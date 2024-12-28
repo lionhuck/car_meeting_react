@@ -23,7 +23,7 @@ const LoginUser = () => {
         }
         
         const data = await response.json();
-        localStorage.setItem('token', JSON.stringify(data.Token));
+        localStorage.setItem('token', JSON.stringify(data.token));
         
         toast.current.show({ severity: 'success', summary: 'Éxito', detail: 'Inicio de sesión exitoso', life: 3000 });
         console.log(data.Token);

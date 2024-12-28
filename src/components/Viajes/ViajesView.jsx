@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-const ViajesView = ({ token, onAddPassenger }) => {
+const ViajesView = ({ onAddPassenger }) => {
+  const token = JSON.parse(localStorage.getItem('token'));
   const [viajes, setViajes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -23,6 +24,7 @@ const ViajesView = ({ token, onAddPassenger }) => {
         if (response.ok) {
           const data = await response.json();
           setViajes(data);
+          console.log(data);
         } else {
           console.error("Error al obtener los viajes");
         }
