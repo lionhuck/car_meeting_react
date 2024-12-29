@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ViajesView from "./ViajesView";
+import ViajesView from "./ViewViajes";
 
 const ViajesContainer = () => {
   const token = JSON.parse(localStorage.getItem('token'));

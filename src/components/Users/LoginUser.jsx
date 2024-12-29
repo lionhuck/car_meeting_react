@@ -5,9 +5,7 @@ import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import * as Yup from 'yup';
-import "primereact/resources/themes/saga-blue/theme.css";
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
+
 
 const LoginUser = () => {
   const toast = useRef(null);
@@ -98,11 +96,11 @@ const LoginUser = () => {
                   style={{ color: "red" }}
                 />
               </div>
-
+            <div className='card flex justify-content-center'></div>
               <Button
                 label="Iniciar Sesión"
                 type="submit"
-                className="p-button p-mt-3"
+
                 disabled={!isValid}
                 style={{ width: "100%" }}
               />
