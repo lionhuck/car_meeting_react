@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import ViajesView from "./ViajesView";
 
 const ViajesContainer = () => {
-  const [token, setToken] = useState(localStorage.getItem("token")); // O de donde guardes el token
-  const [userId, setUserId] = useState(null);
+  const token = JSON.parse(localStorage.getItem('token'));
 
   const handleAddPassenger = async (id_viaje) => {
     if (!token) {
@@ -12,10 +11,10 @@ const ViajesContainer = () => {
     }
 
     const datos_pasajero = {
-      id_equipaje: null, // Aquí podrías obtener los datos del equipaje si es necesario
+      id_equipaje: 1, // Aquí podrías obtener los datos del equipaje si es necesario
     };
 
-    const response = await fetch(`http://localhost:5000/viajes/${id_viaje}/agregar_pasajero`, {
+    const response = await fetch(`http://localhost:5000/viajes/${id_viaje}/pasajeros`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -23,7 +22,7 @@ const ViajesContainer = () => {
       },
       body: JSON.stringify({
         id_viaje,
-        id_usuario: userId,
+        id_usuario,
         datos_pasajero,
       }),
     });

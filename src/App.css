@@ -40,3 +40,76 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Estilos personalizados para DataTable */
+.p-datatable-custom .p-datatable-header {
+  background: white;
+  border: none;
+  padding: 1.5rem 1rem;
+}
+
+.p-datatable-custom .p-datatable-thead > tr > th {
+  background: #f8fafc;
+  color: #1e293b;
+  padding: 1rem;
+  border-color: #e2e8f0;
+}
+
+.p-datatable-custom .p-column-filter {
+  width: 100%;
+}
+
+.p-datatable-custom .p-inputtext {
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+/* Estilos para el paginador */
+.custom-paginator .p-paginator-current,
+.custom-paginator .p-paginator-page,
+.custom-paginator .p-paginator-first,
+.custom-paginator .p-paginator-last,
+.custom-paginator .p-paginator-next,
+.custom-paginator .p-paginator-prev {
+  border-radius: 6px;
+  min-width: 2.5rem;
+  height: 2.5rem;
+}
+
+.custom-paginator .p-paginator-page.p-highlight {
+  background: #3b82f6;
+  color: white;
+}
+
+/* Estilos para el calendario */
+.p-calendar-custom .p-calendar {
+  width: 100%;
+}
+
+.p-calendar-custom .p-inputtext {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+/* Estilos para los botones de filtro */
+.p-column-filter-clear-button,
+.p-column-filter-apply-button {
+  border-radius: 6px !important;
+}
+
+.p-column-filter-clear-button {
+  background-color: #ef4444 !important;
+  border: none !important;
+}
+
+.p-column-filter-apply-button {
+  background-color: #22c55e !important;
+  border: none !important;
+}
+
+/* Estilos para el modal de filtros */
+.p-column-filter-overlay {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
