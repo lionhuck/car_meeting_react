@@ -55,67 +55,69 @@ const LoginUser = () => {
   };
 
   return (
-    <div className="p-d-flex p-jc-center p-ai-center">
-      <div className="p-card p-shadow-3" style={{ width: "400px", padding: "2rem" }}>
-        <Toast ref={toast} />
-        <h2 className="p-text-center">Iniciar Sesión</h2>
-        <Formik
-          initialValues={{ username: "", password: "" }}
-          validationSchema={validationSchema}
-          onSubmit={(values) => onLoginUser(values)}
-        >
-          {({ handleSubmit, isValid }) => (
-            <form onSubmit={handleSubmit} className="p-fluid">
-              <div className="p-field">
-                <label htmlFor="username">Nombre de usuario</label>
-                <Field
-                  as={InputText}
-                  id="username"
-                  name="username"
-                  className="p-inputtext"
-                />
-                <ErrorMessage
-                  name="username"
-                  component="small"
-                  style={{ color: "red" }}
-                />
-              </div>
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+      <div className="p-d-flex p-jc-center p-ai-center">
+        <div className="p-card p-shadow-3" style={{ width: "400px", padding: "2rem" }}>
+          <Toast ref={toast} />
+          <h2 className="p-text-center">Iniciar Sesión</h2>
+          <Formik
+            initialValues={{ username: "", password: "" }}
+            validationSchema={validationSchema}
+            onSubmit={(values) => onLoginUser(values)}
+          >
+            {({ handleSubmit, isValid }) => (
+              <form onSubmit={handleSubmit} className="p-fluid">
+                <div className="p-field">
+                  <label htmlFor="username">Nombre de usuario</label>
+                  <Field
+                    as={InputText}
+                    id="username"
+                    name="username"
+                    className="p-inputtext"
+                  />
+                  <ErrorMessage
+                    name="username"
+                    component="small"
+                    style={{ color: "red" }}
+                  />
+                </div>
 
-              <div className="p-field">
-                <label htmlFor="password">Contraseña</label>
-                <Field
-                  as={InputText}
-                  id="password"
-                  type="password"
-                  name="password"
-                  className="p-inputtext"
+                <div className="p-field">
+                  <label htmlFor="password">Contraseña</label>
+                  <Field
+                    as={InputText}
+                    id="password"
+                    type="password"
+                    name="password"
+                    className="p-inputtext"
+                  />
+                  <ErrorMessage
+                    name="password"
+                    component="small"
+                    style={{ color: "red" }}
+                  />
+                </div>
+                <div className="card flex justify-content-center"></div>
+                <Button
+                  label="Iniciar Sesión"
+                  type="submit"
+                  disabled={!isValid}
+                  style={{ width: "100%" }}
                 />
-                <ErrorMessage
-                  name="password"
-                  component="small"
-                  style={{ color: "red" }}
+
+                <Button
+                  label="Registrarse"
+                  className="p-button p-mt-3 p-button-secondary"
+                  style={{ width: "100%" }}
+                  onClick={redirectToRegistro}
                 />
-              </div>
-            <div className='card flex justify-content-center'></div>
-              <Button
-                label="Iniciar Sesión"
-                type="submit"
-
-                disabled={!isValid}
-                style={{ width: "100%" }}
-              />
-
-              <Button
-                label="Registrarse"
-                className="p-button p-mt-3 p-button-secondary"
-                style={{ width: "100%" }}
-                onClick={redirectToRegistro} // Llama a la función para redirigir
-              />
-            </form>
-          )}
-        </Formik>
+              </form>
+            )}
+          </Formik>
+        </div>
       </div>
-    </div>
+  </div>
+
   );
 };
 

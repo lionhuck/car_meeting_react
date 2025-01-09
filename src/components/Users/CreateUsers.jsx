@@ -45,129 +45,131 @@ const RegistroUsuario = () => {
     });
 
     return (
-        <div className="p-d-flex p-jc-center p-ai-center">
-            <div className="p-card p-shadow-3" style={{ width: "400px", padding: "2rem" }}>
-                <h2 className="p-text-center">Registrarse</h2>
-                {mensaje && <div className="p-text-center p-mb-3">{mensaje}</div>}
-                <Formik
-                    initialValues={{
-                        nombre: '',
-                        apellido: '',
-                        nombre_usuario: '',
-                        email: '',
-                        password: '',
-                        id_genero: 1,
-                    }}
-                    validationSchema={validationSchema}
-                    onSubmit={onSubmit}
-                >
-                    {({ handleSubmit, isValid }) => (
-                        <form onSubmit={handleSubmit} className="p-fluid">
-                            <div className="p-field">
-                                <label htmlFor="nombre">Nombre</label>
-                                <Field
-                                    as={InputText}
-                                    id="nombre"
-                                    name="nombre"
-                                    className="p-inputtext"
-                                />
-                                <ErrorMessage
-                                    name="nombre"
-                                    component="small"
-                                    style={{ color: "red" }}
-                                />
-                            </div>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+            <div className="p-d-flex p-jc-center p-ai-center">
+                <div className="p-card p-shadow-3" style={{ width: "400px", padding: "2rem" }}>
+                    <h2 className="p-text-center">Registrarse</h2>
+                    {mensaje && <div className="p-text-center p-mb-3">{mensaje}</div>}
+                    <Formik
+                        initialValues={{
+                            nombre: '',
+                            apellido: '',
+                            nombre_usuario: '',
+                            email: '',
+                            password: '',
+                            id_genero: 1,
+                        }}
+                        validationSchema={validationSchema}
+                        onSubmit={onSubmit}
+                    >
+                        {({ handleSubmit, isValid }) => (
+                            <form onSubmit={handleSubmit} className="p-fluid">
+                                <div className="p-field">
+                                    <label htmlFor="nombre">Nombre</label>
+                                    <Field
+                                        as={InputText}
+                                        id="nombre"
+                                        name="nombre"
+                                        className="p-inputtext"
+                                    />
+                                    <ErrorMessage
+                                        name="nombre"
+                                        component="small"
+                                        style={{ color: "red" }}
+                                    />
+                                </div>
 
-                            <div className="p-field">
-                                <label htmlFor="apellido">Apellido</label>
-                                <Field
-                                    as={InputText}
-                                    id="apellido"
-                                    name="apellido"
-                                    className="p-inputtext"
-                                />
-                                <ErrorMessage
-                                    name="apellido"
-                                    component="small"
-                                    style={{ color: "red" }}
-                                />
-                            </div>
+                                <div className="p-field">
+                                    <label htmlFor="apellido">Apellido</label>
+                                    <Field
+                                        as={InputText}
+                                        id="apellido"
+                                        name="apellido"
+                                        className="p-inputtext"
+                                    />
+                                    <ErrorMessage
+                                        name="apellido"
+                                        component="small"
+                                        style={{ color: "red" }}
+                                    />
+                                </div>
 
-                            <div className="p-field">
-                                <label htmlFor="nombre_usuario">Nombre de usuario</label>
-                                <Field
-                                    as={InputText}
-                                    id="nombre_usuario"
-                                    name="nombre_usuario"
-                                    className="p-inputtext"
-                                />
-                                <ErrorMessage
-                                    name="nombre_usuario"
-                                    component="small"
-                                    style={{ color: "red" }}
-                                />
-                            </div>
+                                <div className="p-field">
+                                    <label htmlFor="nombre_usuario">Nombre de usuario</label>
+                                    <Field
+                                        as={InputText}
+                                        id="nombre_usuario"
+                                        name="nombre_usuario"
+                                        className="p-inputtext"
+                                    />
+                                    <ErrorMessage
+                                        name="nombre_usuario"
+                                        component="small"
+                                        style={{ color: "red" }}
+                                    />
+                                </div>
 
-                            <div className="p-field">
-                                <label htmlFor="email">Email</label>
-                                <Field
-                                    as={InputText}
-                                    id="email"
-                                    name="email"
-                                    className="p-inputtext"
-                                />
-                                <ErrorMessage
-                                    name="email"
-                                    component="small"
-                                    style={{ color: "red" }}
-                                />
-                            </div>
+                                <div className="p-field">
+                                    <label htmlFor="email">Email</label>
+                                    <Field
+                                        as={InputText}
+                                        id="email"
+                                        name="email"
+                                        className="p-inputtext"
+                                    />
+                                    <ErrorMessage
+                                        name="email"
+                                        component="small"
+                                        style={{ color: "red" }}
+                                    />
+                                </div>
 
-                            <div className="p-field">
-                                <label htmlFor="password">Contraseña</label>
-                                <Field
-                                    as={InputText}
-                                    id="password"
-                                    type="password"
-                                    name="password"
-                                    className="p-inputtext"
-                                />
-                                <ErrorMessage
-                                    name="password"
-                                    component="small"
-                                    style={{ color: "red" }}
-                                />
-                            </div>
+                                <div className="p-field">
+                                    <label htmlFor="password">Contraseña</label>
+                                    <Field
+                                        as={InputText}
+                                        id="password"
+                                        type="password"
+                                        name="password"
+                                        className="p-inputtext"
+                                    />
+                                    <ErrorMessage
+                                        name="password"
+                                        component="small"
+                                        style={{ color: "red" }}
+                                    />
+                                </div>
 
-                            <div className="p-field">
-                                <label htmlFor="id_genero">Género</label>
-                                <Field
-                                    as="select"
-                                    id="id_genero"
-                                    name="id_genero"
-                                    className="p-inputtext"
-                                >
-                                    <option value="1">Masculino</option>
-                                    <option value="2">Femenino</option>
-                                    <option value="3">Otro</option>
-                                </Field>
-                                <ErrorMessage
-                                    name="id_genero"
-                                    component="small"
-                                    style={{ color: "red" }}
-                                />
-                            </div>
+                                <div className="p-field">
+                                    <label htmlFor="id_genero">Género</label>
+                                    <Field
+                                        as="select"
+                                        id="id_genero"
+                                        name="id_genero"
+                                        className="p-inputtext"
+                                    >
+                                        <option value="1">Masculino</option>
+                                        <option value="2">Femenino</option>
+                                        <option value="3">Otro</option>
+                                    </Field>
+                                    <ErrorMessage
+                                        name="id_genero"
+                                        component="small"
+                                        style={{ color: "red" }}
+                                    />
+                                </div>
 
-                            <Button
-                                label="Registrarse"
-                                type="submit"
-                                className="p-button p-mt-3"
-                                disabled={!isValid}
-                                style={{ width: "100%" }}
-                            />
-                        </form>
-                    )}
-                </Formik>
+                                <Button
+                                    label="Registrarse"
+                                    type="submit"
+                                    className="p-button p-mt-3"
+                                    disabled={!isValid}
+                                    style={{ width: "100%" }}
+                                />
+                            </form>
+                        )}
+                    </Formik>
+                </div>
             </div>
         </div>
     );
