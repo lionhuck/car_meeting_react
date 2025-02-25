@@ -41,7 +41,7 @@ const LoginUser = () => {
       detail: "Inicio de sesión exitoso",
       life: 3000,
     });
-    console.log(data.Token);
+    navigate('/viajes');
   };
 
   const validationSchema = Yup.object().shape({
@@ -99,16 +99,13 @@ const LoginUser = () => {
                 </div>
                 <div className="card flex justify-content-center"></div>
                 <Button
+                  className="mb-6"
                   label="Iniciar Sesión"
                   type="submit"
                   disabled={!isValid}
-                  style={{ width: "100%" }}
                 />
-
                 <Button
                   label="Registrarse"
-                  className="p-button p-mt-3 p-button-secondary"
-                  style={{ width: "100%" }}
                   onClick={redirectToRegistro}
                 />
               </form>

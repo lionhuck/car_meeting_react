@@ -6,6 +6,10 @@ import { Button } from "primereact/button";
 import { AutoComplete } from "primereact/autocomplete";
 import { Calendar } from "primereact/calendar";
 import { InputSwitch } from "primereact/inputswitch";
+import { Card } from "primereact/card";
+import { Message } from "primereact/message";
+import { Panel } from "primereact/panel";
+import { Divider } from "primereact/divider";
 import axios from "axios";
 
 const CreateViaje = () => {
@@ -13,7 +17,7 @@ const CreateViaje = () => {
   const [localidades, setLocalidades] = useState([]);
   const [filteredLocalidades, setFilteredLocalidades] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [mensaje, setMensaje] = useState("");
+  const [mensaje, setMensaje] = useState(null);
 
   useEffect(() => {
     const fetchLocalidades = async () => {
@@ -29,7 +33,7 @@ const CreateViaje = () => {
         setLocalidades(response.data);
       } catch (error) {
         console.error("Error al cargar localidades:", error);
-        setMensaje("Error al cargar localidades");
+        setMensaje({ severity: "error", summary: "Error", detail: "Error al cargar localidades" });
       } finally {
         setLoading(false);
       }
@@ -72,205 +76,202 @@ const CreateViaje = () => {
         body: JSON.stringify(formData),
       });
   
-      // ...rest of the code
+      const responseData = await response.json();
+      
       if (response.ok) {
-        setMensaje("Viaje creado exitosamente");
+        setMensaje({ severity: "success", summary: "Éxito", detail: "Viaje creado exitosamente" });
         reset();
       } else {
         console.error('Server response:', responseData);
-        setMensaje(responseData.error || "Error al crear el viaje");
+        setMensaje({ 
+          severity: "error", 
+          summary: "Error", 
+          detail: responseData.error || "Error al crear el viaje" 
+        });
       }
     } catch (error) {
       console.error("Error al conectar con el servidor:", error);
-      setMensaje("Error al conectar con el servidor");
+      setMensaje({ 
+        severity: "error", 
+        summary: "Error de conexión", 
+        detail: "Error al conectar con el servidor" 
+      });
     } finally {
       setLoading(false);
     }
   };
 
+  const formFields = [
+    {
+      name: "id_origen",
+      label: "Origen",
+      component: (field, errors) => (
+        <AutoComplete
+          value={field.value}
+          onChange={(e) => field.onChange(e.value)}
+          suggestions={filteredLocalidades}
+          completeMethod={searchLocalidades}
+          field="nombre"
+          dropdown
+          dropdownMode="current"
+          placeholder="Seleccione el origen"
+          dropdownIcon="pi pi-chevron-down"
+          toggleable={true}
+        />
+      ),
+      rules: { required: "El origen es obligatorio" }
+    },
+    {
+      name: "id_destino",
+      label: "Destino",
+      component: (field, errors) => (
+        <AutoComplete
+          value={field.value}
+          onChange={(e) => field.onChange(e.value)}
+          suggestions={filteredLocalidades}
+          completeMethod={searchLocalidades}
+          field="nombre"
+          dropdown
+          dropdownMode="current"
+          placeholder="Seleccione el destino"
+          dropdownIcon="pi pi-chevron-down"
+          toggleable={true}
+        />
+      ),
+      rules: { required: "El destino es obligatorio" }
+    },
+    {
+      name: "fecha_salida",
+      label: "Fecha y hora de salida",
+      component: (field, errors) => (
+        <Calendar
+          value={field.value}
+          onChange={(e) => field.onChange(e.value)}
+          showTime
+          hourFormat="24"
+          placeholder="Seleccione la fecha y hora de salida"
+          minDate={new Date()}
+          showIcon
+          manualInput={true}
+        />
+      ),
+      rules: { required: "La fecha de salida es obligatoria" }
+    },
+    {
+      name: "asientos_disponibles",
+      label: "Asientos Disponibles",
+      component: (field, errors) => (
+        <InputNumber
+          value={field.value}
+          onValueChange={(e) => field.onChange(e.value)}
+          min={1}
+          max={10}
+          placeholder="Número de asientos"
+        />
+      ),
+      rules: { 
+        required: "Debe ingresar la cantidad de asientos",
+        min: { value: 1, message: "Mínimo 1 asiento" }
+      },
+      defaultValue: 1
+    },
+    {
+      name: "precio",
+      label: "Precio",
+      component: (field, errors) => (
+        <div className="p-inputgroup">
+          <span className="p-inputgroup-addon">$</span>
+          <InputNumber
+            value={field.value}
+            onValueChange={(e) => field.onChange(e.value)}
+            min={0}
+            mode="currency"
+            currency="ARS"
+            locale="es-AR"
+          />
+        </div>
+      ),
+      rules: { 
+        required: "El precio es obligatorio",
+        min: { value: 0, message: "El precio no puede ser negativo" }
+      },
+      defaultValue: 0
+    },
+    {
+      name: "mascotas",
+      label: "¿Permite mascotas?",
+      component: (field, errors) => (
+        <div className="p-field-switch p-my-4">
+          <InputSwitch
+            checked={field.value}
+            onChange={(e) => field.onChange(e.value)}
+          />
+        </div>
+      ),
+      defaultValue: false
+    },
+    {
+      name: "observaciones",
+      label: "Observaciones",
+      component: (field, errors) => (
+        <InputText
+          value={field.value}
+          onChange={(e) => field.onChange(e.target.value)}
+          placeholder="Ingrese observaciones adicionales"
+          maxLength={500}
+        />
+      ),
+      defaultValue: ""
+    }
+  ];
+
+  const header = <h2>Crear Viaje</h2>;
+  
   return (
-    <div className="form-container">
-      <h2>Crear Viaje</h2>
+    <Card>
+      {header}
+      <Divider />
+      
       {mensaje && (
-        <div className={`mensaje ${mensaje.includes("error") ? "error" : "success"}`}>
-          {mensaje}
-        </div>
+        <Message severity={mensaje.severity} text={mensaje.detail} />
       )}
-      <form onSubmit={handleSubmit(onSubmit)} className="viaje-form">
-        <div className="form-group">
-          <Controller
-            name="id_origen"
-            control={control}
-            defaultValue=""
-            rules={{ required: "El origen es obligatorio" }}
-            render={({ field }) => (
-              <>
-                <AutoComplete
-                  value={field.value}
-                  onChange={(e) => field.onChange(e.value)}
-                  suggestions={filteredLocalidades}
-                  completeMethod={searchLocalidades}
-                  field="nombre"
-                  dropdown
-                  placeholder="Seleccione el origen"
+      
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Panel>
+          <div className="p-fluid">
+            {formFields.map((fieldConfig, index) => (
+              <div className="p-field p-mb-4" key={index}>
+                <label htmlFor={fieldConfig.name} className="p-d-block p-mb-2">{fieldConfig.label}</label>
+                <Controller
+                  name={fieldConfig.name}
+                  control={control}
+                  defaultValue={fieldConfig.defaultValue || ""}
+                  rules={fieldConfig.rules}
+                  render={({ field }) => (
+                    <>
+                      {fieldConfig.component(field, errors)}
+                      {errors[fieldConfig.name] && (
+                        <small className="p-error">{errors[fieldConfig.name].message}</small>
+                      )}
+                    </>
+                  )}
                 />
-                {errors.id_origen && (
-                  <small className="error">{errors.id_origen.message}</small>
-                )}
-              </>
-            )}
-          />
-        </div>
-
-        <div className="form-group">
-          <Controller
-            name="id_destino"
-            control={control}
-            defaultValue=""
-            rules={{ required: "El destino es obligatorio" }}
-            render={({ field }) => (
-              <>
-                <AutoComplete
-                  value={field.value}
-                  onChange={(e) => field.onChange(e.value)}
-                  suggestions={filteredLocalidades}
-                  completeMethod={searchLocalidades}
-                  field="nombre"
-                  dropdown
-                  placeholder="Seleccione el destino"
-                />
-                {errors.id_destino && (
-                  <small className="error">{errors.id_destino.message}</small>
-                )}
-              </>
-            )}
-          />
-        </div>
-
-        <div className="form-group">
-          <Controller
-            name="fecha_salida"
-            control={control}
-            defaultValue=""
-            rules={{ required: "La fecha de salida es obligatoria" }}
-            render={({ field }) => (
-              <>
-                <Calendar
-                  value={field.value}
-                  onChange={(e) => field.onChange(e.value)}
-                  showTime
-                  hourFormat="24"
-                  placeholder="Seleccione la fecha y hora de salida"
-                  minDate={new Date()}
-                />
-                {errors.fecha_salida && (
-                  <small className="error">{errors.fecha_salida.message}</small>
-                )}
-              </>
-            )}
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="asientos_disponibles" className="font-bold block mb-2">
-            Asientos Disponibles
-          </label>
-          <Controller
-            name="asientos_disponibles"
-            control={control}
-            defaultValue={1}
-            rules={{ 
-              required: "Debe ingresar la cantidad de asientos",
-              min: { value: 1, message: "Mínimo 1 asiento" }
-            }}
-            render={({ field }) => (
-              <>
-                <InputNumber
-                  value={field.value}
-                  onValueChange={(e) => field.onChange(e.value)}
-                  min={1}
-                  max={10}
-                  placeholder="Número de asientos"
-                />
-                {errors.asientos_disponibles && (
-                  <small className="error">{errors.asientos_disponibles.message}</small>
-                )}
-              </>
-            )}
-          />
-        </div>
-
-        <div className="form-group">
-          <Controller
-            name="precio"
-            control={control}
-            defaultValue={0}
-            rules={{ 
-              required: "El precio es obligatorio",
-              min: { value: 0, message: "El precio no puede ser negativo" }
-            }}
-            render={({ field }) => (
-              <>
-                <div className="p-inputgroup flex-1">
-                  <span className="p-inputgroup-addon">$</span>
-                  <InputNumber
-                    value={field.value}
-                    onValueChange={(e) => field.onChange(e.value)}
-                    min={0}
-                    mode="currency"
-                    currency="ARS"
-                    locale="es-AR"
-                  />
-                </div>
-                {errors.precio && (
-                  <small className="error">{errors.precio.message}</small>
-                )}
-              </>
-            )}
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="mascotas">¿Permite mascotas?</label>
-          <Controller
-            name="mascotas"
-            control={control}
-            defaultValue={false}
-            render={({ field }) => (
-              <InputSwitch
-                checked={field.value}
-                onChange={(e) => field.onChange(e.value)}
+              </div>
+            ))}
+            
+            <div className="p-field p-mt-4">
+              <Button
+                label={loading ? "Cargando..." : "Crear Viaje"}
+                icon="pi pi-check"
+                type="submit"
+                className="p-button-success"
+                disabled={loading}
               />
-            )}
-          />
-        </div>
-
-        <div className="form-group">
-          <Controller
-            name="observaciones"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <InputText
-                {...field}
-                type="text"
-                placeholder="Ingrese observaciones adicionales"
-                maxLength={500}
-              />
-            )}
-          />
-        </div>
-
-        <div className="form-group">
-          <Button
-            label={loading ? "Cargando..." : "Crear Viaje"}
-            type="submit"
-            className="p-button-success p-button-lg"
-            disabled={loading}
-          />
-        </div>
+            </div>
+          </div>
+        </Panel>
       </form>
-    </div>
+    </Card>
   );
 };
 
