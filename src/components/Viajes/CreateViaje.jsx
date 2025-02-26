@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm, Controller } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
@@ -18,7 +19,7 @@ const CreateViaje = () => {
   const [filteredLocalidades, setFilteredLocalidades] = useState([]);
   const [loading, setLoading] = useState(false);
   const [mensaje, setMensaje] = useState(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchLocalidades = async () => {
       try {
@@ -81,7 +82,9 @@ const CreateViaje = () => {
       if (response.ok) {
         setMensaje({ severity: "success", summary: "Éxito", detail: "Viaje creado exitosamente" });
         reset();
-      } else {
+        navigate("/viajes");
+      }
+       else {
         console.error('Server response:', responseData);
         setMensaje({ 
           severity: "error", 
@@ -105,7 +108,7 @@ const CreateViaje = () => {
     {
       name: "id_origen",
       label: "Origen",
-      component: (field, errors) => (
+    component: (field, errors) => (
         <AutoComplete
           value={field.value}
           onChange={(e) => field.onChange(e.value)}
@@ -177,7 +180,7 @@ const CreateViaje = () => {
     },
     {
       name: "precio",
-      label: "Precio",
+      label: "Precio por persona",
       component: (field, errors) => (
         <div className="p-inputgroup">
           <span className="p-inputgroup-addon">$</span>
@@ -259,7 +262,7 @@ const CreateViaje = () => {
               </div>
             ))}
             
-            <div className="p-field p-mt-4">
+            <div className="p-field p-mt-4 pt-4">
               <Button
                 label={loading ? "Cargando..." : "Crear Viaje"}
                 icon="pi pi-check"
