@@ -4,6 +4,7 @@ import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
+import { Calendar } from "primereact/calendar";
 
 const ViajesPasajero = () => {
     const token = JSON.parse(localStorage.getItem("token"));
@@ -80,6 +81,31 @@ const ViajesPasajero = () => {
         />
     );
 
+    const dateBodyTemplate = (rowData) => {
+        return new Date(rowData.fecha_salida).toLocaleString("es-ES", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false, 
+        });
+      };
+
+
+      const dateFilterTemplate = (options) => {
+        return (
+            <Calendar
+                value={options.value}
+                onChange={(e) => options.filterCallback(e.value, options.index)}
+                dateFormat="dd/mm/yy"
+                placeholder="dd/mm/yyyy"
+                mask="99/99/9999"
+                className="p-calendar-custom"
+            />
+        );
+    };
+
     return (
         <div className="card p-4" style={{ background: "white", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}>
             <Toast ref={toast} />
@@ -117,7 +143,16 @@ const ViajesPasajero = () => {
                 >
                     <Column field="origen.nombre" header="Origen" sortable className="font-semibold" />
                     <Column field="destino.nombre" header="Destino" sortable className="font-semibold" />
-                    <Column field="fecha_salida" header="Fecha" sortable className="font-semibold" />
+                    <Column
+                                  field="fecha_salida"
+                                  header="Fecha"
+                                  dataType="date"
+                                  body={dateBodyTemplate}
+                                  filter
+                                  filterElement={dateFilterTemplate}
+                                  sortable
+                                  className="font-semibold"
+                    />
                     <Column field="conductor.nombre" header="Conductor" className="font-semibold" />
                     <Column field="precio" header="Precio" body={(rowData) => `$${rowData.precio}`} sortable className="font-semibold" />
                     <Column field="observaciones" header="Observaciones" className="font-semibold" />

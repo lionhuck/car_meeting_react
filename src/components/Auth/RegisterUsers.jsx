@@ -1,9 +1,9 @@
 import { Formik, Field, ErrorMessage } from "formik";
 import { useEffect, useState, useRef } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { Toast } from 'primereact/toast';
+import { Toast } from "primereact/toast";
 import * as Yup from "yup";
 
 const RegistroUsuario = () => {
@@ -11,7 +11,7 @@ const RegistroUsuario = () => {
   const [generos, setGeneros] = useState([]);
   const toast = useRef(null);
   const navigate = useNavigate();
-  
+
   // Función para manejar el envío del formulario
   const onSubmit = async (values) => {
     try {
@@ -27,7 +27,7 @@ const RegistroUsuario = () => {
       const data = await response.json();
       if (response.ok) {
         setMensaje(data.mensaje || "Usuario registrado exitosamente");
-        
+
         // 2. Si el registro es exitoso, hacemos login automáticamente
         await realizarLoginAutomatico(values.nombre_usuario, values.password);
       } else {
@@ -66,11 +66,12 @@ const RegistroUsuario = () => {
         toast.current.show({
           severity: "error",
           summary: "Error",
-          detail: "Inicio de sesión automático fallido. Por favor, inicie sesión manualmente.",
+          detail:
+            "Inicio de sesión automático fallido. Por favor, inicie sesión manualmente.",
           life: 3000,
         });
         // Redirigir a la página de login para que el usuario inicie sesión manualmente
-        navigate('/login');
+        navigate("/login");
         return;
       }
 
@@ -83,9 +84,9 @@ const RegistroUsuario = () => {
         detail: "¡Registro e inicio de sesión exitosos!",
         life: 3000,
       });
-      
+
       // Redirigir a la página principal o dashboard
-      navigate('/viajes'); // Ajusta esta ruta según tu aplicación
+      navigate("/viajes"); // Ajusta esta ruta según tu aplicación
     } catch (error) {
       console.error("Error en login automático:", error);
       toast.current.show({
@@ -94,7 +95,7 @@ const RegistroUsuario = () => {
         detail: "Error al iniciar sesión automáticamente",
         life: 3000,
       });
-      navigate('/login');
+      navigate("/login");
     }
   };
 
@@ -106,9 +107,9 @@ const RegistroUsuario = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-          }
+          },
         });
-        
+
         if (response.ok) {
           const data = await response.json();
           console.log("Géneros obtenidos:", data);
@@ -120,7 +121,7 @@ const RegistroUsuario = () => {
         console.error("Error al obtener los géneros:", error);
       }
     };
-    
+
     obtenerGeneros();
   }, []);
 
@@ -155,10 +156,13 @@ const RegistroUsuario = () => {
     <div
       style={{
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
+        height: "100vh",
       }}
     >
+      <h1 style={{ marginBottom: "1rem" }}>CAR MEETING</h1>
       <div className="p-d-flex p-jc-center p-ai-center">
         <div
           className="p-card p-shadow-3"
@@ -286,7 +290,15 @@ const RegistroUsuario = () => {
                 <Button
                   label="Registrarse"
                   type="submit"
-                  className="p-button p-mt-3"
+                  className="p-button mt-3"
+                  disabled={!isValid}
+                  style={{ width: "100%" }}
+                />
+
+                <Button
+                  label="Login"
+                  className="p-button-link mt-3"
+                  onClick={() => navigate("/login")}
                   disabled={!isValid}
                   style={{ width: "100%" }}
                 />

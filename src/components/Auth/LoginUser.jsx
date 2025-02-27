@@ -51,11 +51,12 @@ const LoginUser = () => {
 
   // Función para redirigir a la página de registro
   const redirectToRegistro = () => {
-    navigate("/nuevo-usuario"); // Redirige a la página de registro
+    navigate("/registro-usuario"); // Redirige a la página de registro
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+    <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+    <h1 style={{ marginBottom: "1rem" }}>CAR MEETING</h1>
       <div className="p-d-flex p-jc-center p-ai-center">
         <div className="p-card p-shadow-3" style={{ width: "400px", padding: "2rem" }}>
           <Toast ref={toast} />
@@ -99,12 +100,13 @@ const LoginUser = () => {
                 </div>
                 <div className="card flex justify-content-center"></div>
                 <Button
-                  className="mb-6"
+                  className="mb-3"
                   label="Iniciar Sesión"
                   type="submit"
                   disabled={!isValid}
                 />
                 <Button
+                className='p-button-link'
                   label="Registrarse"
                   onClick={redirectToRegistro}
                 />

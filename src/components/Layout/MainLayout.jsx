@@ -21,14 +21,6 @@ const MainLayout = ({ children }) => {
     {label: 'Mis Viajes', icon:'pi pi-bookmark', url:'/mis-viajes'},
   ];
 
-  const publicItems = [
-    {label: 'Registrar Usuario', icon:'pi pi-user', url:'/registro-usuario'},
-    {label: 'Login', icon:'pi pi-sign-in', url:'/inicio-sesion'},
-  ];
-
-  // Decidir qué menú mostrar
-  const items = isAuthenticated ? authenticatedItems : publicItems;
-
   // Función para cerrar sesión
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -46,12 +38,14 @@ const MainLayout = ({ children }) => {
     />
   ) : null;
 
-  return (
+  return isAuthenticated ? (
     <div>
-      <Menubar model={items} end={end} />
+      <Menubar model={authenticatedItems} end={<Button label="Cerrar Sesión" icon="pi pi-sign-out" className="p-button-danger" onClick={handleLogout} />} />
       <h1>CAR MEETING</h1>
       <div className="content">{children}</div>
     </div>
+  ) : (
+    <div>{children}</div>
   );
 };
 
