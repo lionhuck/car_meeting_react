@@ -5,10 +5,11 @@ import './App.css';
 import ViajesView from './components/Viajes/ViewViajes';
 import LoginUser from './components/Auth/LoginUser';
 import CreateViaje from './components/Viajes/CreateViaje';
-import ViajesPasajero from './components/Viajes/MisViajes';
+import ViajesPasajero from './components/Viajes/ViajesAceptados';
 import RegistroUsuario from './components/Auth/RegisterUsers';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import MainLayout from './components/Layout/MainLayout';
+import ViajesPropuestos from './components/Viajes/ViajesPropuestos';
 
 function App() {
   return (
@@ -24,7 +25,8 @@ function App() {
             <Route path="/" element={<ViajesView />} />
             <Route path="/viajes" element={<ViajesView />} />
             <Route path="/cargar-viaje" element={<CreateViaje />} />
-            <Route path="/mis-viajes" element={<ViajesPasajero />} />
+            <Route path="/viajes-aceptados" element={<ViajesPasajero />} />
+            <Route path="/viajes-propuestos" element={<ViajesPropuestos />} />
           </Route>
           
           {/* Ruta para páginas no encontradas */}

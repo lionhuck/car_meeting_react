@@ -18,7 +18,8 @@ const MainLayout = ({ children }) => {
   const authenticatedItems = [
     {label: 'Viajes', icon:'pi pi-car', url:'/viajes'},
     {label: 'Crear Viaje', icon:'pi pi-warehouse', url:'/cargar-viaje'},
-    {label: 'Mis Viajes', icon:'pi pi-bookmark', url:'/mis-viajes'},
+    {label: 'Viajes Aceptados', icon:'pi pi-bookmark', url:'/viajes-aceptados'},
+    {label: 'Viajes Propuestos', icon:'pi pi-car', url:'/viajes-propuestos'},
   ];
 
   // Función para cerrar sesión
