@@ -5,6 +5,7 @@ import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Calendar } from "primereact/calendar";
+import Chat from "../Chat/Chat"; // Importar el componente Chat
 
 const ViajesPasajero = () => {
     const token = JSON.parse(localStorage.getItem("token"));
@@ -12,6 +13,8 @@ const ViajesPasajero = () => {
     const [loading, setLoading] = useState(true);
     const [selectedTrip, setSelectedTrip] = useState(null);
     const [showDialog, setShowDialog] = useState(false);
+    const [showChat, setShowChat] = useState(false);
+    const [activeChatViajeId, setActiveChatViajeId] = useState(null);
     const toast = useRef(null);
 
     useEffect(() => {
@@ -72,13 +75,31 @@ const ViajesPasajero = () => {
         }
     };
 
+    const handleOpenChat = (viajeId) => {
+        setActiveChatViajeId(viajeId);
+        setShowChat(true);
+    };
+
+    const handleCloseChat = () => {
+        setShowChat(false);
+        setActiveChatViajeId(null);
+    };
+
     const actionTemplate = (rowData) => (
-        <Button
-            label="Salir del viaje"
-            icon="pi pi-times"
-            className="p-button-danger"
-            onClick={() => confirmUnjoinTrip(rowData)}
-        />
+        <div className="flex gap-2">
+            <Button
+                label="Salir del viaje"
+                icon="pi pi-times"
+                className="p-button-danger"
+                onClick={() => confirmUnjoinTrip(rowData)}
+            />
+            <Button
+                label="Chat"
+                icon="pi pi-comments"
+                className="p-button-secondary"
+                onClick={() => handleOpenChat(rowData.id)}
+            />
+        </div>
     );
 
     const dateBodyTemplate = (rowData) => {
@@ -91,7 +112,6 @@ const ViajesPasajero = () => {
             hour12: false, 
         });
       };
-
 
       const dateFilterTemplate = (options) => {
         return (
@@ -107,59 +127,79 @@ const ViajesPasajero = () => {
     };
 
     return (
-        <div className="card p-4" style={{ background: "white", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}>
-            <Toast ref={toast} />
-            <Dialog 
-                visible={showDialog} 
-                onHide={() => setShowDialog(false)} 
-                header="Confirmar salida" 
-                footer={
-                    <div>
-                        <Button label="Cancelar" icon="pi pi-times" onClick={() => setShowDialog(false)} className="p-button-text" />
-                        <Button label="Confirmar" icon="pi pi-check" onClick={handleUnjoinTrip} className="p-button-danger" />
-                    </div>
-                }
-            >
-                <p>¿Estás seguro de que deseas salir de este viaje?</p>
-            </Dialog>
-            {loading ? (
-                <div className="text-center p-4">
-                    <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem", color: "#3b82f6" }}></i>
-                    <div className="mt-2">Cargando viajes...</div>
-                </div>
-            ) : viajes.length === 0 ? (
-                <p className="text-center text-gray-600">No has sido pasajero en ningún viaje.</p>
-            ) : (
-                <DataTable
-                    value={viajes}
-                    paginator
-                    rows={10}
-                    dataKey="id"
-                    emptyMessage="No hay viajes disponibles."
-                    showGridlines
-                    stripedRows
-                    className="p-datatable-custom"
-                    paginatorClassName="custom-paginator"
+        <>
+            <div className="card p-4" style={{ background: "white", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}>
+                <Toast ref={toast} />
+                <Dialog 
+                    visible={showDialog} 
+                    onHide={() => setShowDialog(false)} 
+                    header="Confirmar salida" 
+                    footer={
+                        <div>
+                            <Button label="Cancelar" icon="pi pi-times" onClick={() => setShowDialog(false)} className="p-button-text" />
+                            <Button label="Confirmar" icon="pi pi-check" onClick={handleUnjoinTrip} className="p-button-danger" />
+                        </div>
+                    }
                 >
-                    <Column field="origen.nombre" header="Origen" sortable className="font-semibold" />
-                    <Column field="destino.nombre" header="Destino" sortable className="font-semibold" />
-                    <Column
-                                  field="fecha_salida"
-                                  header="Fecha"
-                                  dataType="date"
-                                  body={dateBodyTemplate}
-                                  filter
-                                  filterElement={dateFilterTemplate}
-                                  sortable
-                                  className="font-semibold"
+                    <p>¿Estás seguro de que deseas salir de este viaje?</p>
+                </Dialog>
+                {loading ? (
+                    <div className="text-center p-4">
+                        <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem", color: "#3b82f6" }}></i>
+                        <div className="mt-2">Cargando viajes...</div>
+                    </div>
+                ) : viajes.length === 0 ? (
+                    <p className="text-center text-gray-600">No has sido pasajero en ningún viaje.</p>
+                ) : (
+                    <DataTable
+                        value={viajes}
+                        paginator
+                        rows={10}
+                        dataKey="id"
+                        emptyMessage="No hay viajes disponibles."
+                        showGridlines
+                        stripedRows
+                        className="p-datatable-custom"
+                        paginatorClassName="custom-paginator"
+                    >
+                        <Column field="origen.nombre" header="Origen" sortable className="font-semibold" />
+                        <Column field="destino.nombre" header="Destino" sortable className="font-semibold" />
+                        <Column
+                                    field="fecha_salida"
+                                    header="Fecha"
+                                    dataType="date"
+                                    body={dateBodyTemplate}
+                                    filter
+                                    filterElement={dateFilterTemplate}
+                                    sortable
+                                    className="font-semibold"
+                        />
+                        <Column field="conductor.nombre" header="Conductor" className="font-semibold" />
+                        <Column field="precio" header="Precio" body={(rowData) => `$${rowData.precio}`} sortable className="font-semibold" />
+                        <Column field="observaciones" header="Observaciones" className="font-semibold" />
+                        <Column header="Acciones" body={actionTemplate} className="font-semibold" />
+                    </DataTable>
+                )}
+            </div>
+            
+            {/* Chat Modal */}
+            <Dialog
+                visible={showChat}
+                onHide={handleCloseChat}
+                header="Chat del Viaje"
+                style={{ width: '80vw', maxWidth: '1000px' }}
+                maximizable
+                modal
+                className="p-fluid"
+            >
+                {activeChatViajeId && (
+                    <Chat 
+                        viajeId={activeChatViajeId} 
+                        onClose={handleCloseChat} 
                     />
-                    <Column field="conductor.nombre" header="Conductor" className="font-semibold" />
-                    <Column field="precio" header="Precio" body={(rowData) => `$${rowData.precio}`} sortable className="font-semibold" />
-                    <Column field="observaciones" header="Observaciones" className="font-semibold" />
-                    <Column header="Acciones" body={actionTemplate} className="font-semibold" />
-                </DataTable>
-            )}
-        </div>
+                )}
+            </Dialog>
+        </>
     );
 };
 

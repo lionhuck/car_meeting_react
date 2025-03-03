@@ -4,7 +4,7 @@ import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
-import { Calendar } from "primereact/calendar";
+import Chat from "../Chat/Chat"; // Importar el componente Chat
 
 const ViajesConductor = () => {
     const token = JSON.parse(localStorage.getItem("token"));
@@ -12,6 +12,8 @@ const ViajesConductor = () => {
     const [loading, setLoading] = useState(true);
     const [selectedTrip, setSelectedTrip] = useState(null);
     const [showDialog, setShowDialog] = useState(false);
+    const [showChat, setShowChat] = useState(false);
+    const [activeChatViajeId, setActiveChatViajeId] = useState(null);
     const toast = useRef(null);
 
     useEffect(() => {
@@ -67,10 +69,30 @@ const ViajesConductor = () => {
         }
     };
 
+    const handleOpenChat = (viajeId) => {
+        setActiveChatViajeId(viajeId);
+        setShowChat(true);
+    };
+
+    const handleCloseChat = () => {
+        setShowChat(false);
+        setActiveChatViajeId(null);
+    };
+
     const actionTemplate = (rowData) => (
         <div className="flex gap-2">
-            <Button label="Eliminar" icon="pi pi-trash" className="p-button-danger" onClick={() => confirmDeleteTrip(rowData)} />
-            <Button label="VER CHAT" icon="pi pi-comments" className="p-button-secondary" disabled />
+            <Button 
+                label="Eliminar" 
+                icon="pi pi-trash" 
+                className="p-button-danger" 
+                onClick={() => confirmDeleteTrip(rowData)} 
+            />
+            <Button 
+                label="Chat" 
+                icon="pi pi-comments" 
+                className="p-button-secondary" 
+                onClick={() => handleOpenChat(rowData.id)} 
+            />
         </div>
     );
 
@@ -79,39 +101,60 @@ const ViajesConductor = () => {
     });
 
     return (
-        <div className="card p-4" style={{ background: "white", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}>
-            <Toast ref={toast} />
-            <Dialog 
-                visible={showDialog} 
-                onHide={() => setShowDialog(false)} 
-                header="Confirmar eliminación" 
-                footer={
-                    <div>
-                        <Button label="Cancelar" icon="pi pi-times" onClick={() => setShowDialog(false)} className="p-button-text" />
-                        <Button label="Confirmar" icon="pi pi-check" onClick={handleDeleteTrip} className="p-button-danger" />
+        <>
+            <div className="card p-4" style={{ background: "white", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}>
+                <Toast ref={toast} />
+                <Dialog 
+                    visible={showDialog} 
+                    onHide={() => setShowDialog(false)} 
+                    header="Confirmar eliminación" 
+                    footer={
+                        <div>
+                            <Button label="Cancelar" icon="pi pi-times" onClick={() => setShowDialog(false)} className="p-button-text" />
+                            <Button label="Confirmar" icon="pi pi-check" onClick={handleDeleteTrip} className="p-button-danger" />
+                        </div>
+                    }
+                >
+                    <p>¿Estás seguro de que deseas eliminar este viaje?</p>
+                </Dialog>
+                
+                {loading ? (
+                    <div className="text-center p-4">
+                        <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem", color: "#3b82f6" }}></i>
+                        <div className="mt-2">Cargando viajes...</div>
                     </div>
-                }
+                ) : viajes.length === 0 ? (
+                    <p className="text-center text-gray-600">No has creado ningún viaje.</p>
+                ) : (
+                    <DataTable value={viajes} paginator rows={10} dataKey="id" showGridlines stripedRows>
+                        <Column field="origen.nombre" header="Origen" sortable className="font-semibold" />
+                        <Column field="destino.nombre" header="Destino" sortable className="font-semibold" />
+                        <Column field="fecha_salida" header="Fecha" body={dateBodyTemplate} sortable className="font-semibold" />
+                        <Column field="precio" header="Precio" body={(rowData) => `$${rowData.precio}`} sortable className="font-semibold" />
+                        <Column field="observaciones" header="Observaciones" className="font-semibold" />
+                        <Column header="Acciones" body={actionTemplate} className="font-semibold" />
+                    </DataTable>
+                )}
+            </div>
+            
+            {/* Chat Modal */}
+            <Dialog
+                visible={showChat}
+                onHide={handleCloseChat}
+                header="Chat del Viaje"
+                style={{ width: '80vw', maxWidth: '1000px' }}
+                maximizable
+                modal
+                className="p-fluid"
             >
-                <p>¿Estás seguro de que deseas eliminar este viaje?</p>
+                {activeChatViajeId && (
+                    <Chat 
+                        viajeId={activeChatViajeId} 
+                        onClose={handleCloseChat} 
+                    />
+                )}
             </Dialog>
-            {loading ? (
-                <div className="text-center p-4">
-                    <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem", color: "#3b82f6" }}></i>
-                    <div className="mt-2">Cargando viajes...</div>
-                </div>
-            ) : viajes.length === 0 ? (
-                <p className="text-center text-gray-600">No has creado ningún viaje.</p>
-            ) : (
-                <DataTable value={viajes} paginator rows={10} dataKey="id" showGridlines stripedRows>
-                    <Column field="origen.nombre" header="Origen" sortable className="font-semibold" />
-                    <Column field="destino.nombre" header="Destino" sortable className="font-semibold" />
-                    <Column field="fecha_salida" header="Fecha" body={dateBodyTemplate} sortable className="font-semibold" />
-                    <Column field="precio" header="Precio" body={(rowData) => `$${rowData.precio}`} sortable className="font-semibold" />
-                    <Column field="observaciones" header="Observaciones" className="font-semibold" />
-                    <Column header="Acciones" body={actionTemplate} className="font-semibold" />
-                </DataTable>
-            )}
-        </div>
+        </>
     );
 };
 
