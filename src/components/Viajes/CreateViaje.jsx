@@ -146,18 +146,25 @@ const CreateViaje = () => {
     {
       name: "fecha_salida",
       label: "Fecha y hora de salida",
-      component: (field, errors) => (
-        <Calendar
-          value={field.value}
-          onChange={(e) => field.onChange(e.value)}
-          showTime
-          hourFormat="24"
-          placeholder="Seleccione la fecha y hora de salida"
-          minDate={new Date()}
-          showIcon
-          manualInput={true}
-        />
-      ),
+      component: (field, errors) => {
+        const today = new Date();
+        const maxDate = new Date();
+        maxDate.setMonth(today.getMonth() + 1); // Un mes después
+    
+        return (
+          <Calendar
+            value={field.value}
+            onChange={(e) => field.onChange(e.value)}
+            showTime
+            hourFormat="24"
+            placeholder="Seleccione la fecha y hora de salida"
+            minDate={today}  // Restringe a partir de hoy
+            maxDate={maxDate} // Máximo un mes adelante
+            showIcon
+            manualInput={false}
+          />
+        );
+      },
       rules: { required: "La fecha de salida es obligatoria" }
     },
     {

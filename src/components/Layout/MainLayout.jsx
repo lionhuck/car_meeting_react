@@ -19,7 +19,7 @@ const MainLayout = ({ children }) => {
     {label: 'Viajes', icon:'pi pi-car', url:'/viajes'},
     {label: 'Crear Viaje', icon:'pi pi-warehouse', url:'/cargar-viaje'},
     {label: 'Viajes Aceptados', icon:'pi pi-bookmark', url:'/viajes-aceptados'},
-    {label: 'Viajes Propuestos', icon:'pi pi-car', url:'/viajes-propuestos'},
+    {label: 'Viajes Propuestos', icon:'pi pi-check', url:'/viajes-propuestos'},
   ];
 
   // Función para cerrar sesión

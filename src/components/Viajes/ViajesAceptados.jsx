@@ -174,7 +174,11 @@ const ViajesPasajero = () => {
                                     sortable
                                     className="font-semibold"
                         />
-                        <Column field="conductor.nombre" header="Conductor" className="font-semibold" />
+                        <Column body={(rowData) =>
+                                `${rowData.conductor.nombre} ${rowData.conductor.apellido}`
+                                } 
+                                header="Conductor" 
+                                className="font-semibold" />
                         <Column field="precio" header="Precio" body={(rowData) => `$${rowData.precio}`} sortable className="font-semibold" />
                         <Column field="observaciones" header="Observaciones" className="font-semibold" />
                         <Column header="Acciones" body={actionTemplate} className="font-semibold" />

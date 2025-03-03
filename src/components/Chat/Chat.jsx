@@ -157,27 +157,31 @@ const Chat = ({ viajeId, onClose }) => {
                     </div>
 
                     {/* Input para escribir mensajes */}
-                    <div className="mt-3 flex">
+                    <div className="mt-3 flex flex-col">
+                        {/* Input arriba */}
                         <InputText
                             value={mensaje}
                             onChange={(e) => setMensaje(e.target.value)}
                             onKeyPress={handleKeyPress}
                             placeholder="Escribe un mensaje..."
-                            className="flex-1"
+                            className="mb-2 flex-1"
                         />
-                        <Button 
-                            label="Enviar" 
-                            icon="pi pi-send" 
-                            className="ml-2" 
-                            onClick={enviarMensaje} 
-                        />
-                        <Button 
-                            label="Cerrar" 
-                            icon="pi pi-times" 
-                            className="ml-2 p-button-outlined p-button-danger" 
-                            onClick={onClose} 
-                        />
+                        
+                        {/* Botones abajo en una línea */}
+                        <div className="flex justify-end gap-2">
+                            <Button 
+                                icon="pi pi-send" 
+                                className="p-button-rounded p-button-primary" 
+                                onClick={enviarMensaje} 
+                            />
+                            <Button 
+                                icon="pi pi-times" 
+                                className="p-button-rounded p-button-danger p-button-outlined" 
+                                onClick={onClose} 
+                            />
+                        </div>
                     </div>
+
                 </div>
 
                 {/* Lista de participantes */}
