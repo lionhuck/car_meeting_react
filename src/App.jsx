@@ -10,7 +10,6 @@ import RegistroUsuario from './components/Auth/RegisterUsers';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import MainLayout from './components/Layout/MainLayout';
 import ViajesPropuestos from './components/Viajes/ViajesPropuestos';
-
 function App() {
   return (
     <BrowserRouter>
@@ -27,7 +26,7 @@ function App() {
             <Route path="/cargar-viaje" element={<CreateViaje />} />
             <Route path="/viajes-aceptados" element={<ViajesPasajero />} />
             <Route path="/viajes-propuestos" element={<ViajesPropuestos />} />
-          </Route>
+           </Route>
           
           {/* Ruta para páginas no encontradas */}
           <Route path="*" element={<Navigate to="/inicio-sesion" />} />

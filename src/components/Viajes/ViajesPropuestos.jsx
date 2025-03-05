@@ -24,7 +24,7 @@ const ViajesConductor = () => {
 
     const fetchViajesConductor = async () => {
         try {
-            const response = await fetch("http://localhost:5000/viajes/conductor", {
+            const response = await fetch("http://localhost:5000/viajes/disponibles", {
                 method: "GET",
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -42,12 +42,40 @@ const ViajesConductor = () => {
         }
     };
 
-    const confirmDeleteTrip = (trip) => {
+    const confirmStartTrip = (trip) => {
         setSelectedTrip(trip);
         setShowDialog(true);
     };
-
-    const handleDeleteTrip = async () => {
+    const handleStartTrip = async () => {
+        if (!selectedTrip) return;
+        try {
+            const response = await fetch(`http://localhost:5000/viajes/${selectedTrip.id}/iniciar`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`},
+            });
+            
+            if (response.ok) {
+                setViajes(viajes.filter((viaje) => viaje.id !== selectedTrip.id));
+                toast.current.show({ severity: "success", summary: "Éxito", detail: "Viaje iniciado", life: 3000 });
+            } else {
+                throw new Error("No se pudo iniciar el viaje");
+            }
+        } catch (error) {
+            toast.current.show({ severity: "error", summary: "Error", detail: error.message, life: 3000 });
+        }
+        finally {
+            setShowDialog(false);
+            setSelectedTrip(null);
+        }
+    }
+    
+        const confirmDeleteTrip = (trip) => {
+            setSelectedTrip(trip);
+            setShowDialog(true);
+        };
+    
+        const handleDeleteTrip = async () => {
         if (!selectedTrip) return;
         try {
             const response = await fetch(`http://localhost:5000/viajes/${selectedTrip.id}/eliminar`, {
@@ -93,6 +121,12 @@ const ViajesConductor = () => {
                 className="p-button-secondary" 
                 onClick={() => handleOpenChat(rowData.id)} 
             />
+            <Button
+                label="Comenzar Viaje"
+                icon="pi pi-start"
+                className="p-button-warning"
+                onClick={() => { confirmStartTrip(rowData) }}
+            />
         </div>
     );
 
@@ -117,6 +151,23 @@ const ViajesConductor = () => {
                 >
                     <p>¿Estás seguro de que deseas eliminar este viaje?</p>
                 </Dialog>
+
+                <Dialog 
+                    visible={showDialog} 
+                    onHide={() => setShowDialog(false)} 
+                    header="Comenzar Viaje" 
+                    footer={
+                        <div>
+                            <Button label="Cancelar" icon="pi pi-times" onClick={() => setShowDialog(false)} className="p-button-text" />
+                            <Button label="Confirmar" icon="pi pi-check" onClick={handleStartTrip} className="p-button-succes" />
+                        </div>
+                    }
+                >
+                    <p>¿Estás seguro de que deseas comenzar este viaje?</p>
+                </Dialog>
+
+
+
                 
                 {loading ? (
                     <div className="text-center p-4">

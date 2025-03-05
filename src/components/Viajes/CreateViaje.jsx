@@ -25,7 +25,7 @@ const CreateViaje = () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:5000/api/localidades", {
+        const response = await axios.get("http://localhost:5000/localidades", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -56,10 +56,16 @@ const CreateViaje = () => {
     try {
       setLoading(true);
       const token = JSON.parse(localStorage.getItem("token"));
+
+      // Ajustar la fecha a la zona horaria local
+      const fechaSalida = new Date(data.fecha_salida);
+      fechaSalida.setMinutes(fechaSalida.getMinutes() - fechaSalida.getTimezoneOffset());
+      
+
       const formData = {
         id_origen: parseInt(data.id_origen.id),
         id_destino: parseInt(data.id_destino.id),
-        fecha_salida: data.fecha_salida.toISOString().split('.')[0],
+        fecha_salida: fechaSalida.toISOString().replace('T', ' ').split('.')[0],
         asientos_disponibles: parseInt(data.asientos_disponibles),
         precio: parseInt(data.precio),
         mascotas: data.mascotas || false,
