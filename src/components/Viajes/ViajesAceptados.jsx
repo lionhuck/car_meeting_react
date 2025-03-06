@@ -25,7 +25,7 @@ const ViajesPasajero = () => {
 
     const fetchViajesPasajero = async () => {
         try {
-            const response = await fetch("http://localhost:5000/viajes/pasajeros", {
+            const response = await fetch("http://localhost:5000/viajes/pasajero/disponibles", {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,

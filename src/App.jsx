@@ -9,7 +9,9 @@ import ViajesPasajero from './components/Viajes/ViajesAceptados';
 import RegistroUsuario from './components/Auth/RegisterUsers';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import MainLayout from './components/Layout/MainLayout';
-import ViajesPropuestos from './components/Viajes/ViajesPropuestos';
+import ViajesPropuestos from './components/Viajes/ViajesDisponiblesConductor';
+import ViajesEnCursoConductor from './components/Viajes/ViajesEnCursoConductor';
+import ViajesFinalizadosConductor from './components/Viajes/ViajesFinalizadosConductor';
 function App() {
   return (
     <BrowserRouter>
@@ -26,6 +28,8 @@ function App() {
             <Route path="/cargar-viaje" element={<CreateViaje />} />
             <Route path="/viajes-aceptados" element={<ViajesPasajero />} />
             <Route path="/viajes-propuestos" element={<ViajesPropuestos />} />
+            <Route path="/viajes-en-curso" element={<ViajesEnCursoConductor />} />
+            <Route path="/viajes-finalizados" element={<ViajesFinalizadosConductor/>} />
            </Route>
           
           {/* Ruta para páginas no encontradas */}
