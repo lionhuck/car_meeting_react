@@ -5,6 +5,7 @@ import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Calendar } from "primereact/calendar";
+import { Card } from "primereact/card";
 import Chat from "../Chat/Chat"; // Importar el componente Chat
 
 const ViajesPasajero = () => {
@@ -128,7 +129,7 @@ const ViajesPasajero = () => {
 
     return (
         <>
-            <div className="card p-4" style={{ background: "white", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}>
+            <Card title="Viajes Aceptados" className="p-4" style={{ borderRadius: "12px" }}>
                 <Toast ref={toast} />
                 <Dialog 
                     visible={showDialog} 
@@ -149,7 +150,10 @@ const ViajesPasajero = () => {
                         <div className="mt-2">Cargando viajes...</div>
                     </div>
                 ) : viajes.length === 0 ? (
-                    <p className="text-center text-gray-600">No has sido pasajero en ningún viaje.</p>
+                    <div className="text-center p-4">
+                        <i className="pi pi-info-circle" style={{ fontSize: "2rem", color: "#64748b" }}></i>
+                        <p className="text-gray-600">No te has unido a ningún viaje.</p>
+                    </div>
                 ) : (
                     <DataTable
                         value={viajes}
@@ -165,27 +169,27 @@ const ViajesPasajero = () => {
                         <Column field="origen.nombre" header="Origen" sortable className="font-semibold" />
                         <Column field="destino.nombre" header="Destino" sortable className="font-semibold" />
                         <Column
-                                    field="fecha_salida"
-                                    header="Fecha"
-                                    dataType="date"
-                                    body={dateBodyTemplate}
-                                    filter
-                                    filterElement={dateFilterTemplate}
-                                    sortable
-                                    className="font-semibold"
+                            field="fecha_salida"
+                            header="Fecha"
+                            dataType="date"
+                            body={dateBodyTemplate}
+                            filter
+                            filterElement={dateFilterTemplate}
+                            sortable
+                            className="font-semibold"
                         />
-                        <Column body={(rowData) =>
-                                `${rowData.conductor.nombre} ${rowData.conductor.apellido}`
-                                } 
-                                header="Conductor" 
-                                className="font-semibold" />
+                        <Column 
+                            field="conductor"
+                            header="Conductor"
+                            body={(rowData) => `${rowData.conductor.nombre} ${rowData.conductor.apellido}`} 
+                            className="font-semibold" 
+                        />
                         <Column field="precio" header="Precio" body={(rowData) => `$${rowData.precio}`} sortable className="font-semibold" />
                         <Column field="observaciones" header="Observaciones" className="font-semibold" />
                         <Column header="Acciones" body={actionTemplate} className="font-semibold" />
                     </DataTable>
                 )}
-            </div>
-            
+            </Card>
             {/* Chat Modal */}
             <Dialog
                 visible={showChat}
@@ -205,6 +209,6 @@ const ViajesPasajero = () => {
             </Dialog>
         </>
     );
-};
+};    
 
 export default ViajesPasajero;

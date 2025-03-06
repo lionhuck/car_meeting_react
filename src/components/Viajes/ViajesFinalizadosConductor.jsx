@@ -73,12 +73,6 @@ const ViajesFinalizadosConductor = () => {
         return `$${rowData.precio.toFixed(2)}`;
     };
 
-    const asientosBodyTemplate = (rowData) => {
-        return (
-            <Badge value={rowData.asientos_disponibles} 
-                   severity={rowData.asientos_disponibles > 0 ? "success" : "danger"} />
-        );
-    };
 
     return (
         <>

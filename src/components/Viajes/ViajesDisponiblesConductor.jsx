@@ -4,6 +4,7 @@ import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
+import { Card } from "primereact/card";
 import Chat from "../Chat/Chat"; // Importar el componente Chat
 
 const ViajesConductor = () => {
@@ -136,7 +137,7 @@ const ViajesConductor = () => {
 
     return (
         <>
-            <div className="card p-4" style={{ background: "white", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}>
+            <Card title="Viajes Ofrecidos" className="card p-4" style={{ borderRadius: "12px" }}>
                 <Toast ref={toast} />
                 <Dialog 
                     visible={showDialog} 
@@ -175,7 +176,10 @@ const ViajesConductor = () => {
                         <div className="mt-2">Cargando viajes...</div>
                     </div>
                 ) : viajes.length === 0 ? (
-                    <p className="text-center text-gray-600">No has creado ningún viaje.</p>
+                    <div className="text-center p-4">
+                        <i className="pi pi-info-circle" style={{ fontSize: "2rem", color: "#64748b" }}></i>
+                        <p className="text-center text-gray-600">No has creado ningún viaje.</p>
+                    </div>
                 ) : (
                     <DataTable value={viajes} paginator rows={10} dataKey="id" showGridlines stripedRows>
                         <Column field="origen.nombre" header="Origen" sortable className="font-semibold" />
@@ -186,7 +190,7 @@ const ViajesConductor = () => {
                         <Column header="Acciones" body={actionTemplate} className="font-semibold" />
                     </DataTable>
                 )}
-            </div>
+            </Card>
             
             {/* Chat Modal */}
             <Dialog

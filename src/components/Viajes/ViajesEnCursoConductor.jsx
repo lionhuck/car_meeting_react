@@ -4,6 +4,7 @@ import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
+import { Card } from "primereact/card";
 
 const ViajesEnCurso = () => {
     const token = JSON.parse(localStorage.getItem("token"));
@@ -108,9 +109,9 @@ const ViajesEnCurso = () => {
     };
 
     return (
-        <div className="card p-4" style={{ background: "white", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}>
+        <Card title="Viajes en curso" className="p-4" style={{ borderRadius: "12px" }}>
             <Toast ref={toast} />
-
+    
             <Dialog 
                 visible={showDialog} 
                 onHide={() => setShowDialog(false)} 
@@ -130,24 +131,58 @@ const ViajesEnCurso = () => {
             >
                 <p>¿Estás seguro de que deseas finalizar este viaje?</p>
             </Dialog>
-
+    
             {loading ? (
                 <div className="text-center p-4">
                     <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem", color: "#3b82f6" }}></i>
                     <div className="mt-2">Cargando viajes en curso...</div>
                 </div>
             ) : viajes.length === 0 ? (
-                <p className="text-center text-gray-600">No tienes viajes en curso.</p>
+                <div className="text-center p-4">
+                    <i className="pi pi-info-circle" style={{ fontSize: "2rem", color: "#64748b" }}></i>
+                    <p className="mt-2 text-gray-600">No tienes viajes en curso.</p>
+                </div>
             ) : (
-                <DataTable value={viajes} paginator rows={10} dataKey="id" showGridlines stripedRows>
-                    <Column field="origen" header="Origen" body={(rowData) => localidadTemplate(rowData, 'origen')} sortable className="font-semibold" />
-                    <Column field="destino" header="Destino" body={(rowData) => localidadTemplate(rowData, 'destino')} sortable className="font-semibold" />
-                    <Column field="hora_inicio_real" header="Hora de Inicio" body={dateBodyTemplate} sortable className="font-semibold" />
-                    <Column header="Acciones" body={actionTemplate} className="font-semibold" />
+                <DataTable 
+                    value={viajes} 
+                    paginator 
+                    rows={10} 
+                    dataKey="id" 
+                    showGridlines 
+                    stripedRows  
+                    rowHover
+                    responsiveLayout="scroll"
+                    className="p-datatable-sm"
+                >
+                    <Column 
+                        field="origen" 
+                        header="Origen" 
+                        body={(rowData) => localidadTemplate(rowData, 'origen')} 
+                        sortable 
+                        className="font-semibold" 
+                    />
+                    <Column 
+                        field="destino" 
+                        header="Destino" 
+                        body={(rowData) => localidadTemplate(rowData, 'destino')} 
+                        sortable 
+                        className="font-semibold" 
+                    />
+                    <Column 
+                        field="hora_inicio_real" 
+                        header="Hora de Inicio" 
+                        body={dateBodyTemplate} 
+                        sortable 
+                        className="font-semibold" 
+                    />
+                    <Column 
+                        header="Acciones" 
+                        body={actionTemplate} 
+                        className="font-semibold" 
+                    />
                 </DataTable>
             )}
-        </div>
+        </Card>
     );
-};
-
+};      
 export default ViajesEnCurso;
