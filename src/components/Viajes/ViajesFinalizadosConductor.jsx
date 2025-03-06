@@ -110,12 +110,8 @@ const ViajesFinalizadosConductor = () => {
                     >
                         <Column field="origen" header="Origen" body={origenBodyTemplate} sortable className="font-semibold" />
                         <Column field="destino" header="Destino" body={destinoBodyTemplate} sortable className="font-semibold" />
-                        <Column field="fecha_salida" header="Fecha de Salida" body={(rowData) => dateBodyTemplate(rowData, 'fecha_salida')} sortable />
                         <Column field="hora_inicio_real" header="Hora de Inicio" body={(rowData) => dateBodyTemplate(rowData, 'hora_inicio_real')} sortable />
-                        <Column field="hora_de_llegada" header="Hora de Llegada" body={(rowData) => dateBodyTemplate(rowData, 'hora_de_llegada')} sortable />
-                        <Column field="duracion_viaje" header="Duración" body={duracionBodyTemplate} sortable />
                         <Column field="precio" header="Precio" body={precioBodyTemplate} sortable />
-                        <Column field="asientos_disponibles" header="Asientos" body={asientosBodyTemplate} sortable />
                     </DataTable>
                 )}
             </Card>
