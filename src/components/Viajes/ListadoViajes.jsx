@@ -7,6 +7,7 @@ import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Toast } from 'primereact/toast';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
+import { Card } from 'primereact/card';
 
 const ViajesView = () => {
   const token = JSON.parse(localStorage.getItem("token"));
@@ -292,94 +293,97 @@ const ViajesView = () => {
   };
 
   return (
-    <div className="card p-4" style={{ background: 'white', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}>
+    <Card title="Listado de viajes" className="p-4" style={{ borderRadius: "12px" }}>
       <Toast ref={toast} />
-      {loading ? (
-        <div className="text-center p-4">
-          <i className="pi pi-spin pi-spinner" style={{ fontSize: '2rem', color: '#3b82f6' }}></i>
-          <div className="mt-2">Cargando viajes...</div>
-        </div>
-      ) : viajes.length === 0 ? (
-        <p className="text-center text-gray-600">No hay viajes disponibles en este momento.</p>
-      ) : (
-        <>
-          <DataTable
-            value={viajes}
-            paginator
-            rows={10}
-            dataKey="id"
-            filters={filters}
-            globalFilterFields={['origen.nombre', 'destino.nombre']}
-            header={renderHeader}
-            emptyMessage="No hay viajes disponibles."
-            showGridlines
-            stripedRows
-            className="p-datatable-custom"
-            paginatorClassName="custom-paginator"
-            style={{
-              '--primary-color': '#3b82f6',
-              '--primary-light-color': '#93c5fd'
-            }}
-          >
-            <Column 
-              field="origen.nombre" 
-              header="Origen" 
-              filter 
-              filterPlaceholder="Buscar por origen"
-              sortable
-              className="font-semibold"
-            />
-            <Column 
-              field="destino.nombre" 
-              header="Destino" 
-              filter 
-              filterPlaceholder="Buscar por destino"
-              sortable
-              className="font-semibold"
-            />
-            <Column
-              field="fecha_salida"
-              header="Fecha"
-              dataType="date"
-              body={dateBodyTemplate}
-              filter
-              filterElement={dateFilterTemplate}
-              sortable
-              className="font-semibold"
-            />
-            <Column
-              field="conductor"
-              header="Conductor"
-              body={(rowData) =>
-                `${rowData.conductor.nombre} ${rowData.conductor.apellido}`
-              }
-              className="font-semibold"
-            />
-            <Column 
-              field="precio" 
-              header="Precio" 
-              body={(rowData) => `$${rowData.precio}`} 
-              sortable 
-              className="font-semibold"
-            />
-            <Column
-              field="asientos_disponibles"
-              header="Asientos Disponibles"
-              sortable
-              className="font-semibold"
-            />
-            <Column
-              field="observaciones"
-              header="Observaciones"
-              body={observacionesTemplate}
-              className="font-semibold"
-            />
-            <Column body={actionTemplate} header="Acciones" />
-          </DataTable>
-          {renderLuggageDialog()}
-        </>
-      )}
-    </div>
+        {loading ? (
+          <div className="text-center p-4">
+            <i className="pi pi-spin pi-spinner" style={{ fontSize: '2rem', color: '#3b82f6' }}></i>
+            <div className="mt-2">Cargando viajes...</div>
+          </div>
+        ) : viajes.length === 0 ? (
+          <div className="text-center p-4">
+            <i className="pi pi-info-circle" style={{ fontSize: "2rem", color: "#64748b" }}></i>
+            <p className="mt-2 text-gray-600">No hay viajes disponibles. Se el primero en ofrecer! </p>
+          </div>  
+        ) : (
+          <>
+            <DataTable
+              value={viajes}
+              paginator
+              rows={10}
+              dataKey="id"
+              filters={filters}
+              globalFilterFields={['origen.nombre', 'destino.nombre']}
+              header={renderHeader}
+              emptyMessage="No hay viajes disponibles."
+              showGridlines
+              stripedRows
+              className="p-datatable-custom"
+              paginatorClassName="custom-paginator"
+              style={{
+                '--primary-color': '#3b82f6',
+                '--primary-light-color': '#93c5fd'
+              }}
+            >
+              <Column 
+                field="origen.nombre" 
+                header="Origen" 
+                filter 
+                filterPlaceholder="Buscar por origen"
+                sortable
+                className="font-semibold"
+              />
+              <Column 
+                field="destino.nombre" 
+                header="Destino" 
+                filter 
+                filterPlaceholder="Buscar por destino"
+                sortable
+                className="font-semibold"
+              />
+              <Column
+                field="fecha_salida"
+                header="Fecha"
+                dataType="date"
+                body={dateBodyTemplate}
+                filter
+                filterElement={dateFilterTemplate}
+                sortable
+                className="font-semibold"
+              />
+              <Column
+                field="conductor"
+                header="Conductor"
+                body={(rowData) =>
+                  `${rowData.conductor.nombre} ${rowData.conductor.apellido}`
+                }
+                className="font-semibold"
+              />
+              <Column 
+                field="precio" 
+                header="Precio" 
+                body={(rowData) => `$${rowData.precio}`} 
+                sortable 
+                className="font-semibold"
+              />
+              <Column
+                field="asientos_disponibles"
+                header="Asientos Disponibles"
+                sortable
+                className="font-semibold"
+              />
+              <Column
+                field="observaciones"
+                header="Observaciones"
+                body={observacionesTemplate}
+                className="font-semibold"
+              />
+              <Column body={actionTemplate} header="Acciones" />
+            </DataTable>
+            {renderLuggageDialog()}
+          </>
+        )}
+    </Card>
   );
 };
 

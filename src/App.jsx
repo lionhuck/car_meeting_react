@@ -2,16 +2,17 @@
 // App.jsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
-import ViajesView from './components/Viajes/ViewViajes';
+import ViajesView from './components/Viajes/ListadoViajes';
 import LoginUser from './components/Auth/LoginUser';
 import CreateViaje from './components/Viajes/CreateViaje';
 import ViajesPasajero from './components/Viajes/ViajesAceptados';
 import RegistroUsuario from './components/Auth/RegisterUsers';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import MainLayout from './components/Layout/MainLayout';
-import ViajesPropuestos from './components/Viajes/ViajesDisponiblesConductor';
-import ViajesEnCursoConductor from './components/Viajes/ViajesEnCursoConductor';
-import ViajesFinalizadosConductor from './components/Viajes/ViajesFinalizadosConductor';
+import ViajesPropuestos from './components/Viajes/ConductorViajesDisponibles';
+import ViajesEnCursoConductor from './components/Viajes/ConductorViajesEnCurso';
+import ViajesFinalizadosConductor from './components/Viajes/ConductorViajesFinalizados';
+import ViajesEnCursoPasajero from './components/Viajes/PasajeroViajesEnCurso';
 function App() {
   return (
     <BrowserRouter>
@@ -30,7 +31,8 @@ function App() {
             <Route path="/viajes-propuestos" element={<ViajesPropuestos />} />
             <Route path="/viajes-en-curso" element={<ViajesEnCursoConductor />} />
             <Route path="/viajes-finalizados" element={<ViajesFinalizadosConductor/>} />
-           </Route>
+            <Route path="/viajes-en-curso/pasajeros" element={<ViajesEnCursoPasajero />} />
+          </Route>
           
           {/* Ruta para páginas no encontradas */}
           <Route path="*" element={<Navigate to="/inicio-sesion" />} />

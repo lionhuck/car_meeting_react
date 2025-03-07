@@ -35,28 +35,15 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
+/* Colores para los viajes finalizados */
+.bg-conductor {
+  background-color: #9fbdc4; /* Color para conductor */
+}
 
-/* Elimina estos estilos o modifícalos para que no afecten a los botones de PrimeReact */
-/* 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+.bg-pasajero {
+  background-color: #dcb967; /* Color para pasajero */
 }
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-*/
+
 
 /* Si quieres mantener estos estilos para tus propios botones pero no para PrimeReact,
    puedes usar una clase específica */

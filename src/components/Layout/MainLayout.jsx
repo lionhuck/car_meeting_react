@@ -19,14 +19,21 @@ const MainLayout = ({ children, title = 'CAR MEETING' }) => {
     { label: 'Crear Viaje', icon: 'pi pi-warehouse', url: '/cargar-viaje' },
     { label: 'Viajes Aceptados', icon: 'pi pi-bookmark', url: '/viajes-aceptados' },
     { label: 'Viajes Propuestos', icon: 'pi pi-check', url: '/viajes-propuestos' },
-    { label: 'Viajes en Curso', icon: 'pi pi-spinner', url: '/viajes-en-curso' },
+    { label: 'Viajes en Curso CONDUCTOR', icon: 'pi pi-spinner', url: '/viajes-en-curso' },
     { label: 'Viajes Finalizados', icon: 'pi pi-check-circle', url: '/viajes-finalizados' },
+    { label: 'Viajes en curso PASAJEROS', icon: 'pi pi-spinner', url: '/viajes-en-curso/pasajeros' },
   ];
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
+    setVisible(false); // Cierra el sidebar
     navigate('/inicio-sesion');
+  };
+
+  const handleNavigation = (url) => {
+    navigate(url);
+    setVisible(false); // Cierra el sidebar después de la navegación
   };
 
   return isAuthenticated ? (
@@ -39,7 +46,7 @@ const MainLayout = ({ children, title = 'CAR MEETING' }) => {
             label={item.label}
             icon={item.icon}
             className="p-button-text w-full"
-            onClick={() => navigate(item.url)}
+            onClick={() => handleNavigation(item.url)}
           />
         ))}
         <Button
@@ -52,7 +59,7 @@ const MainLayout = ({ children, title = 'CAR MEETING' }) => {
 
       <div className="main-content">
         <Button icon="pi pi-bars" className="p-button-text" onClick={() => setVisible(true)} />
-          <h1>{title}</h1>
+        <h1>{title}</h1>
         <div className="content">{children}</div>
       </div>
     </div>
@@ -62,3 +69,4 @@ const MainLayout = ({ children, title = 'CAR MEETING' }) => {
 };
 
 export default MainLayout;
+
