@@ -4,7 +4,6 @@ import { Column } from "primereact/column";
 import { Toast } from "primereact/toast";
 import { Card } from "primereact/card";
 import { Button } from "primereact/button";
-
 const ViajesFinalizados = () => {
     const token = JSON.parse(localStorage.getItem("token"));
     const [viajes, setViajes] = useState([]);
@@ -61,7 +60,7 @@ const ViajesFinalizados = () => {
     return (
         <>
             <Card 
-                title={`Viajes Finalizados ${tipoViaje === "conductor" ? "Conductor" : "Pasajero"}`} 
+                title={`Viajes Finalizados Como ${tipoViaje === "conductor" ? "Conductor" : "Pasajero"}`} 
                 className={`p-4 ${tipoViaje === "conductor" ? "bg-pasajero" : "bg-conductor"}`} 
                 style={{ borderRadius: "12px" }}
             >
