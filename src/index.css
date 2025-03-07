@@ -37,11 +37,11 @@ h1 {
 }
 /* Colores para los viajes finalizados */
 .bg-conductor {
-  background-color: #9fbdc4; /* Color para conductor */
+  background-color: #90dcff; /* Color para conductor */
 }
 
 .bg-pasajero {
-  background-color: #dcb967; /* Color para pasajero */
+  background-color: #ffdc69; /* Color para pasajero */
 }
 
 

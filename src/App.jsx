@@ -12,7 +12,6 @@ import MainLayout from './components/Layout/MainLayout';
 import ViajesPropuestos from './components/Viajes/ConductorViajesDisponibles';
 import ViajesEnCursoConductor from './components/Viajes/ConductorViajesEnCurso';
 import ViajesFinalizadosConductor from './components/Viajes/ConductorViajesFinalizados';
-import ViajesEnCursoPasajero from './components/Viajes/PasajeroViajesEnCurso';
 function App() {
   return (
     <BrowserRouter>
@@ -31,7 +30,6 @@ function App() {
             <Route path="/viajes-propuestos" element={<ViajesPropuestos />} />
             <Route path="/viajes-en-curso" element={<ViajesEnCursoConductor />} />
             <Route path="/viajes-finalizados" element={<ViajesFinalizadosConductor/>} />
-            <Route path="/viajes-en-curso/pasajeros" element={<ViajesEnCursoPasajero />} />
           </Route>
           
           {/* Ruta para páginas no encontradas */}

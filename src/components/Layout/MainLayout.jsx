@@ -21,7 +21,6 @@ const MainLayout = ({ children, title = 'CAR MEETING' }) => {
     { label: 'Viajes Propuestos', icon: 'pi pi-check', url: '/viajes-propuestos' },
     { label: 'Viajes en Curso CONDUCTOR', icon: 'pi pi-spinner', url: '/viajes-en-curso' },
     { label: 'Viajes Finalizados', icon: 'pi pi-check-circle', url: '/viajes-finalizados' },
-    { label: 'Viajes en curso PASAJEROS', icon: 'pi pi-spinner', url: '/viajes-en-curso/pasajeros' },
   ];
 
   const handleLogout = () => {
