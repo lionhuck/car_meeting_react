@@ -108,12 +108,6 @@ const ViajesFinalizados = () => {
                 Conductor: {viaje.conductor?.nombre} {viaje.conductor?.apellido}
               </span>
             </div>
-            {viaje.hora_fin_real && (
-              <div className="detail-item">
-                <i className="pi pi-calendar-times"></i>
-                <span>Hora de Finalización: {formatDate(viaje.hora_fin_real)}</span>
-              </div>
-            )}
           </div>
         </Card>
       </div>

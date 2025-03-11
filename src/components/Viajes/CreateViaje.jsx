@@ -90,7 +90,7 @@ const CreateViaje = () => {
         reset();
         navigate("/viajes");
       }
-       else {
+      else {
         console.error('Server response:', responseData);
         setMensaje({ 
           severity: "error", 
@@ -159,16 +159,18 @@ const CreateViaje = () => {
     
         return (
           <Calendar
-            value={field.value}
-            onChange={(e) => field.onChange(e.value)}
-            showTime
-            hourFormat="24"
-            placeholder="Seleccione la fecha y hora de salida"
-            minDate={today}  // Restringe a partir de hoy
-            maxDate={maxDate} // Máximo un mes adelante
-            showIcon
-            manualInput={false}
-          />
+          value={field.value}
+          onChange={(e) => field.onChange(e.value)}
+          dateFormat="dd/mm/yy"        // Para mostrar la fecha como DD/MM/AAAA
+          timeFormat="HH:mm"            // Para mostrar la hora como HH:MM
+          showTime
+          hourFormat="24"               // Para utilizar el formato de 24 horas
+          placeholder="Seleccione la fecha y hora de salida"
+          minDate={today}               // Restringe a partir de hoy
+          maxDate={maxDate}             // Máximo un mes adelante
+          showIcon
+          manualInput={true}            // Permite la entrada manual
+        />
         );
       },
       rules: { required: "La fecha de salida es obligatoria" }

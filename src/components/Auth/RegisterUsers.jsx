@@ -149,6 +149,9 @@ const RegistroUsuario = () => {
         "La contraseña debe contener letras y números"
       )
       .required("La contraseña es obligatoria"),
+    confirm_password: Yup.string()
+      .oneOf([Yup.ref("password"), null], "Las contraseñas no coinciden")
+      .required("Debes confirmar la contraseña"),
     id_genero: Yup.number().required("El género es obligatorio"),
   });
 
@@ -178,6 +181,7 @@ const RegistroUsuario = () => {
               nombre_usuario: "",
               email: "",
               password: "",
+              confirm_password: "",
               id_genero: "",
             }}
             validationSchema={validationSchema}
@@ -260,7 +264,21 @@ const RegistroUsuario = () => {
                     style={{ color: "red" }}
                   />
                 </div>
-
+                <div className="p-field">
+                  <label htmlFor="confirm_password">Confirmar contraseña</label>
+                  <Field
+                    as={InputText}
+                    id="confirm_password"
+                    type="password"
+                    name="confirm_password"
+                    className="p-inputtext"
+                  />
+                  <ErrorMessage
+                    name="confirm_password"
+                    component="small"
+                    style={{ color: "red" }}
+                  />
+                </div>
                 <div className="p-field">
                   <label htmlFor="id_genero">Género</label>
                   <Field

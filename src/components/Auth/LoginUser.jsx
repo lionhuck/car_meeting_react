@@ -105,6 +105,7 @@ const LoginUser = () => {
                   type="submit"
                   disabled={!isValid}
                 />
+                <span>¿No tienes una cuenta? </span>
                 <Button
                 className='p-button-link'
                   label="Registrarse"
