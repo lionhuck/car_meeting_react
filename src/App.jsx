@@ -11,7 +11,7 @@ import ProtectedRoute from './components/Auth/ProtectedRoute';
 import MainLayout from './components/Layout/MainLayout';
 import ViajesPropuestos from './components/Viajes/ConductorViajesDisponibles';
 import ViajesEnCursoConductor from './components/Viajes/ConductorViajesEnCurso';
-import ViajesFinalizadosConductor from './components/Viajes/ConductorViajesFinalizados';
+import ViajesFinalizadosConductor from './components/Viajes/ViajesFinalizados';
 function App() {
   return (
     <BrowserRouter>

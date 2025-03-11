@@ -1,284 +1,271 @@
-import React, { useState, useEffect, useRef } from "react";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import { Button } from "primereact/button";
-import { Calendar } from "primereact/calendar";
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
-import { Toast } from 'primereact/toast';
-import { Dialog } from 'primereact/dialog';
-import { Dropdown } from 'primereact/dropdown';
-import { Card } from 'primereact/card';
+import { useState, useEffect, useRef } from "react"
+import { Button } from "primereact/button"
+import { Calendar } from "primereact/calendar"
+import { Toast } from "primereact/toast"
+import { Dialog } from "primereact/dialog"
+import { Dropdown } from "primereact/dropdown"
+import { Card } from "primereact/card"
+import { InputText } from "primereact/inputtext"
+import { Divider } from "primereact/divider"
+import { Paginator } from "primereact/paginator"
+import "../common/TripCard.css"
 
 const ViajesView = () => {
-  const token = JSON.parse(localStorage.getItem("token"));
-  const [viajes, setViajes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({});
-  const [globalFilterValue, setGlobalFilterValue] = useState('');
-  const [showLuggageDialog, setShowLuggageDialog] = useState(false);
-  const [selectedTrip, setSelectedTrip] = useState(null);
-  const [selectedLuggage, setSelectedLuggage] = useState(null);
-  const [luggageTypes, setLuggageTypes] = useState([]);
-  const toast = useRef(null);
+  const token = JSON.parse(localStorage.getItem("token"))
+  const [viajes, setViajes] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [filters, setFilters] = useState({})
+  const [globalFilterValue, setGlobalFilterValue] = useState("")
+  const [showLuggageDialog, setShowLuggageDialog] = useState(false)
+  const [selectedTrip, setSelectedTrip] = useState(null)
+  const [selectedLuggage, setSelectedLuggage] = useState(null)
+  const [luggageTypes, setLuggageTypes] = useState([])
+  const [filteredViajes, setFilteredViajes] = useState([])
+  const [first, setFirst] = useState(0)
+  const [rows, setRows] = useState(6)
+  const toast = useRef(null)
 
   useEffect(() => {
-    initFilters();
-    fetchViajes();
-    fetchLuggageTypes();
-  }, [token]);
+    if (token){
+      fetchViajes()
+      fetchLuggageTypes()
+      initFilters()
+    } else {
+      setLoading(False);
+    } 
+  }, [token])
+
+  useEffect(() => {
+    applyFilters()
+  }, [viajes, globalFilterValue, filters])
 
   const fetchLuggageTypes = async () => {
-    if (!token) return;
-
     try {
       const response = await fetch("http://localhost:5000/equipajes", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-      });
+      })
 
       if (response.ok) {
-        const data = await response.json();
-        setLuggageTypes(data.map(type => ({
-          label: type.categoria,
-          value: type.id
-        })));
+        const data = await response.json()
+        setLuggageTypes(
+          data.map((type) => ({
+            label: type.categoria,
+            value: type.id,
+          })),
+        )
       } else {
-        console.error("Error al obtener tipos de equipaje");
+        console.error("Error al obtener tipos de equipaje")
       }
     } catch (error) {
-      console.error("Error en la solicitud de tipos de equipaje:", error);
+      console.error("Error en la solicitud de tipos de equipaje:", error)
     }
-  };
+  }
 
   const fetchViajes = async () => {
-    if (!token) {
-      console.error("Token no encontrado");
-      setLoading(false);
-      return;
-    }
-
     try {
       const response = await fetch("http://localhost:5000/viajes", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-      });
+      })
 
       if (response.ok) {
-        const data = await response.json();
-        setViajes(data);
+        const data = await response.json()
+        setViajes(data)
+        setFilteredViajes(data)
       } else {
-        console.error("Error al obtener los viajes");
+        console.error("Error al obtener los viajes")
       }
     } catch (error) {
-      console.error("Error en la solicitud de viajes:", error);
+      console.error("Error en la solicitud de viajes:", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const initFilters = () => {
     setFilters({
-      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-      'origen.nombre': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-      'destino.nombre': { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-      fecha_salida: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] }
-    });
-    setGlobalFilterValue('');
-  };
+      origen: null,
+      destino: null,
+      fecha: null,
+    })
+    setGlobalFilterValue("")
+  }
+
+  const applyFilters = () => {
+    let filtered = [...viajes]
+
+    // Global search
+    if (globalFilterValue) {
+      filtered = filtered.filter(
+        (viaje) =>
+          viaje.origen.nombre.toLowerCase().includes(globalFilterValue.toLowerCase()) ||
+          viaje.destino.nombre.toLowerCase().includes(globalFilterValue.toLowerCase()) ||
+          `${viaje.conductor.nombre} ${viaje.conductor.apellido}`
+            .toLowerCase()
+            .includes(globalFilterValue.toLowerCase()),
+      )
+    }
+
+    // Specific filters
+    if (filters.origen) {
+      filtered = filtered.filter((viaje) => viaje.origen.nombre.toLowerCase().includes(filters.origen.toLowerCase()))
+    }
+
+    if (filters.destino) {
+      filtered = filtered.filter((viaje) => viaje.destino.nombre.toLowerCase().includes(filters.destino.toLowerCase()))
+    }
+
+    if (filters.fecha) {
+      const filterDate = new Date(filters.fecha)
+      filtered = filtered.filter((viaje) => {
+        const viajeDate = new Date(viaje.fecha_salida)
+        return viajeDate.toDateString() === filterDate.toDateString()
+      })
+    }
+
+    setFilteredViajes(filtered)
+    setFirst(0)
+  }
 
   const clearFilter = () => {
-    initFilters();
-  };
+    initFilters()
+  }
 
   const handleJoinTrip = (tripData) => {
     if (!token) {
       toast.current.show({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Debe iniciar sesión para unirse a un viaje',
-        life: 3000
-      });
-      return;
+        severity: "error",
+        summary: "Error",
+        detail: "Debe iniciar sesión para unirse a un viaje",
+        life: 3000,
+      })
+      return
     }
-    setSelectedTrip(tripData);
-    setShowLuggageDialog(true);
-  };
+    setSelectedTrip(tripData)
+    setShowLuggageDialog(true)
+  }
 
   const handleAddPassenger = async () => {
     if (!selectedTrip || !selectedLuggage) {
       toast.current.show({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Por favor seleccione un tipo de equipaje',
-        life: 3000
-      });
-      return;
+        severity: "error",
+        summary: "Error",
+        detail: "Por favor seleccione un tipo de equipaje",
+        life: 3000,
+      })
+      return
     }
 
     try {
       const response = await fetch(`http://localhost:5000/viajes/${selectedTrip.id}/pasajeros`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          equipaje_id: selectedLuggage
-        })
-      });
+          equipaje_id: selectedLuggage,
+        }),
+      })
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (response.ok) {
-        setViajes(prevViajes => 
-          prevViajes.map(viaje => 
-            viaje.id === selectedTrip.id 
-              ? { ...viaje, asientos_disponibles: viaje.asientos_disponibles - 1 }
-              : viaje
-          )
-        );
+        setViajes((prevViajes) =>
+          prevViajes.map((viaje) =>
+            viaje.id === selectedTrip.id ? { ...viaje, asientos_disponibles: viaje.asientos_disponibles - 1 } : viaje,
+          ),
+        )
 
         toast.current.show({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Te has unido al viaje exitosamente',
-          life: 3000
-        });
-        
-        handleDialogClose();
+          severity: "success",
+          summary: "Éxito",
+          detail: "Te has unido al viaje exitosamente",
+          life: 3000,
+        })
+
+        handleDialogClose()
       } else {
         toast.current.show({
-          severity: 'error',
-          summary: 'Error',
-          detail: data.error || 'Error al unirse al viaje',
-          life: 3000
-        });
+          severity: "error",
+          summary: "Error",
+          detail: data.error || "Error al unirse al viaje",
+          life: 3000,
+        })
       }
     } catch (error) {
-      console.error('Error al unirse al viaje:', error);
+      console.error("Error al unirse al viaje:", error)
       toast.current.show({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'Error de conexión al intentar unirse al viaje',
-        life: 3000
-      });
+        severity: "error",
+        summary: "Error",
+        detail: "Error de conexión al intentar unirse al viaje",
+        life: 3000,
+      })
     }
-  };
+  }
 
   const handleDialogClose = () => {
-    setShowLuggageDialog(false);
-    setSelectedTrip(null);
-    setSelectedLuggage(null);
-  };
+    setShowLuggageDialog(false)
+    setSelectedTrip(null)
+    setSelectedLuggage(null)
+  }
 
-  const actionTemplate = (rowData) => {
-    return (
-      <Button
-        label="Unirse al viaje"
-        icon="pi pi-check"
-        severity="success"
-        className="p-button-raised"
-        onClick={() => handleJoinTrip(rowData)}
-        disabled={!rowData.activo || rowData.asientos_disponibles <= 0}
-        style={{
-          backgroundColor: '#22c55e',
-          border: 'none',
-          color: 'white'
-        }}
-      />
-    );
-  };
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleString("es-ES", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    })
+  }
 
-  const observacionesTemplate = (rowData) => {
-    return rowData.observaciones || "Ninguna";
-  };
-
-  const dateBodyTemplate = (rowData) => {
-    return new Date(rowData.fecha_salida).toLocaleString("es-ES", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false, 
-    });
-  };
-  const dateFilterTemplate = (options) => {
-    return (
-      <Calendar
-        value={options.value}
-        onChange={(e) => options.filterCallback(e.value, options.index)}
-        dateFormat="dd/mm/yy"
-        placeholder="dd/mm/yyyy"
-        mask="99/99/9999"
-        className="p-calendar-custom"
-      />
-    );
-  };
-
-  const renderHeader = () => {
-    return (
-      <div className="flex justify-content-between align-items-center">
-        <h2 className="text-2xl font-bold m-0">Listado de Viajes</h2>
-        <div className="flex align-items-center gap-3">
-          <Button 
-            type="button" 
-            icon="pi pi-filter-slash" 
-            label="Limpiar filtros"
-            severity="info"
-            className="p-button-raised"
-            onClick={clearFilter}
-            style={{
-              backgroundColor: '#3b82f6',
-              border: 'none',
-              color: 'white'
-            }}
-          />
-        </div>
-      </div>
-    );
-  };
+  const onPageChange = (event) => {
+    setFirst(event.first)
+    setRows(event.rows)
+  }
 
   const renderLuggageDialog = () => {
     const dialogFooter = (
       <div>
-        <Button 
-          label="Cancelar" 
-          icon="pi pi-times" 
-          onClick={handleDialogClose} 
-          className="p-button-text"
-        />
-        <Button 
-          label="Confirmar" 
-          icon="pi pi-check" 
-          onClick={handleAddPassenger} 
-          autoFocus 
+        <Button label="Cancelar" icon="pi pi-times" onClick={handleDialogClose} className="p-button-text" />
+        <Button
+          label="Confirmar"
+          icon="pi pi-check"
+          onClick={handleAddPassenger}
+          autoFocus
           severity="success"
           style={{
-            backgroundColor: '#22c55e',
-            border: 'none',
-            color: 'white'
+            backgroundColor: "#22c55e",
+            border: "none",
+            color: "white",
           }}
         />
       </div>
-    );
+    )
 
     return (
-      <Dialog 
-        visible={showLuggageDialog} 
-        style={{ width: '450px' }} 
-        header="Seleccionar Equipaje" 
-        modal 
-        className="p-fluid" 
-        footer={dialogFooter} 
+      <Dialog
+        visible={showLuggageDialog}
+        style={{ width: "450px" }}
+        header="Seleccionar Equipaje"
+        modal
+        className="p-fluid"
+        footer={dialogFooter}
         onHide={handleDialogClose}
       >
         <div className="field">
-          <label htmlFor="luggage" className="font-bold">Tipo de Equipaje</label>
+          <label htmlFor="luggage" className="font-bold">
+            Tipo de Equipaje
+          </label>
           <Dropdown
             id="luggage"
             value={selectedLuggage}
@@ -289,102 +276,172 @@ const ViajesView = () => {
           />
         </div>
       </Dialog>
-    );
-  };
+    )
+  }
 
-  return (
-    <Card title="Listado de viajes" className="p-4" style={{ borderRadius: "12px" }}>
-      <Toast ref={toast} />
-        {loading ? (
-          <div className="text-center p-4">
-            <i className="pi pi-spin pi-spinner" style={{ fontSize: '2rem', color: '#3b82f6' }}></i>
-            <div className="mt-2">Cargando viajes...</div>
+  const renderFilters = () => {
+    return (
+        <div className="specific-filters">
+          <div className="filter-item">
+            <span className="p-input-icon-left">
+              <i className="pi pi-map-marker" />
+              <InputText
+                value={filters.origen || ""}
+                onChange={(e) => setFilters({ ...filters, origen: e.target.value })}
+                placeholder="  Origen"
+                className="filter-input"
+              />
+            </span>
           </div>
-        ) : viajes.length === 0 ? (
-          <div className="text-center p-4">
-            <i className="pi pi-info-circle" style={{ fontSize: "2rem", color: "#64748b" }}></i>
-            <p className="mt-2 text-gray-600">No hay viajes disponibles. Se el primero en ofrecer! </p>
-          </div>  
-        ) : (
-          <>
-            <DataTable
-              value={viajes}
-              paginator
-              rows={10}
-              dataKey="id"
-              filters={filters}
-              globalFilterFields={['origen.nombre', 'destino.nombre']}
-              header={renderHeader}
-              emptyMessage="No hay viajes disponibles."
-              showGridlines
-              stripedRows
-              className="p-datatable-custom"
-              paginatorClassName="custom-paginator"
+
+          <div className="filter-item">
+            <span className="p-input-icon-left">
+              <i className="pi pi-flag" />
+              <InputText
+                value={filters.destino || ""}
+                onChange={(e) => setFilters({ ...filters, destino: e.target.value })}
+                placeholder="  Destino"
+                className="filter-input"
+              />
+            </span>
+          </div>
+
+          <div className="filter-item">
+            <Calendar
+              value={filters.fecha}
+              onChange={(e) => setFilters({ ...filters, fecha: e.value })}
+              dateFormat="dd/mm/yy"
+              placeholder="Fecha"
+              showIcon
+              className="filter-calendar"
+            />
+          </div>
+
+          <Button
+            icon="pi pi-filter-slash"
+            tooltip="Limpiar filtros"
+            onClick={clearFilter}
+            className="p-button-rounded p-button-info clear-filter-btn"
+          />
+        </div>
+    )
+  }
+
+  if (!token) {
+    return (
+      <Card title="Acceso restringido" className="p-4" style={{ borderRadius: "12px" }}>
+        <p>Debes iniciar sesión para ver los viajes disponibles.</p>
+        <Button label="Iniciar sesión" icon="pi pi-sign-in" className="p-button-primary" onClick={() => window.location.href = "/login"} />
+      </Card>
+    );
+  }
+
+
+  const renderViajeCard = (viaje) => {
+    return (
+      <div className="trip-card" key={viaje.id}>
+        <Card className="h-full">
+          <div className="trip-card-header">
+            <div className="trip-route">
+              <div className="origin">
+                <i className="pi pi-map-marker"></i>
+                <span>{viaje.origen.nombre}</span>
+              </div>
+              <div className="route-arrow">
+                <i className="pi pi-arrow-right"></i>
+              </div>
+              <div className="destination">
+                <i className="pi pi-flag"></i>
+                <span>{viaje.destino.nombre}</span>
+              </div>
+            </div>
+            <div className="trip-date">
+              <i className="pi pi-calendar"></i>
+              <span>{formatDate(viaje.fecha_salida)}</span>
+            </div>
+          </div>
+
+          <Divider />
+
+          <div className="trip-details">
+            <div className="detail-item">
+              <i className="pi pi-user"></i>
+              <span>
+                Conductor: {viaje.conductor.nombre} {viaje.conductor.apellido}
+              </span>
+            </div>
+            <div className="detail-item">
+              <i className="pi pi-dollar"></i>
+              <span>Precio: ${viaje.precio}</span>
+            </div>
+            <div className="detail-item">
+              <i className="pi pi-users"></i>
+              <span>Asientos disponibles: {viaje.asientos_disponibles}</span>
+            </div>
+            {viaje.observaciones && (
+              <div className="detail-item">
+                <i className="pi pi-info-circle"></i>
+                <span>Observaciones: {viaje.observaciones}</span>
+              </div>
+            )}
+          </div>
+
+          <div className="trip-actions">
+            <Button
+              label="Unirse al viaje"
+              icon="pi pi-check"
+              severity="success"
+              className="p-button-raised join-button"
+              onClick={() => handleJoinTrip(viaje)}
+              disabled={!viaje.activo || viaje.asientos_disponibles <= 0}
               style={{
-                '--primary-color': '#3b82f6',
-                '--primary-light-color': '#93c5fd'
+                backgroundColor: "#22c55e",
+                border: "none",
+                color: "white",
               }}
-            >
-              <Column 
-                field="origen.nombre" 
-                header="Origen" 
-                filter 
-                filterPlaceholder="Buscar por origen"
-                sortable
-                className="font-semibold"
-              />
-              <Column 
-                field="destino.nombre" 
-                header="Destino" 
-                filter 
-                filterPlaceholder="Buscar por destino"
-                sortable
-                className="font-semibold"
-              />
-              <Column
-                field="fecha_salida"
-                header="Fecha"
-                dataType="date"
-                body={dateBodyTemplate}
-                filter
-                filterElement={dateFilterTemplate}
-                sortable
-                className="font-semibold"
-              />
-              <Column
-                field="conductor"
-                header="Conductor"
-                body={(rowData) =>
-                  `${rowData.conductor.nombre} ${rowData.conductor.apellido}`
-                }
-                className="font-semibold"
-              />
-              <Column 
-                field="precio" 
-                header="Precio" 
-                body={(rowData) => `$${rowData.precio}`} 
-                sortable 
-                className="font-semibold"
-              />
-              <Column
-                field="asientos_disponibles"
-                header="Asientos Disponibles"
-                sortable
-                className="font-semibold"
-              />
-              <Column
-                field="observaciones"
-                header="Observaciones"
-                body={observacionesTemplate}
-                className="font-semibold"
-              />
-              <Column body={actionTemplate} header="Acciones" />
-            </DataTable>
-            {renderLuggageDialog()}
-          </>
-        )}
+            />
+          </div>
+        </Card>
+      </div>
+    )
+  }
+
+  return  (
+    <Card title="Listado de Viajes" className="p-4" style={{ borderRadius: "12px" }}>
+      <Toast ref={toast} />
+      {renderFilters()} 
+      {loading ? (
+        <div className="loading-container flex flex-col items-center mt-4">
+          <i className="pi pi-spin pi-spinner text-blue-500 text-3xl"></i>
+          <div className="mt-2 text-gray-600">Cargando viajes...</div>
+        </div>
+      ) : filteredViajes.length === 0 ? (
+        <div className="empty-container flex flex-col items-center mt-4">
+          <i className="pi pi-info-circle text-gray-500 text-3xl"></i>
+          <p className="empty-message text-gray-600 mt-2">No hay viajes disponibles. ¡Sé el primero en ofrecer!</p>
+        </div>
+      ) : (
+        <>
+          <div className="trips-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            {filteredViajes.slice(first, first + rows).map((viaje) => renderViajeCard(viaje))}
+          </div>
+
+          <div className="pagination-container flex justify-center mt-6">
+            <Paginator
+              first={first}
+              rows={rows}
+              totalRecords={filteredViajes.length}
+              onPageChange={onPageChange}
+              className="custom-paginator"
+            />
+          </div>
+
+          {renderLuggageDialog()}
+        </>
+      )}
     </Card>
   );
-};
+}
 
-export default ViajesView;
+export default ViajesView
+
