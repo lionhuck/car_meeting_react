@@ -1,5 +1,3 @@
-"use client"
-
 import { Sidebar } from "primereact/sidebar"
 import { useNavigate, useLocation } from "react-router-dom"
 import { Button } from "primereact/button"

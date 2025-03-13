@@ -12,6 +12,8 @@ import MainLayout from './components/Layout/MainLayout';
 import ViajesPropuestos from './components/Viajes/ConductorViajesDisponibles';
 import ViajesEnCursoConductor from './components/Viajes/ConductorViajesEnCurso';
 import ViajesFinalizadosConductor from './components/Viajes/ViajesFinalizados';
+import VerificarEmail from './components/Auth/VerificarEmail';
+import ReenviarVerificacion from './components/Auth/ReenviarVerificacion';
 function App() {
   return (
     <BrowserRouter>
@@ -20,6 +22,8 @@ function App() {
           {/* Rutas públicas */}
           <Route path="/inicio-sesion" element={<LoginUser />} />
           <Route path="/registro-usuario" element={<RegistroUsuario />} />
+          <Route path="/verificar-email/:token" element={<VerificarEmail />} />
+          <Route path="/reenviar-verificacion" element={<ReenviarVerificacion />} />
           
           {/* Rutas protegidas */}
           <Route element={<ProtectedRoute />}>
