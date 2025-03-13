@@ -12,7 +12,7 @@ const VerificarEmail = () => {
   const navigate = useNavigate();
   const isMounted = useRef(false);
   useEffect(() => {
-    if (isMounted.current) return;
+    if (isMounted.current) return; // para que el metodo de verificar no se active dos veces
     isMounted.current = true;
     const verificarEmail = async () => {
       try {
