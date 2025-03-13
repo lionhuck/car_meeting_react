@@ -1,5 +1,5 @@
 import { Formik, Field, ErrorMessage } from "formik";
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
@@ -8,14 +8,15 @@ import * as Yup from "yup";
 
 const RegistroUsuario = () => {
   const [mensaje, setMensaje] = useState("");
-  const [generos, setGeneros] = useState([]);
+  const [registroExitoso, setRegistroExitoso] = useState(false);
+  const [emailRegistrado, setEmailRegistrado] = useState("");
   const toast = useRef(null);
   const navigate = useNavigate();
 
   // Función para manejar el envío del formulario
   const onSubmit = async (values) => {
     try {
-      // 1. Registramos al usuario
+      // Registramos al usuario
       const response = await fetch("http://127.0.0.1:5000/registro", {
         method: "POST",
         headers: {
@@ -25,11 +26,20 @@ const RegistroUsuario = () => {
       });
 
       const data = await response.json();
+      
       if (response.ok) {
-        setMensaje(data.mensaje || "Usuario registrado exitosamente");
-
-        // 2. Si el registro es exitoso, hacemos login automáticamente
-        await realizarLoginAutomatico(values.nombre_usuario, values.password);
+        setEmailRegistrado(values.email);
+        setRegistroExitoso(true);
+        setMensaje(data.mensaje || "Usuario registrado exitosamente. Por favor, verifica tu correo electrónico.");
+        
+        toast.current.show({
+          severity: "success",
+          summary: "Registro Exitoso",
+          detail: "Se ha enviado un correo de verificación a tu dirección de email.",
+          life: 5000,
+        });
+        
+        // Ya no hacemos login automático, esperamos verificación de email
       } else {
         setMensaje(data.mensaje || "Hubo un error al registrar el usuario");
         toast.current.show({
@@ -50,80 +60,44 @@ const RegistroUsuario = () => {
     }
   };
 
-  // Función para realizar el login automático después del registro
-  const realizarLoginAutomatico = async (username, password) => {
+  const handleReenviarVerificacion = async () => {
+    if (!emailRegistrado) return;
+    
     try {
-      const bodyLoginUser = btoa(`${username}:${password}`);
-
-      const response = await fetch("http://127.0.0.1:5000/login", {
+      const response = await fetch("http://127.0.0.1:5000/reenviar-verificacion", {
         method: "POST",
         headers: {
-          Authorization: `Basic ${bodyLoginUser}`,
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({ email: emailRegistrado }),
       });
 
-      if (!response.ok) {
+      const data = await response.json();
+      
+      if (response.ok) {
+        toast.current.show({
+          severity: "success",
+          summary: "Correo Reenviado",
+          detail: data.mensaje || "Se ha reenviado el correo de verificación",
+          life: 3000,
+        });
+      } else {
         toast.current.show({
           severity: "error",
           summary: "Error",
-          detail:
-            "Inicio de sesión automático fallido. Por favor, inicie sesión manualmente.",
+          detail: data.mensaje || "No se pudo reenviar el correo de verificación",
           life: 3000,
         });
-        // Redirigir a la página de login para que el usuario inicie sesión manualmente
-        navigate("/login");
-        return;
       }
-
-      const data = await response.json();
-      localStorage.setItem("token", JSON.stringify(data.token));
-
-      toast.current.show({
-        severity: "success",
-        summary: "Éxito",
-        detail: "¡Registro e inicio de sesión exitosos!",
-        life: 3000,
-      });
-
-      // Redirigir a la página principal o dashboard
-      navigate("/viajes"); // Ajusta esta ruta según tu aplicación
     } catch (error) {
-      console.error("Error en login automático:", error);
       toast.current.show({
         severity: "error",
         summary: "Error",
-        detail: "Error al iniciar sesión automáticamente",
+        detail: "Error al conectar con el servidor",
         life: 3000,
       });
-      navigate("/login");
     }
   };
-
-  // Obtener los géneros al cargar el componente
-  useEffect(() => {
-    const obtenerGeneros = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:5000/generos", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Géneros obtenidos:", data);
-          setGeneros(data);
-        } else {
-          console.error("Error al obtener géneros:", await response.text());
-        }
-      } catch (error) {
-        console.error("Error al obtener los géneros:", error);
-      }
-    };
-
-    obtenerGeneros();
-  }, []);
 
   const validationSchema = Yup.object().shape({
     nombre: Yup.string().min(2).max(50).required("El nombre es obligatorio"),
@@ -152,8 +126,56 @@ const RegistroUsuario = () => {
     confirm_password: Yup.string()
       .oneOf([Yup.ref("password"), null], "Las contraseñas no coinciden")
       .required("Debes confirmar la contraseña"),
-    id_genero: Yup.number().required("El género es obligatorio"),
   });
+
+  // Si el registro fue exitoso, mostrar mensaje de verificación
+  if (registroExitoso) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <h1 style={{ marginBottom: "1rem" }}>CAR MEETING</h1>
+        <div className="p-d-flex p-jc-center p-ai-center">
+          <div
+            className="p-card p-shadow-3"
+            style={{ width: "500px", padding: "2rem" }}
+          >
+            <Toast ref={toast} />
+            <h2 className="p-text-center">Verificación de Email</h2>
+            
+            <div className="p-text-center p-mb-3" style={{marginBottom: "1rem"}}>
+              Se ha enviado un correo de verificación a <strong>{emailRegistrado}</strong>. 
+              Por favor, revisa tu bandeja de entrada y sigue las instrucciones para verificar tu cuenta.
+            </div>
+            
+            <div className="p-text-center p-mb-3" style={{marginBottom: "1rem"}}>
+              Si no has recibido el correo, revisa tu carpeta de spam o haz clic en el botón para reenviar.
+            </div>
+            
+            <div className="p-text-center" style={{marginBottom: "1rem"}}>
+              <Button
+                label="Reenviar Verificación"
+                onClick={handleReenviarVerificacion}
+                className="p-button-outlined"
+                style={{ marginRight: "1rem" }}
+              />
+              <Button
+                label="Ir a Login"
+                onClick={() => navigate("/login")}
+                className="p-button"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -182,12 +204,11 @@ const RegistroUsuario = () => {
               email: "",
               password: "",
               confirm_password: "",
-              id_genero: "",
             }}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
           >
-            {({ handleSubmit, isValid }) => (
+            {({ handleSubmit, isValid, values, handleChange }) => (
               <form onSubmit={handleSubmit} className="p-fluid">
                 <div className="p-field">
                   <label htmlFor="nombre">Nombre</label>
@@ -264,6 +285,7 @@ const RegistroUsuario = () => {
                     style={{ color: "red" }}
                   />
                 </div>
+
                 <div className="p-field">
                   <label htmlFor="confirm_password">Confirmar contraseña</label>
                   <Field
@@ -279,46 +301,21 @@ const RegistroUsuario = () => {
                     style={{ color: "red" }}
                   />
                 </div>
-                <div className="p-field">
-                  <label htmlFor="id_genero">Género</label>
-                  <Field
-                    as="select"
-                    id="id_genero"
-                    name="id_genero"
-                    className="p-inputtext"
-                  >
-                    <option value="">Seleccione un género</option>
-                    {generos && generos.length > 0 ? (
-                      generos.map((genero) => (
-                        <option key={genero.id} value={genero.id}>
-                          {genero.nombre}
-                        </option>
-                      ))
-                    ) : (
-                      <option disabled>Cargando géneros...</option>
-                    )}
-                  </Field>
-                  <ErrorMessage
-                    name="id_genero"
-                    component="small"
-                    style={{ color: "red" }}
-                  />
-                </div>
 
                 <Button
                   label="Registrarse"
                   type="submit"
                   className="p-button mt-3"
                   disabled={!isValid}
-                  style={{ width: "100%" }}
+                  style={{ width: "100%", marginTop: "1rem" }}
                 />
 
                 <Button
-                  label="Login"
+                  label="¿Ya tienes cuenta? Iniciar sesión"
                   className="p-button-link mt-3"
                   onClick={() => navigate("/login")}
-                  disabled={!isValid}
-                  style={{ width: "100%" }}
+                  style={{ width: "100%", marginTop: "0.5rem" }}
+                  type="button"
                 />
               </form>
             )}
