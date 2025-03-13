@@ -340,7 +340,7 @@ const ViajesView = () => {
   const renderViajeCard = (viaje) => {
     return (
       <div className="trip-card" key={viaje.id}>
-        <Card className="h-full">
+        <Card>
           <div className="trip-card-header">
             <div className="trip-route">
               <div className="origin">
@@ -379,7 +379,7 @@ const ViajesView = () => {
               <span>Asientos disponibles: {viaje.asientos_disponibles}</span>
             </div>
             {viaje.observaciones && (
-              <div className="detail-item">
+              <div className="detail-item trip-observaciones">
                 <i className="pi pi-info-circle"></i>
                 <span>Observaciones: {viaje.observaciones}</span>
               </div>
@@ -390,43 +390,37 @@ const ViajesView = () => {
             <Button
               label="Unirse al viaje"
               icon="pi pi-check"
-              severity="success"
-              className="p-button-raised join-button"
+              className="trip-join-btn"
               onClick={() => handleJoinTrip(viaje)}
               disabled={!viaje.activo || viaje.asientos_disponibles <= 0}
-              style={{
-                backgroundColor: "#22c55e",
-                border: "none",
-                color: "white",
-              }}
             />
           </div>
         </Card>
       </div>
-    )
+    );
   }
 
   return  (
-    <Card title="Listado de Viajes" className="p-4" style={{ borderRadius: "12px" }}>
+    <Card title="Listado de Viajes" className="card p-4" style={{ borderRadius: "12px" }}>
       <Toast ref={toast} />
       {renderFilters()} 
       {loading ? (
-        <div className="loading-container flex flex-col items-center mt-4">
-          <i className="pi pi-spin pi-spinner text-blue-500 text-3xl"></i>
-          <div className="mt-2 text-gray-600">Cargando viajes...</div>
+        <div className="loading-container">
+          <i className="pi pi-spin pi-spinner"></i>
+          <div className="mt-2">Cargando viajes...</div>
         </div>
       ) : filteredViajes.length === 0 ? (
-        <div className="empty-container flex flex-col items-center mt-4">
-          <i className="pi pi-info-circle text-gray-500 text-3xl"></i>
-          <p className="empty-message text-gray-600 mt-2">No hay viajes disponibles. ¡Sé el primero en ofrecer!</p>
+        <div className="empty-container">
+          <i className="pi pi-info-circle"></i>
+          <p className="empty-message ">No hay viajes disponibles. ¡Sé el primero en ofrecer!</p>
         </div>
       ) : (
         <>
-          <div className="trips-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+          <div className="trips-grid">
             {filteredViajes.slice(first, first + rows).map((viaje) => renderViajeCard(viaje))}
           </div>
 
-          <div className="pagination-container flex justify-center mt-6">
+          <div className="pagination-container">
             <Paginator
               first={first}
               rows={rows}

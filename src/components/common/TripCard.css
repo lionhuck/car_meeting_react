@@ -13,6 +13,12 @@
   .trip-card .p-card-content {
     padding: 0.75rem;
   }
+  .trip-observaciones {
+    max-height: 3em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   
   .trip-card-header {
     display: flex;

@@ -14,6 +14,7 @@ import ViajesEnCursoConductor from './components/Viajes/ConductorViajesEnCurso';
 import ViajesFinalizadosConductor from './components/Viajes/ViajesFinalizados';
 import VerificarEmail from './components/Auth/VerificarEmail';
 import ReenviarVerificacion from './components/Auth/ReenviarVerificacion';
+import editarPerfil from './components/Auth/editarPerfil';
 function App() {
   return (
     <BrowserRouter>
@@ -34,6 +35,7 @@ function App() {
             <Route path="/viajes-propuestos" element={<ViajesPropuestos />} />
             <Route path="/viajes-en-curso" element={<ViajesEnCursoConductor />} />
             <Route path="/viajes-finalizados" element={<ViajesFinalizadosConductor/>} />
+            <Route path="/editar-perfil" element={<editarPerfil />} />
           </Route>
           
           {/* Ruta para páginas no encontradas */}

@@ -88,7 +88,7 @@ const CreateViaje = () => {
       if (response.ok) {
         setMensaje({ severity: "success", summary: "Éxito", detail: "Viaje creado exitosamente" });
         reset();
-        navigate("/viajes");
+        navigate("/viajes-propuestos");
       }
       else {
         console.error('Server response:', responseData);

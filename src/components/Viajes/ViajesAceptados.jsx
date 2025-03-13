@@ -149,7 +149,7 @@ const ViajesPasajero = () => {
               <span>Precio: ${viaje.precio}</span>
             </div>
             {viaje.observaciones && (
-              <div className="detail-item">
+              <div className="trip-observaciones">
                 <i className="pi pi-info-circle"></i>
                 <span>Observaciones: {viaje.observaciones}</span>
               </div>

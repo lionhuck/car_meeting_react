@@ -30,6 +30,7 @@ const MainLayout = ({ children, title = "CAR MEETING" }) => {
     { label: "Viajes Propuestos", icon: "pi pi-check", url: "/viajes-propuestos" },
     { label: "Viajes en Curso CONDUCTOR", icon: "pi pi-spinner", url: "/viajes-en-curso" },
     { label: "Viajes Finalizados", icon: "pi pi-check-circle", url: "/viajes-finalizados" },
+    { label: "Editar Perfil", icon: "pi pi-user-edit", url: "/editar-perfil"}
   ]
 
   const handleLogout = () => {

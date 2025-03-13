@@ -165,7 +165,7 @@ const ViajesConductor = () => {
               <span>Precio: ${viaje.precio}</span>
             </div>
             {viaje.observaciones && (
-              <div className="detail-item">
+              <div className="detail-item trip-observaciones">
                 <i className="pi pi-info-circle"></i>
                 <span>Observaciones: {viaje.observaciones}</span>
               </div>
