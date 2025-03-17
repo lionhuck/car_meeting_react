@@ -14,7 +14,7 @@ import ViajesEnCursoConductor from './components/Viajes/ConductorViajesEnCurso';
 import ViajesFinalizadosConductor from './components/Viajes/ViajesFinalizados';
 import VerificarEmail from './components/Auth/VerificarEmail';
 import ReenviarVerificacion from './components/Auth/ReenviarVerificacion';
-import editarPerfil from './components/Auth/EditarPerfil';
+import EditarPerfil from './components/Auth/EditarPerfil';
 function App() {
   return (
     <BrowserRouter>
@@ -35,11 +35,11 @@ function App() {
             <Route path="/viajes-propuestos" element={<ViajesPropuestos />} />
             <Route path="/viajes-en-curso" element={<ViajesEnCursoConductor />} />
             <Route path="/viajes-finalizados" element={<ViajesFinalizadosConductor/>} />
-            <Route path="/editar-perfil" element={<editarPerfil />} />
+            <Route path="/editar-perfil" element={<EditarPerfil />} />
           </Route>
           
           {/* Ruta para páginas no encontradas */}
-          <Route path="*" element={<Navigate to="/inicio-sesion" />} />
+          <Route path="*" element={<Navigate to="/viajes" />} />
         </Routes>
       </MainLayout>
     </BrowserRouter>

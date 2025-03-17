@@ -111,7 +111,7 @@ const MainLayout = ({ children, title = "CAR MEETING" }) => {
             className={`p-button-text ${location.pathname === "/viajes" ? "active" : ""}`}
             onClick={() => handleNavigation("/viajes")}
           />
-          <Button icon="pi pi-user" className="p-button-text user-button" onClick={() => handleNavigation("/perfil")} />
+          <Button icon="pi pi-user" className="p-button-text user-button" onClick={() => handleNavigation("/editar-perfil")} />
         </div>
       </header>
 
