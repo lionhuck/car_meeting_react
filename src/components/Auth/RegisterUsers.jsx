@@ -17,7 +17,7 @@ const RegistroUsuario = () => {
   const onSubmit = async (values) => {
     try {
       // Registramos al usuario
-      const response = await fetch("http://127.0.0.1:5000/registro", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/registro`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,7 +64,7 @@ const RegistroUsuario = () => {
     if (!emailRegistrado) return;
     
     try {
-      const response = await fetch("http://127.0.0.1:5000/reenviar-verificacion", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/reenviar-verificacion`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

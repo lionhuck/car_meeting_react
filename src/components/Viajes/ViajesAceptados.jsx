@@ -30,7 +30,7 @@ const ViajesPasajero = () => {
 
   const fetchViajesPasajero = async () => {
     try {
-      const response = await fetch("http://localhost:5000/viajes/pasajero/disponibles", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/viajes/pasajero/disponibles`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -58,7 +58,7 @@ const ViajesPasajero = () => {
   const handleUnjoinTrip = async () => {
     if (!selectedTrip) return
     try {
-      const response = await fetch(`http://localhost:5000/viajes/${selectedTrip.id}/eliminar/pasajero`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/viajes/${selectedTrip.id}/eliminar/pasajero`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

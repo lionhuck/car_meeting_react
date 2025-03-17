@@ -24,7 +24,7 @@ const EditarPerfil = () => {
     const obtenerPerfil = async () => {
       try {
         setCargando(true);
-        const response = await axios.get("/api/usuarios/perfil");
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/perfil`);
         setUsuario(response.data);
         setCargando(false);
       } catch (error) {
@@ -61,7 +61,7 @@ const EditarPerfil = () => {
         delete datosEnvio.password;
       }
       
-      const response = await axios.put("/api/usuarios/perfil", datosEnvio);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/perfil`, datosEnvio);
       
       toast.current.show({
         severity: "success",

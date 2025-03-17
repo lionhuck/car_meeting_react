@@ -16,7 +16,7 @@ const VerificarEmail = () => {
     isMounted.current = true;
     const verificarEmail = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:5000/verificar-email/${token}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/verificar-email/${token}`, {
           method: "GET",
         });
 

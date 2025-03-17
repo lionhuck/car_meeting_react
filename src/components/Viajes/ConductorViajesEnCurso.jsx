@@ -28,7 +28,7 @@ const ViajesEnCurso = () => {
 
   const fetchViajesEnCurso = async () => {
     try {
-      const response = await fetch("http://localhost:5000/viajes/en-curso", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/viajes/en-curso`, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -50,7 +50,7 @@ const ViajesEnCurso = () => {
   const finalizarViaje = async (viajeId) => {
     try {
       setFinalizingTrip(true)
-      const response = await fetch(`http://localhost:5000/viajes/${viajeId}/finalizar/conductor`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/viajes/${viajeId}/finalizar/conductor`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

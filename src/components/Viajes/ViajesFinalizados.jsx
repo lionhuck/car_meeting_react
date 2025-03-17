@@ -28,8 +28,8 @@ const ViajesFinalizados = () => {
       setLoading(true)
       const endpoint =
         tipoViaje === "conductor"
-          ? "http://localhost:5000/viajes/completados"
-          : "http://localhost:5000/viajes/pasajero/completados"
+          ? `${process.env.REACT_APP_API_URL}/viajes/completados`
+          : `${process.env.REACT_APP_API_URL}/viajes/pasajero/completados`
 
       const response = await fetch(endpoint, {
         method: "GET",

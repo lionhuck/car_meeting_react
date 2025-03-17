@@ -66,7 +66,7 @@ const ViajesView = () => {
 
   const fetchLuggageTypes = async () => {
     try {
-      const response = await fetch("http://localhost:5000/equipajes", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/equipajes`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -92,7 +92,7 @@ const ViajesView = () => {
 
   const fetchViajes = async () => {
     try {
-      const response = await fetch("http://localhost:5000/viajes", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/viajes`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -189,7 +189,7 @@ const ViajesView = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/viajes/${selectedTrip.id}/pasajeros`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/viajes/${selectedTrip.id}/pasajeros`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
