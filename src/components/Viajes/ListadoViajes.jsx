@@ -8,7 +8,7 @@ import { Card } from "primereact/card"
 import { InputText } from "primereact/inputtext"
 import { Divider } from "primereact/divider"
 import { Paginator } from "primereact/paginator"
-import "../common/TripCard.css"
+import "../Common/TripCard.css"
 
 const ViajesView = () => {
   const token = JSON.parse(localStorage.getItem("token"))
@@ -23,7 +23,9 @@ const ViajesView = () => {
   const [filteredViajes, setFilteredViajes] = useState([])
   const [first, setFirst] = useState(0)
   const [rows, setRows] = useState(6)
+  const [showFilters, setShowFilters] = useState(false)
   const toast = useRef(null)
+  const isMobile = window.innerWidth <= 768
 
   useEffect(() => {
     if (token){
@@ -31,13 +33,36 @@ const ViajesView = () => {
       fetchLuggageTypes()
       initFilters()
     } else {
-      setLoading(False);
+      setLoading(false)
     } 
   }, [token])
 
   useEffect(() => {
     applyFilters()
   }, [viajes, globalFilterValue, filters])
+
+  // Add event listener for window resize
+  useEffect(() => {
+    const handleResize = () => {
+      // Adjust rows based on screen size
+      const width = window.innerWidth
+      if (width <= 480) {
+        setRows(3)
+      } else if (width <= 768) {
+        setRows(4)
+      } else {
+        setRows(6)
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    // Call once on mount to set initial value
+    handleResize()
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   const fetchLuggageTypes = async () => {
     try {
@@ -235,7 +260,7 @@ const ViajesView = () => {
 
   const renderLuggageDialog = () => {
     const dialogFooter = (
-      <div>
+      <div className="luggage-dialog-footer">
         <Button label="Cancelar" icon="pi pi-times" onClick={handleDialogClose} className="p-button-text" />
         <Button
           label="Confirmar"
@@ -255,12 +280,13 @@ const ViajesView = () => {
     return (
       <Dialog
         visible={showLuggageDialog}
-        style={{ width: "450px" }}
+        style={{ width: isMobile ? "90%" : "450px" }}
         header="Seleccionar Equipaje"
         modal
-        className="p-fluid"
+        className="p-fluid responsive-dialog"
         footer={dialogFooter}
         onHide={handleDialogClose}
+        breakpoints={{ "960px": "75vw", "640px": "90vw" }}
       >
         <div className="field">
           <label htmlFor="luggage" className="font-bold">
@@ -272,7 +298,7 @@ const ViajesView = () => {
             options={luggageTypes}
             onChange={(e) => setSelectedLuggage(e.value)}
             placeholder="Seleccione un tipo de equipaje"
-            className="w-full md:w-14rem"
+            className="w-full"
           />
         </div>
       </Dialog>
@@ -281,61 +307,78 @@ const ViajesView = () => {
 
   const renderFilters = () => {
     return (
+      <div className="filters-container">
+      <div className="filters-header">
+        <Button
+        icon={showFilters ? "pi pi-times" : "pi pi-filter"}
+        className="p-button-rounded p-button-text "
+        onClick={() => setShowFilters(!showFilters)}
+        aria-label={showFilters ? "Ocultar filtros" : "Mostrar filtros"}
+        tooltip={showFilters ? "Ocultar filtros" : "Mostrar filtros"}
+        />
+      </div>
+      
+      {showFilters && (
         <div className="specific-filters">
-          <div className="filter-item">
-            <span className="p-input-icon-left">
-              <i className="pi pi-map-marker" />
-              <InputText
-                value={filters.origen || ""}
-                onChange={(e) => setFilters({ ...filters, origen: e.target.value })}
-                placeholder="  Origen"
-                className="filter-input"
-              />
-            </span>
-          </div>
-
-          <div className="filter-item">
-            <span className="p-input-icon-left">
-              <i className="pi pi-flag" />
-              <InputText
-                value={filters.destino || ""}
-                onChange={(e) => setFilters({ ...filters, destino: e.target.value })}
-                placeholder="  Destino"
-                className="filter-input"
-              />
-            </span>
-          </div>
-
-          <div className="filter-item">
-            <Calendar
-              value={filters.fecha}
-              onChange={(e) => setFilters({ ...filters, fecha: e.value })}
-              dateFormat="dd/mm/yy"
-              placeholder="Fecha"
-              showIcon
-              className="filter-calendar"
-            />
-          </div>
-
-          <Button
-            icon="pi pi-filter-slash"
-            tooltip="Limpiar filtros"
-            onClick={clearFilter}
-            className="p-button-rounded p-button-info clear-filter-btn"
+        <div className="filter-item">
+          <span className="p-input-icon-left w-full">
+          {!filters.origen && <i className="pi pi-map-marker ml-2" />}
+          <InputText
+            value={filters.origen || ""}
+            onChange={(e) => setFilters({ ...filters, origen: e.target.value })}
+            placeholder="   Origen"
+            className="filter-input w-full"
+          />
+          </span>
+        </div>
+      
+        <div className="filter-item">
+          <span className="p-input-icon-left w-full">
+          {!filters.destino && <i className="pi pi-flag ml-2" />}
+          <InputText
+            value={filters.destino || ""}
+            onChange={(e) => setFilters({ ...filters, destino: e.target.value })}
+            placeholder="   Destino"
+            className="filter-input w-full"
+          />
+          </span>
+        </div>
+      
+        <div className="filter-item">
+          <Calendar
+          value={filters.fecha}
+          onChange={(e) => setFilters({ ...filters, fecha: e.value })}
+          dateFormat="dd/mm/yy"
+          placeholder="Fecha"
+          showIcon
+          className="filter-calendar w-full"
+          touchUI={isMobile}
           />
         </div>
+      
+        <div className="filter-item">
+          <Button
+          icon="pi pi-filter-slash"
+          tooltip="Limpiar filtros"
+          onClick={clearFilter}
+          className="p-button-rounded p-button-info clear-filter-btn w-full"
+          label={isMobile ? "Limpiar" : "Limpiar filtros"}
+          />
+        </div>
+        </div>
+      )}
+      </div>
     )
   }
 
   if (!token) {
     return (
-      <Card title="Acceso restringido" className="p-4" style={{ borderRadius: "12px" }}>
+      <Card title="Acceso restringido" className="p-4 access-card" style={{ borderRadius: "12px" }}>
         <p>Debes iniciar sesión para ver los viajes disponibles.</p>
-        <Button label="Iniciar sesión" icon="pi pi-sign-in" className="p-button-primary" onClick={() => window.location.href = "/login"} />
+        <Button label="Iniciar sesión" icon="pi pi-sign-in" className="p-button-primary login-btn" onClick={() => window.location.href = "/login"} />
       </Card>
     );
   }
-
 
   const renderViajeCard = (viaje) => {
     return (
@@ -381,7 +424,7 @@ const ViajesView = () => {
             {viaje.observaciones && (
               <div className="detail-item trip-observaciones">
                 <i className="pi pi-info-circle"></i>
-                <span>Observaciones: {viaje.observaciones}</span>
+                <span title={viaje.observaciones}>Observaciones: {viaje.observaciones}</span>
               </div>
             )}
           </div>
@@ -400,42 +443,50 @@ const ViajesView = () => {
     );
   }
 
-  return  (
-    <Card title="Listado de Viajes" className="card p-4" style={{ borderRadius: "12px" }}>
-      <Toast ref={toast} />
-      {renderFilters()} 
+  return (
+    <Card title="Listado de Viajes" className="card p-4 main-card" style={{ borderRadius: "12px" }}>
+      <Toast ref={toast} position={isMobile ? "bottom-center" : "top-right"} />
+      {renderFilters()}
+
       {loading ? (
         <div className="loading-container">
-          <i className="pi pi-spin pi-spinner"></i>
-          <div className="mt-2">Cargando viajes...</div>
+          <i className="pi pi-spin pi-spinner loading-icon"></i>
+          <span>Cargando viajes...</span>
         </div>
-      ) : filteredViajes.length === 0 ? (
-        <div className="empty-container">
-          <i className="pi pi-info-circle"></i>
-          <p className="empty-message ">No hay viajes disponibles. ¡Sé el primero en ofrecer!</p>
-        </div>
-      ) : (
+      ) : filteredViajes.length > 0 ? (
         <>
-          <div className="trips-grid">
-            {filteredViajes.slice(first, first + rows).map((viaje) => renderViajeCard(viaje))}
+          <div className="trip-grid">
+            {filteredViajes
+              .slice(first, first + rows)
+              .map((viaje) => renderViajeCard(viaje))}
           </div>
-
-          <div className="pagination-container">
-            <Paginator
-              first={first}
-              rows={rows}
-              totalRecords={filteredViajes.length}
-              onPageChange={onPageChange}
-              className="custom-paginator"
-            />
-          </div>
-
-          {renderLuggageDialog()}
+          <Paginator
+            first={first}
+            rows={rows}
+            totalRecords={filteredViajes.length}
+            onPageChange={onPageChange}
+            className="trip-paginator"
+          />
         </>
+      ) : (
+        <div className="no-trips-message">
+          <i className="pi pi-info-circle"></i>
+          <span>No se encontraron viajes.</span>
+          {Object.values(filters).some(Boolean) || globalFilterValue ? (
+            <Button
+              label="Limpiar filtros"
+              icon="pi pi-filter-slash"
+              className="p-button-text"
+              onClick={clearFilter}
+            />
+          ) : null}
+        </div>
       )}
+
+      {renderLuggageDialog()}
     </Card>
   );
-}
-
-export default ViajesView
+};
+    
+export default ViajesView;
 

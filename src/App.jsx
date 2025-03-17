@@ -14,7 +14,7 @@ import ViajesEnCursoConductor from './components/Viajes/ConductorViajesEnCurso';
 import ViajesFinalizadosConductor from './components/Viajes/ViajesFinalizados';
 import VerificarEmail from './components/Auth/VerificarEmail';
 import ReenviarVerificacion from './components/Auth/ReenviarVerificacion';
-import editarPerfil from './components/Auth/editarPerfil';
+import editarPerfil from './components/Auth/EditarPerfil';
 function App() {
   return (
     <BrowserRouter>

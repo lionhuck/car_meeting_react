@@ -68,7 +68,6 @@ const CreateViaje = () => {
         fecha_salida: fechaSalida.toISOString().replace('T', ' ').split('.')[0],
         asientos_disponibles: parseInt(data.asientos_disponibles),
         precio: parseInt(data.precio),
-        mascotas: data.mascotas || false,
         observaciones: data.observaciones || null
       };
   
@@ -216,19 +215,6 @@ const CreateViaje = () => {
       defaultValue: 0
     },
     {
-      name: "mascotas",
-      label: "¿Permite mascotas?",
-      component: (field, errors) => (
-        <div className="p-field-switch p-my-4">
-          <InputSwitch
-            checked={field.value}
-            onChange={(e) => field.onChange(e.value)}
-          />
-        </div>
-      ),
-      defaultValue: false
-    },
-    {
       name: "observaciones",
       label: "Observaciones",
       component: (field, errors) => (
@@ -255,39 +241,38 @@ const CreateViaje = () => {
       )}
       
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Panel>
-          <div className="p-fluid">
-            {formFields.map((fieldConfig, index) => (
-              <div className="p-field p-mb-4" key={index}>
-                <label htmlFor={fieldConfig.name} className="p-d-block p-mb-2">{fieldConfig.label}</label>
-                <Controller
-                  name={fieldConfig.name}
-                  control={control}
-                  defaultValue={fieldConfig.defaultValue || ""}
-                  rules={fieldConfig.rules}
-                  render={({ field }) => (
-                    <>
-                      {fieldConfig.component(field, errors)}
-                      {errors[fieldConfig.name] && (
-                        <small className="p-error">{errors[fieldConfig.name].message}</small>
-                      )}
-                    </>
-                  )}
-                />
-              </div>
-            ))}
-            
-            <div className="p-field p-mt-4 pt-4">
-              <Button
-                label={loading ? "Cargando..." : "Crear Viaje"}
-                icon="pi pi-check"
-                type="submit"
-                className="p-button-success"
-                disabled={loading}
-              />
+        <Panel className="p-fluid">
+            <div className="p-grid p-formgrid"> {/* Usa grid para mejor organización */}
+              {formFields.map((fieldConfig, index) => (
+                <div className="p-field p-col-12 p-md-6 p-lg-4" key={index}> {/* Responsive columns */}
+                  <label htmlFor={fieldConfig.name} className="p-d-block p-mb-2">{fieldConfig.label}</label>
+                  <Controller
+                    name={fieldConfig.name}
+                    control={control}
+                    defaultValue={fieldConfig.defaultValue || ""}
+                    rules={fieldConfig.rules}
+                    render={({ field }) => (
+                      <>
+                        {fieldConfig.component(field, errors)}
+                        {errors[fieldConfig.name] && (
+                          <small className="p-error">{errors[fieldConfig.name].message}</small>
+                        )}
+                      </>
+                    )}
+                  />
+                </div>
+              ))}
             </div>
-          </div>
         </Panel>
+        <div className="p-field p-mt-4 pt-4">
+          <Button
+            label={loading ? "Cargando..." : "Crear Viaje"}
+            icon="pi pi-check"
+            type="submit"
+            className="p-button-success p-button-lg" // Botón más grande
+            disabled={loading}
+          />
+        </div>
       </form>
     </Card>
   );

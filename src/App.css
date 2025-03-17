@@ -1,9 +1,40 @@
+:root {
+  --primary-color: #3b82f6;
+  --secondary-color: #64748b;
+  --success-color: #22c55e;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --text-color: #1e293b;
+  --light-bg: #f8fafc;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --transition-speed: 0.3s;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--text-color);
+  background-color: var(--light-bg);
+}
+
 #root {
   width: 100%;
   max-width: 100%;
   height: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   text-align: center;
 }
 
@@ -13,32 +44,168 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
 .card {
-  padding: 2em;
+  padding: 1em;
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  background-color: white;
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
 }
 
 .read-the-docs {
   color: #888;
+}
+
+/* PrimeReact Component Overrides */
+.p-card {
+  border-radius: 8px !important;
+  box-shadow: var(--card-shadow) !important;
+}
+
+.p-button {
+  border-radius: 6px !important;
+  transition: background-color var(--transition-speed), box-shadow var(--transition-speed) !important;
+}
+
+.p-inputtext, 
+.p-dropdown, 
+.p-calendar {
+  border-radius: 6px !important;
+}
+
+.p-dialog {
+  border-radius: 8px !important;
+}
+
+.p-dialog .p-dialog-header {
+  border-top-left-radius: 8px !important;
+  border-top-right-radius: 8px !important;
+}
+
+.p-dialog .p-dialog-footer {
+  border-bottom-left-radius: 8px !important;
+  border-bottom-right-radius: 8px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  #root {
+    padding: 0.75rem;
+  }
+  
+  .card {
+    padding: 0.9em;
+  }
+  
+  .logo {
+    height: 5em;
+    padding: 1.25em;
+  }
+}
+
+@media (max-width: 768px) {
+  #root {
+    padding: 0.5rem;
+  }
+  
+  .card {
+    padding: 0.75em;
+  }
+  
+  .logo {
+    height: 4em;
+    padding: 1em;
+  }
+  
+  .p-card .p-card-content {
+    padding: 0.75rem !important;
+  }
+  
+  .p-card .p-card-body {
+    padding: 1rem !important;
+  }
+  
+  .p-dialog .p-dialog-header {
+    padding: 1rem !important;
+  }
+  
+  .p-dialog .p-dialog-content {
+    padding: 1rem !important;
+  }
+  
+  .p-dialog .p-dialog-footer {
+    padding: 1rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #root {
+    padding: 0.25rem;
+  }
+  
+  .card {
+    padding: 0.5em;
+  }
+  
+  .logo {
+    height: 3em;
+    padding: 0.75em;
+  }
+  
+  .p-card .p-card-content {
+    padding: 0.5rem !important;
+  }
+  
+  .p-dialog .p-dialog-header {
+    padding: 0.75rem !important;
+  }
+  
+  .p-dialog .p-dialog-content {
+    padding: 0.75rem !important;
+  }
+  
+  .p-dialog .p-dialog-footer {
+    padding: 0.75rem !important;
+  }
+  
+  .p-button {
+    padding: 0.5rem 0.75rem !important;
+  }
+  
+  .p-inputtext, 
+  .p-dropdown, 
+  .p-calendar {
+    padding: 0.5rem !important;
+  }
+}
+
+/* Touch-friendly adjustments */
+@media (hover: none) and (pointer: coarse) {
+  .p-button,
+  .p-inputtext,
+  .p-dropdown,
+  .p-calendar,
+  .p-checkbox,
+  .p-radiobutton {
+    min-height: 2.75rem;
+  }
+  
+  .p-button {
+    padding: 0.6rem 1rem !important;
+  }
+  
+  .p-inputtext, 
+  .p-dropdown, 
+  .p-calendar {
+    padding: 0.6rem !important;
+  }
 }

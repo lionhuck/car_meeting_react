@@ -6,7 +6,7 @@ import { Card } from "primereact/card"
 import { Button } from "primereact/button"
 import { Divider } from "primereact/divider"
 import { Paginator } from "primereact/paginator"
-import '../common/TripCard.css'
+import '../Common/TripCard.css'
 
 const ViajesFinalizados = () => {
   const token = JSON.parse(localStorage.getItem("token"))
