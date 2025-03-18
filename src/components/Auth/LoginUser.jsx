@@ -119,18 +119,6 @@ const LoginUser = () => {
         <div className="p-card p-shadow-3" style={{ width: "400px", padding: "2rem" }}>
           <Toast ref={toast} />
           <h2 className="p-text-center">Iniciar Sesión</h2>
-          
-          {emailNoVerificado && (
-            <div style={{ marginBottom: "1rem", textAlign: "center", padding: "10px", backgroundColor: "#fff3cd", borderRadius: "4px" }}>
-              <p>Tu correo electrónico no ha sido verificado.</p>
-              <Button
-                label="Reenviar verificación"
-                onClick={handleReenviarVerificacion}
-                className="p-button-warning p-button-text"
-              />
-            </div>
-          )}
-          
           <Formik
             initialValues={{ username: "", password: "" }}
             validationSchema={validationSchema}
@@ -191,6 +179,20 @@ const LoginUser = () => {
                     onClick={() => navigate("/reenviar-verificacion")}
                     type="button"
                   />
+                </div>
+
+                {/* Agregar el enlace de texto para olvidar contraseña */}
+                <div style={{ textAlign: "center", marginTop: "1rem" }}>
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate("/solicitar-reset");
+                    }}
+                    style={{ color: "#2196F3", textDecoration: "none" }}
+                  >
+                    ¿Olvidaste tu contraseña?
+                  </a>
                 </div>
               </form>
             )}

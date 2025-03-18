@@ -473,7 +473,7 @@ const ViajesView = () => {
       ) : (
         <div className="no-trips-message">
           <i className="pi pi-info-circle"></i>
-          <span>No se encontraron viajes.</span>
+          <span> No se encontraron viajes.</span>
           {Object.values(filters).some(Boolean) || globalFilterValue ? (
             <Button
               label="Limpiar filtros"

@@ -15,6 +15,10 @@ import ViajesFinalizadosConductor from './components/Viajes/ViajesFinalizados';
 import VerificarEmail from './components/Auth/VerificarEmail';
 import ReenviarVerificacion from './components/Auth/ReenviarVerificacion';
 import EditarPerfil from './components/Auth/EditarPerfil';
+import SolicitarReset from './components/Auth/SolicitarReset';
+import ResetPassword from './components/Auth/ResetPassword';
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -25,7 +29,8 @@ function App() {
           <Route path="/registro-usuario" element={<RegistroUsuario />} />
           <Route path="/verificar-email/:token" element={<VerificarEmail />} />
           <Route path="/reenviar-verificacion" element={<ReenviarVerificacion />} />
-          
+          <Route path="/solicitar-reset" element={<SolicitarReset />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           {/* Rutas protegidas */}
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<ViajesView />} />

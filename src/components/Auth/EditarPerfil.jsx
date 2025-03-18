@@ -17,8 +17,6 @@ const EditarPerfil = () => {
     nombre: "",
     apellido: "",
     nombre_usuario: "",
-    email: "",
-    email_verificado: true,
   });
   const [cargando, setCargando] = useState(true);
   const [showVerificationDialog, setShowVerificationDialog] = useState(false);
@@ -64,8 +62,6 @@ const EditarPerfil = () => {
     nombre: Yup.string(),
     apellido: Yup.string(),
     nombre_usuario: Yup.string().min(6, "El nombre de usuario debe tener al menos 6 caracteres"),
-    email: Yup.string()
-      .email("El email debe ser válido"),
     password: Yup.string()
       .min(8, "La contraseña debe tener al menos 8 caracteres")
       .nullable(),
@@ -160,7 +156,6 @@ const EditarPerfil = () => {
             nombre:"",
             apellido:"",
             nombre_usuario:"",
-            email:"",
             password: "",
           }}
           validationSchema={validationSchema}
@@ -209,23 +204,6 @@ const EditarPerfil = () => {
                   className={errors.nombre_usuario && touched.nombre_usuario ? "p-invalid" : ""}
                 />
                 <ErrorMessage name="nombre_usuario" component="small" className="p-error block text-left" />
-              </div>
-
-              <div className="field mb-3">
-                <label htmlFor="email" className="block text-left font-bold mb-2">
-                  Email actual: {usuario.email || "No disponible"}
-                </label>
-                <InputText
-                  id="email"
-                  name="email"
-                  value={values.email}
-                  onChange={handleChange}
-                  className={errors.email && touched.email ? "p-invalid" : ""}
-                />
-                <small className="block text-left text-gray-500 mt-1">
-                  Al cambiar tu email, deberás verificarlo nuevamente antes de poder iniciar sesión.
-                </small>
-                <ErrorMessage name="email" component="small" className="p-error block text-left" />
               </div>
 
               <div className="field mb-4">
