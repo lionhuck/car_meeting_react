@@ -44,6 +44,7 @@ const ReenviarVerificacion = () => {
       }
     } catch (error) {
       setMensaje("Error al conectar con el servidor");
+      console.log("API_URL:", API_URL);
       toast.current.show({
         severity: "error",
         summary: "Error",
