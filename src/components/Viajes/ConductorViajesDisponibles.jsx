@@ -10,6 +10,8 @@ import { Paginator } from "primereact/paginator"
 import Chat from "../Chat/Chat"
 import '../Common/TripCard.css'
 
+const API_URL = import.meta.env.VITE_API_URL
+
 const ViajesConductor = () => {
   const token = JSON.parse(localStorage.getItem("token"))
   const [viajes, setViajes] = useState([])
@@ -31,7 +33,7 @@ const ViajesConductor = () => {
 
   const fetchViajesConductor = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/viajes/disponibles`, {
+      const response = await fetch(`${API_URL}/viajes/disponibles`, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -58,7 +60,7 @@ const ViajesConductor = () => {
   const handleStartTrip = async () => {
     if (!selectedTrip) return
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/viajes/${selectedTrip.id}/iniciar`, {
+      const response = await fetch(`${API_URL}/viajes/${selectedTrip.id}/iniciar`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -88,7 +90,7 @@ const ViajesConductor = () => {
   const handleDeleteTrip = async () => {
     if (!selectedTrip) return
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/viajes/${selectedTrip.id}/eliminar`, {
+      const response = await fetch(`${API_URL}/viajes/${selectedTrip.id}/eliminar`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       })

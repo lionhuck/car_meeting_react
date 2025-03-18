@@ -9,6 +9,8 @@ import { Divider } from "primereact/divider"
 import { Paginator } from "primereact/paginator"
 import "../Common/TripCard.css"
 
+const API_URL = import.meta.env.VITE_API_URL
+
 const ViajesEnCurso = () => {
   const token = JSON.parse(localStorage.getItem("token"))
   const [viajes, setViajes] = useState([])
@@ -28,7 +30,7 @@ const ViajesEnCurso = () => {
 
   const fetchViajesEnCurso = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/viajes/en-curso`, {
+      const response = await fetch(`${API_URL}/viajes/en-curso`, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -50,7 +52,7 @@ const ViajesEnCurso = () => {
   const finalizarViaje = async (viajeId) => {
     try {
       setFinalizingTrip(true)
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/viajes/${viajeId}/finalizar/conductor`, {
+      const response = await fetch(`${API_URL}/viajes/${viajeId}/finalizar/conductor`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

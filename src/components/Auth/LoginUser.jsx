@@ -6,6 +6,8 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import * as Yup from 'yup';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const LoginUser = () => {
   const toast = useRef(null);
   const navigate = useNavigate();
@@ -15,7 +17,7 @@ const LoginUser = () => {
     const bodyLoginUser = btoa(`${values.username}:${values.password}`);
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
+      const response = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: {
           Authorization: `Basic ${bodyLoginUser}`,
@@ -69,7 +71,7 @@ const LoginUser = () => {
     if (!emailNoVerificado) return;
     
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/reenviar-verificacion`, {
+      const response = await fetch(`${API_URL}/reenviar-verificacion`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

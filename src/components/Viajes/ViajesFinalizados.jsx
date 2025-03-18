@@ -8,6 +8,8 @@ import { Divider } from "primereact/divider"
 import { Paginator } from "primereact/paginator"
 import '../Common/TripCard.css'
 
+const API_URL = import.meta.env.VITE_API_URL
+
 const ViajesFinalizados = () => {
   const token = JSON.parse(localStorage.getItem("token"))
   const [viajes, setViajes] = useState([])
@@ -28,8 +30,8 @@ const ViajesFinalizados = () => {
       setLoading(true)
       const endpoint =
         tipoViaje === "conductor"
-          ? `${process.env.REACT_APP_API_URL}/viajes/completados`
-          : `${process.env.REACT_APP_API_URL}/viajes/pasajero/completados`
+          ? `${API_URL}/viajes/completados`
+          : `${API_URL}/viajes/pasajero/completados`
 
       const response = await fetch(endpoint, {
         method: "GET",

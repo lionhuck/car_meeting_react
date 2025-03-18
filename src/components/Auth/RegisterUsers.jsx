@@ -6,6 +6,9 @@ import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import * as Yup from "yup";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
+
 const RegistroUsuario = () => {
   const [mensaje, setMensaje] = useState("");
   const [registroExitoso, setRegistroExitoso] = useState(false);
@@ -17,7 +20,7 @@ const RegistroUsuario = () => {
   const onSubmit = async (values) => {
     try {
       // Registramos al usuario
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/registro`, {
+      const response = await fetch(`${API_URL}/registro`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,7 +67,7 @@ const RegistroUsuario = () => {
     if (!emailRegistrado) return;
     
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/reenviar-verificacion`, {
+      const response = await fetch(`${API_URL}/reenviar-verificacion`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

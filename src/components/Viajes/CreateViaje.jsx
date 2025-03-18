@@ -6,12 +6,12 @@ import { InputNumber } from "primereact/inputnumber";
 import { Button } from "primereact/button";
 import { AutoComplete } from "primereact/autocomplete";
 import { Calendar } from "primereact/calendar";
-import { InputSwitch } from "primereact/inputswitch";
 import { Card } from "primereact/card";
 import { Message } from "primereact/message";
 import { Panel } from "primereact/panel";
 import { Divider } from "primereact/divider";
-import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL
 
 const CreateViaje = () => {
   const { control, handleSubmit, reset, formState: { errors } } = useForm();
@@ -25,21 +25,31 @@ const CreateViaje = () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:5000/localidades", {
+        const response = await fetch(`${API_URL}/localidades`, {
+          method: 'GET',
           headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          }
         });
-        setLocalidades(response.data);
+        if (response.ok) {
+          const data = await response.json();  // Procesar la respuesta como JSON
+          setLocalidades(data);  // Asumimos que `data` contiene las localidades
+        } else {
+          throw new Error("Error en la respuesta del servidor");
+        }
       } catch (error) {
         console.error("Error al cargar localidades:", error);
-        setMensaje({ severity: "error", summary: "Error", detail: "Error al cargar localidades" });
+        setMensaje({
+          severity: "error",
+          summary: "Error",
+          detail: "Error al cargar localidades"
+        });
       } finally {
         setLoading(false);
       }
     };
-
+useEffect
     fetchLocalidades();
   }, []);
 
@@ -73,7 +83,7 @@ const CreateViaje = () => {
   
       console.log('Sending data:', formData);
   
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/viajes`, {
+      const response = await fetch(`${API_URL}/viajes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

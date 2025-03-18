@@ -4,6 +4,8 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Chat = ({ viajeId, onClose }) => {
     const [mensaje, setMensaje] = useState("");
     const [mensajes, setMensajes] = useState([]);
@@ -33,7 +35,7 @@ const Chat = ({ viajeId, onClose }) => {
     const obtenerMensajes = async () => {
         try {
             // Obtener mensajes del chat
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/chat/${viajeId}`, {
+            const response = await fetch(`${API_URL}/chat/${viajeId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
@@ -46,7 +48,7 @@ const Chat = ({ viajeId, onClose }) => {
             setCargando(false);
 
             try {
-                const participantesResponse = await fetch(`${process.env.REACT_APP_API_URL}/viajes/${viajeId}/participantes`, {
+                const participantesResponse = await fetch(`${API_URL}/viajes/${viajeId}/participantes`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 
@@ -73,7 +75,7 @@ const Chat = ({ viajeId, onClose }) => {
         if (!mensaje.trim()) return;
 
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/chat/${viajeId}/mensaje`, {
+            const response = await fetch(`${API_URL}/chat/${viajeId}/mensaje`, {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`,

@@ -6,6 +6,8 @@ import { InputText } from "primereact/inputtext";
 import { Toast } from "primereact/toast";
 import * as Yup from "yup";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ReenviarVerificacion = () => {
   const [mensaje, setMensaje] = useState("");
   const toast = useRef(null);
@@ -13,7 +15,7 @@ const ReenviarVerificacion = () => {
 
   const onSubmit = async (values) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/reenviar-verificacion`, {
+      const response = await fetch(`${API_URL}/reenviar-verificacion`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

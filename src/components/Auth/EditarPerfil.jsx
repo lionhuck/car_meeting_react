@@ -9,6 +9,8 @@ import { Toast } from "primereact/toast";
 import { Card } from "primereact/card";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const EditarPerfil = () => {
   const [usuario, setUsuario] = useState({
     nombre: "",
@@ -24,7 +26,7 @@ const EditarPerfil = () => {
     const obtenerPerfil = async () => {
       try {
         setCargando(true);
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/perfil`);
+        const response = await fetch(`${API_URL}/perfil`);
         setUsuario(response.data);
         setCargando(false);
       } catch (error) {
@@ -61,7 +63,7 @@ const EditarPerfil = () => {
         delete datosEnvio.password;
       }
       
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/perfil`, datosEnvio);
+      const response = await fetch(`${API_URL}/perfil`, datosEnvio);
       
       toast.current.show({
         severity: "success",

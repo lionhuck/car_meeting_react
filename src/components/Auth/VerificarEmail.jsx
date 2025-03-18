@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const VerificarEmail = () => {
   const { token } = useParams(); 
@@ -16,7 +17,7 @@ const VerificarEmail = () => {
     isMounted.current = true;
     const verificarEmail = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/verificar-email/${token}`, {
+        const response = await fetch(`${API_URL}/verificar-email/${token}`, {
           method: "GET",
         });
 
