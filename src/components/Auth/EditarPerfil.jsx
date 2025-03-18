@@ -1,24 +1,28 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { Toast } from "primereact/toast";
 import { Card } from "primereact/card";
-import axios from "axios";
+import { Dialog } from "primereact/dialog";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const EditarPerfil = () => {
+  const token = JSON.parse(localStorage.getItem("token"));
   const [usuario, setUsuario] = useState({
     nombre: "",
     apellido: "",
     nombre_usuario: "",
-    email: ""
+    email: "",
+    email_verificado: true,
   });
   const [cargando, setCargando] = useState(true);
+  const [showVerificationDialog, setShowVerificationDialog] = useState(false);
+  const [cambiosRequierenVerificacion, setCambiosRequierenVerificacion] = useState(false);
   const toast = useRef(null);
   const navigate = useNavigate();
 
@@ -26,75 +30,121 @@ const EditarPerfil = () => {
     const obtenerPerfil = async () => {
       try {
         setCargando(true);
-        const response = await fetch(`${API_URL}/perfil`);
-        setUsuario(response.data);
-        setCargando(false);
+        const response = await fetch(`${API_URL}/perfil`, {
+          method: "GET",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+        });
+    
+        if (!response.ok) {
+          throw new Error(`Error en la respuesta del servidor: ${response.status}`);
+        }
+    
+        const data = await response.json();
+        setUsuario(data);
       } catch (error) {
         console.error("Error al obtener perfil:", error);
         toast.current.show({
           severity: "error",
           summary: "Error",
           detail: "No se pudo cargar la información del perfil",
-          life: 3000
+          life: 3000,
         });
+      } finally {
         setCargando(false);
       }
     };
+    
     obtenerPerfil();
-  }, []);
+  }, [token]);
 
   const validationSchema = Yup.object().shape({
-    nombre: Yup.string().required("El nombre es requerido"),
-    apellido: Yup.string().required("El apellido es requerido"),
-    nombre_usuario: Yup.string().required("El nombre de usuario es requerido"),
+    nombre: Yup.string(),
+    apellido: Yup.string(),
+    nombre_usuario: Yup.string().min(6, "El nombre de usuario debe tener al menos 6 caracteres"),
     email: Yup.string()
-      .email("El email debe ser válido")
-      .required("El email es requerido"),
+      .email("El email debe ser válido"),
     password: Yup.string()
       .min(8, "La contraseña debe tener al menos 8 caracteres")
-      .nullable()
+      .nullable(),
   });
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      // Eliminar password si está vacío
-      const datosEnvio = { ...values };
-      if (!datosEnvio.password) {
-        delete datosEnvio.password;
-      }
-      
-      const response = await fetch(`${API_URL}/perfil`, datosEnvio);
-      
-      toast.current.show({
-        severity: "success",
-        summary: "Perfil actualizado",
-        detail: "Tu información ha sido actualizada correctamente",
-        life: 3000
+      const datosEnvio = {};
+  
+      // Solo enviar los campos que han sido modificados
+      Object.keys(values).forEach(key => {
+        if (values[key] && values[key] !== usuario[key]) {
+          datosEnvio[key] = values[key];
+        }
       });
-      
-      // Opcional: actualizar los datos locales con la respuesta
-      setUsuario(response.data.usuario);
-      
-      // Opcional: redirigir al usuario
-      setTimeout(() => {
-        navigate("/perfil");
-      }, 1500);
-      
+  
+      if (Object.keys(datosEnvio).length === 0) {
+        toast.current.show({
+          severity: "warn",
+          summary: "Atención",
+          detail: "No hay cambios para actualizar",
+          life: 3000,
+        });
+        setSubmitting(false);
+        return;
+      }
+  
+      const response = await fetch(`${API_URL}/perfil`, {
+        method: "PUT",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(datosEnvio),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        toast.current.show({
+          severity: "success",
+          summary: "Perfil actualizado",
+          detail: data.mensaje,
+          life: 3000,
+        });
+  
+        if (data.requiere_verificacion) {
+          setShowVerificationDialog(true);
+          localStorage.removeItem("token")
+          setIsAuthenticated(false)
+          setVisible(false)
+          navigate("/inicio-sesion")
+        } else {
+          setTimeout(() => navigate("/perfil"), 1500);
+        }
+      } else {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: data.mensaje || "No se pudo actualizar el perfil",
+          life: 3000,
+        });
+      }
     } catch (error) {
       console.error("Error al actualizar perfil:", error);
-      
-      const mensajeError = error.response?.data?.mensaje || 
-                          "Ha ocurrido un error al actualizar el perfil";
-      
       toast.current.show({
         severity: "error",
         summary: "Error",
-        detail: mensajeError,
-        life: 3000
+        detail: "Ha ocurrido un error al actualizar el perfil",
+        life: 3000,
       });
     } finally {
       setSubmitting(false);
     }
+  };
+  
+  const handleVerificationDialogClose = () => {
+    setShowVerificationDialog(false);
+    navigate("/login");
   };
 
   if (cargando) {
@@ -105,14 +155,13 @@ const EditarPerfil = () => {
     <div className="flex justify-content-center">
       <Card title="Editar Perfil" className="w-full md:w-8 lg:w-6">
         <Toast ref={toast} />
-        
         <Formik
           initialValues={{
-            nombre: usuario.nombre || "",
-            apellido: usuario.apellido || "",
-            nombre_usuario: usuario.nombre_usuario || "",
-            email: usuario.email || "",
-            password: ""
+            nombre:"",
+            apellido:"",
+            nombre_usuario:"",
+            email:"",
+            password: "",
           }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
@@ -121,7 +170,9 @@ const EditarPerfil = () => {
           {({ isSubmitting, handleChange, values, errors, touched }) => (
             <Form className="p-fluid">
               <div className="field mb-3">
-                <label htmlFor="nombre" className="block text-left font-bold mb-2">Nombre</label>
+                <label htmlFor="nombre" className="block text-left font-bold mb-2">
+                  Nombre actual: {usuario.nombre || "No disponible"}
+                </label>
                 <InputText
                   id="nombre"
                   name="nombre"
@@ -131,9 +182,11 @@ const EditarPerfil = () => {
                 />
                 <ErrorMessage name="nombre" component="small" className="p-error block text-left" />
               </div>
-              
+
               <div className="field mb-3">
-                <label htmlFor="apellido" className="block text-left font-bold mb-2">Apellido</label>
+                <label htmlFor="apellido" className="block text-left font-bold mb-2">
+                  Apellido actual: {usuario.apellido || "No disponible"}
+                </label>
                 <InputText
                   id="apellido"
                   name="apellido"
@@ -143,9 +196,11 @@ const EditarPerfil = () => {
                 />
                 <ErrorMessage name="apellido" component="small" className="p-error block text-left" />
               </div>
-              
+
               <div className="field mb-3">
-                <label htmlFor="nombre_usuario" className="block text-left font-bold mb-2">Nombre de usuario</label>
+                <label htmlFor="nombre_usuario" className="block text-left font-bold mb-2">
+                  Nombre de usuario actual: {usuario.nombre_usuario || "No disponible"}
+                </label>
                 <InputText
                   id="nombre_usuario"
                   name="nombre_usuario"
@@ -155,9 +210,11 @@ const EditarPerfil = () => {
                 />
                 <ErrorMessage name="nombre_usuario" component="small" className="p-error block text-left" />
               </div>
-              
+
               <div className="field mb-3">
-                <label htmlFor="email" className="block text-left font-bold mb-2">Email</label>
+                <label htmlFor="email" className="block text-left font-bold mb-2">
+                  Email actual: {usuario.email || "No disponible"}
+                </label>
                 <InputText
                   id="email"
                   name="email"
@@ -165,11 +222,16 @@ const EditarPerfil = () => {
                   onChange={handleChange}
                   className={errors.email && touched.email ? "p-invalid" : ""}
                 />
+                <small className="block text-left text-gray-500 mt-1">
+                  Al cambiar tu email, deberás verificarlo nuevamente antes de poder iniciar sesión.
+                </small>
                 <ErrorMessage name="email" component="small" className="p-error block text-left" />
               </div>
-              
+
               <div className="field mb-4">
-                <label htmlFor="password" className="block text-left font-bold mb-2">Contraseña (dejar vacío para mantener actual)</label>
+                <label htmlFor="password" className="block text-left font-bold mb-2">
+                  Nueva contraseña (dejar vacío para mantener actual)
+                </label>
                 <Password
                   id="password"
                   name="password"
@@ -180,11 +242,12 @@ const EditarPerfil = () => {
                   feedback={false}
                 />
                 <small className="block text-left text-gray-500 mt-1">
-                  Mínimo 8 caracteres. Deja en blanco si no deseas cambiarla.
+                  Mínimo 8 caracteres. Deja en blanco si no deseas cambiarla. 
+                  Al cambiar tu contraseña, deberás verificar tu email nuevamente antes de poder iniciar sesión.
                 </small>
                 <ErrorMessage name="password" component="small" className="p-error block text-left" />
               </div>
-              
+
               <div className="flex justify-content-between">
                 <Button
                   label="Cancelar"
@@ -193,16 +256,32 @@ const EditarPerfil = () => {
                   onClick={() => navigate("/perfil")}
                   type="button"
                 />
-                <Button
-                  label="Guardar Cambios"
-                  icon="pi pi-check"
-                  type="submit"
-                  loading={isSubmitting}
-                />
+                <Button label="Guardar Cambios" icon="pi pi-check" type="submit" loading={isSubmitting} />
               </div>
             </Form>
           )}
         </Formik>
+
+        <Dialog
+          header="Verificación requerida"
+          visible={showVerificationDialog}
+          onHide={handleVerificationDialogClose}
+          footer={
+            <div>
+              <Button label="Entendido" icon="pi pi-check" onClick={handleVerificationDialogClose} />
+            </div>
+          }
+          style={{ width: '450px' }}
+        >
+          <div className="flex align-items-center justify-content-center flex-column">
+            <i className="pi pi-envelope text-5xl mb-3 text-primary"></i>
+            <p className="text-center">
+              Has actualizado información importante de tu cuenta. 
+              Para proteger tu seguridad, te hemos enviado un correo de verificación.
+              Por favor, verifica tu correo electrónico para poder iniciar sesión nuevamente.
+            </p>
+          </div>
+        </Dialog>
       </Card>
     </div>
   );
