@@ -24,6 +24,7 @@ const ViajesConductor = () => {
   const [first, setFirst] = useState(0)
   const [rows, setRows] = useState(6)
   const toast = useRef(null)
+  const isMobile = window.innerWidth <= 768
 
   useEffect(() => {
     if (token) {
@@ -236,9 +237,9 @@ const ViajesConductor = () => {
 
   return (
     <>
-      <Card title="Viajes Ofrecidos" className="card p-4" style={{ borderRadius: "12px" }}>
-        <Toast ref={toast} />
-
+      <Card title="Viajes Ofrecidos" className="card p-4 main-card" style={{ borderRadius: "12px" }}>
+      <Toast ref={toast} position={isMobile ? "bottom-center" : "top-right"} />
+      
         {loading ? (
           <div className="loading-container">
             <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem", color: "#3b82f6" }}></i>

@@ -1,100 +1,142 @@
+/* index.css - Global styles */
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  /* Cambia esto si quieres usar el tema claro por defecto */
-  color-scheme: light;
-  color: #213547;
-  background-color: #ffffff;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --primary-color: #3b82f6;
+  --secondary-color: #64748b;
+  --success-color: #22c55e;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --text-color: #1e293b;
+  --light-bg: #f8fafc;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --transition-speed: 0.3s;
 }
 
-a {
-  font-weight: 500;
-  color: #000000;
-  text-decoration: inherit;
+* {
+  box-sizing: border-box;
 }
-a:hover {
-  color: #000000;
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--text-color);
+  background-color: var(--light-bg);
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-/* Colores para los viajes finalizados */
-.bg-conductor {
-  background-color: #90dcff; /* Color para conductor */
-}
-
-.bg-pasajero {
-  background-color: #ffdc69; /* Color para pasajero */
+#root {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  padding: 1rem;
+  text-align: center;
 }
 
-
-/* Si quieres mantener estos estilos para tus propios botones pero no para PrimeReact,
-   puedes usar una clase específica */
-.my-custom-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #f9f9f9;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-.my-custom-button:hover {
-  border-color: #646cff;
-}
-.my-custom-button:focus,
-.my-custom-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  line-height: 1.2;
 }
 
-.specific-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-  justify-content: space-between;
+p {
+  margin-top: 0;
+  line-height: 1.5;
 }
 
-.filter-item {
-  flex: 1;
-  min-width: 200px;
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-speed);
 }
 
-.clear-filter-btn {
-  flex-shrink: 0;
+a:hover {
+  color: #2563eb;
 }
-@media (max-width:600px) {
-  :root {
-    color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+/* Global layout classes */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+.mt-5 { margin-top: 2rem; }
+
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mb-5 { margin-bottom: 2rem; }
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  #root {
+    padding: 0.75rem;
   }
-  a:hover {
-    color: #747bff;
+  
+  .logo {
+    height: 5em;
+    padding: 1.25em;
   }
-  .my-custom-button {
-    background-color: #1a1a1a;
+}
+
+@media (max-width: 768px) {
+  #root {
+    padding: 0.5rem;
   }
-  .specific-filters {
-    flex-direction: column;
-    align-items: stretch;
+  
+  .logo {
+    height: 4em;
+    padding: 1em;
+  }
+}
+
+@media (max-width: 480px) {
+  #root {
+    padding: 0.25rem;
+  }
+  
+  .logo {
+    height: 3em;
+    padding: 0.75em;
+  }
+  
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
   }
 }

@@ -43,28 +43,7 @@ const ViajesView = () => {
     applyFilters()
   }, [viajes, globalFilterValue, filters])
 
-  // Add event listener for window resize
-  useEffect(() => {
-    const handleResize = () => {
-      // Adjust rows based on screen size
-      const width = window.innerWidth
-      if (width <= 480) {
-        setRows(3)
-      } else if (width <= 768) {
-        setRows(4)
-      } else {
-        setRows(6)
-      }
-    }
 
-    window.addEventListener('resize', handleResize)
-    // Call once on mount to set initial value
-    handleResize()
-
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
 
   const fetchLuggageTypes = async () => {
     try {
@@ -363,7 +342,7 @@ const ViajesView = () => {
           icon="pi pi-filter-slash"
           tooltip="Limpiar filtros"
           onClick={clearFilter}
-          className="p-button-rounded p-button-info clear-filter-btn w-full"
+          className="p-button-info clear-filter-btn w-full"
           label={isMobile ? "Limpiar" : "Limpiar filtros"}
           />
         </div>
@@ -384,7 +363,7 @@ const ViajesView = () => {
 
   const renderViajeCard = (viaje) => {
     return (
-      <div className="trip-card" key={viaje.id}>
+      <div className="trips-card" key={viaje.id}>
         <Card>
           <div className="trip-card-header">
             <div className="trip-route">
@@ -457,18 +436,20 @@ const ViajesView = () => {
         </div>
       ) : filteredViajes.length > 0 ? (
         <>
-          <div className="trip-grid">
+          <div className="trips-grid">
             {filteredViajes
               .slice(first, first + rows)
               .map((viaje) => renderViajeCard(viaje))}
           </div>
-          <Paginator
-            first={first}
-            rows={rows}
-            totalRecords={filteredViajes.length}
-            onPageChange={onPageChange}
-            className="trip-paginator"
-          />
+          <div className="paginator-container">
+            <Paginator
+              first={first}
+              rows={rows}
+              totalRecords={filteredViajes.length}
+              onPageChange={onPageChange}
+              className="trip-paginator"
+            />
+          </div>
         </>
       ) : (
         <div className="no-trips-message">

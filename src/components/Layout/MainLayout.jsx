@@ -2,7 +2,8 @@ import { Sidebar } from "primereact/sidebar"
 import { useNavigate, useLocation } from "react-router-dom"
 import { Button } from "primereact/button"
 import { useEffect, useState } from "react"
-import "./MainLayout.css"
+import "../Common/MainLayout.css"
+import Footer from "../Footer/Footer.jsx"
 
 const MainLayout = ({ children, title = "CAR MEETING" }) => {
   const navigate = useNavigate()
@@ -118,6 +119,7 @@ const MainLayout = ({ children, title = "CAR MEETING" }) => {
       <div className="main-content">
         <div className="content">{children}</div>
       </div>
+      <Footer/>
     </div>
   )
 }
