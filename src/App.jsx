@@ -25,26 +25,26 @@ function App() {
       <MainLayout>
         <Routes>
           {/* Rutas públicas */}
-          <Route path="/inicio-sesion" element={<LoginUser />} />
-          <Route path="/registro-usuario" element={<RegistroUsuario />} />
-          <Route path="/verificar-email/:token" element={<VerificarEmail />} />
-          <Route path="/reenviar-verificacion" element={<ReenviarVerificacion />} />
-          <Route path="/solicitar-reset" element={<SolicitarReset />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="inicio-sesion" element={<LoginUser />} />
+          <Route path="registro-usuario" element={<RegistroUsuario />} />
+          <Route path="verificar-email/:token" element={<VerificarEmail />} />
+          <Route path="reenviar-verificacion" element={<ReenviarVerificacion />} />
+          <Route path="solicitar-reset" element={<SolicitarReset />} />
+          <Route path="reset-password/:token" element={<ResetPassword />} />
           {/* Rutas protegidas */}
           <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<ViajesView />} />
-            <Route path="/viajes" element={<ViajesView />} />
-            <Route path="/cargar-viaje" element={<CreateViaje />} />
-            <Route path="/viajes-aceptados" element={<ViajesPasajero />} />
-            <Route path="/viajes-propuestos" element={<ViajesPropuestos />} />
-            <Route path="/viajes-en-curso" element={<ViajesEnCursoConductor />} />
-            <Route path="/viajes-finalizados" element={<ViajesFinalizadosConductor/>} />
-            <Route path="/editar-perfil" element={<EditarPerfil />} />
+            <Route path="" element={<ViajesView />} />
+            <Route path="viajes" element={<ViajesView />} />
+            <Route path="cargar-viaje" element={<CreateViaje />} />
+            <Route path="viajes-aceptados" element={<ViajesPasajero />} />
+            <Route path="viajes-propuestos" element={<ViajesPropuestos />} />
+            <Route path="viajes-en-curso" element={<ViajesEnCursoConductor />} />
+            <Route path="viajes-finalizados" element={<ViajesFinalizadosConductor/>} />
+            <Route path="editar-perfil" element={<EditarPerfil />} />
           </Route>
           
           {/* Ruta para páginas no encontradas */}
-          <Route path="*" element={<Navigate to="/viajes" />} />
+          <Route path="*" element={<Navigate to="viajes" />} />
         </Routes>
       </MainLayout>
     </BrowserRouter>
