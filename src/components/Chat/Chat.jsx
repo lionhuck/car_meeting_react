@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
+import './Chat.css'; // Import the new CSS file
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -11,10 +12,26 @@ const Chat = ({ viajeId, onClose }) => {
     const [mensajes, setMensajes] = useState([]);
     const [participantes, setParticipantes] = useState([]);
     const [cargando, setCargando] = useState(true);
+    const [isOnline, setIsOnline] = useState(navigator.onLine);
     const token = JSON.parse(localStorage.getItem("token"));
     const toast = useRef(null);
     const mensajesRef = useRef(null);
 
+    // Network status tracking
+    useEffect(() => {
+        const handleOnline = () => setIsOnline(true);
+        const handleOffline = () => setIsOnline(false);
+
+        window.addEventListener('online', handleOnline);
+        window.addEventListener('offline', handleOffline);
+
+        return () => {
+            window.removeEventListener('online', handleOnline);
+            window.removeEventListener('offline', handleOffline);
+        };
+    }, []);
+
+    // Fetch messages on component mount and at intervals
     useEffect(() => {
         obtenerMensajes();
         // Configurar intervalo para actualizar mensajes cada 10 segundos
@@ -22,19 +39,21 @@ const Chat = ({ viajeId, onClose }) => {
         return () => clearInterval(interval);
     }, [viajeId]);
 
-    // Función para hacer scroll al último mensaje
+    // Auto-scroll to latest message
     useEffect(() => {
         if (mensajesRef.current) {
             mensajesRef.current.scrollTop = mensajesRef.current.scrollHeight;
         }
     }, [mensajes]);
 
-    // Obtener información del usuario actual
+    // Get current user ID
     const usuarioId = JSON.parse(localStorage.getItem("usuario"))?.id;
 
+    // Fetch messages and participants
     const obtenerMensajes = async () => {
+        if (!isOnline) return;
+
         try {
-            // Obtener mensajes del chat
             const response = await fetch(`${API_URL}/chat/${viajeId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -60,7 +79,7 @@ const Chat = ({ viajeId, onClose }) => {
                 console.error("Error al obtener participantes:", error);
             }
         } catch (error) {
-            if (!cargando) { // Evitar mostrar error en la carga inicial
+            if (!cargando) {
                 toast.current.show({ 
                     severity: "error", 
                     summary: "Error", 
@@ -71,8 +90,19 @@ const Chat = ({ viajeId, onClose }) => {
         }
     };
 
+    // Send message
     const enviarMensaje = async () => {
-        if (!mensaje.trim()) return;
+        if (!mensaje.trim() || !isOnline) {
+            if (!isOnline) {
+                toast.current.show({
+                    severity: "warn",
+                    summary: "Sin conexión",
+                    detail: "Verifica tu conexión a internet.",
+                    life: 3000
+                });
+            }
+            return;
+        }
 
         try {
             const response = await fetch(`${API_URL}/chat/${viajeId}/mensaje`, {
@@ -85,7 +115,7 @@ const Chat = ({ viajeId, onClose }) => {
             });
 
             if (response.ok) {
-                await obtenerMensajes(); // Recargar mensajes después de enviar uno nuevo
+                await obtenerMensajes();
                 setMensaje("");
             } else {
                 throw new Error("Error al enviar el mensaje");
@@ -100,14 +130,15 @@ const Chat = ({ viajeId, onClose }) => {
         }
     };
 
-    // Manejo de la tecla Enter
+    // Handle Enter key press
     const handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
             enviarMensaje();
         }
     };
 
-    // Formatear fecha de mensajes
+    // Format message timestamp
     const formatFecha = (fechaString) => {
         const fecha = new Date(fechaString);
         return fecha.toLocaleString('es-ES', {
@@ -120,37 +151,37 @@ const Chat = ({ viajeId, onClose }) => {
     };
 
     return (
-        <Card className="p-4 w-full max-w-4xl">
+        <Card className="chat-container">
             <Toast ref={toast} />
-            <div className="flex flex-col md:flex-row gap-4">
-                {/* Área de mensajes */}
-                <div className="w-full md:w-3/4 p-2">
-                    <h3 className="text-xl font-bold mb-2">Chat del viaje</h3>
+            <div className="chat-wrapper">
+                {/* Messages Area */}
+                <div className="chat-messages-section">
+                    <h3 className="chat-title">Chat del viaje</h3>
                     <div 
                         ref={mensajesRef}
-                        className="h-80 overflow-auto border p-3 rounded bg-gray-50"
+                        className="chat-messages-area"
                     >
                         {cargando ? (
-                            <div className="flex justify-center items-center h-full">
-                                <i className="pi pi-spin pi-spinner text-blue-500" style={{ fontSize: '2rem' }}></i>
+                            <div className="chat-loading">
+                                <i className="pi pi-spin pi-spinner text-blue-500"></i>
                             </div>
                         ) : mensajes.length === 0 ? (
-                            <p className="text-gray-500 text-center italic mt-8">
+                            <p className="chat-no-messages">
                                 No hay mensajes aún. ¡Sé el primero en escribir!
                             </p>
                         ) : (
                             mensajes.map((msg) => (
                                 <div 
                                     key={msg.id} 
-                                    className={`mb-2 p-2 rounded max-w-[85%] ${
+                                    className={`chat-message ${
                                         msg.id_usuario === usuarioId 
-                                            ? 'ml-auto bg-blue-100 text-blue-800' 
-                                            : 'bg-gray-200'
+                                            ? 'chat-message-sent' 
+                                            : 'chat-message-received'
                                     }`}
                                 >
-                                    <div className="font-bold">{msg.nombre_usuario || `Usuario ${msg.id_usuario}`}</div>
-                                    <div>{msg.contenido}</div>
-                                    <div className="text-xs text-gray-500 text-right">
+                                    <div className="chat-message-sender">{msg.nombre_usuario || `Usuario ${msg.id_usuario}`}</div>
+                                    <div className="chat-message-content">{msg.contenido}</div>
+                                    <div className="chat-message-timestamp">
                                         {formatFecha(msg.enviado_en)}
                                     </div>
                                 </div>
@@ -158,47 +189,46 @@ const Chat = ({ viajeId, onClose }) => {
                         )}
                     </div>
 
-                    {/* Input para escribir mensajes */}
-                    <div className="mt-3 flex flex-col">
-                        {/* Input arriba */}
+                    {/* Message Input */}
+                    <div className="chat-input-section">
                         <InputText
                             value={mensaje}
                             onChange={(e) => setMensaje(e.target.value)}
                             onKeyPress={handleKeyPress}
                             placeholder="Escribe un mensaje..."
-                            className="mb-2 flex-1"
+                            className="chat-input"
+                            multiline
                         />
                         
-                        {/* Botones abajo en una línea */}
-                        <div className="flex justify-end gap-2">
+                        <div className="chat-actions">
                             <Button 
                                 icon="pi pi-send" 
-                                className="p-button-rounded p-button-primary" 
-                                onClick={enviarMensaje} 
+                                className="chat-send-button" 
+                                onClick={enviarMensaje}
+                                disabled={!isOnline}
                             />
                             <Button 
                                 icon="pi pi-times" 
-                                className="p-button-rounded p-button-danger p-button-outlined" 
+                                className="chat-close-button" 
                                 onClick={onClose} 
                             />
                         </div>
                     </div>
-
                 </div>
 
-                {/* Lista de participantes */}
-                <div className="w-full md:w-1/4 p-2 bg-gray-100 rounded">
-                    <h3 className="text-lg font-bold mb-2">Participantes</h3>
+                {/* Participants Area */}
+                <div className="chat-participants-section">
+                    <h3 className="chat-participants-title">Participantes</h3>
                     {participantes.length === 0 ? (
-                        <p className="text-gray-500 italic">Cargando participantes...</p>
+                        <p className="chat-participants-loading">Cargando participantes...</p>
                     ) : (
-                        <ul>
+                        <ul className="chat-participants-list">
                             {participantes.map((p) => (
-                                <li key={p.id} className="p-2 border-b flex items-center">
-                                    <i className="pi pi-user mr-2"></i>
+                                <li key={p.id} className="chat-participant-item">
+                                    <i className="pi pi-user"></i>
                                     {p.nombre} {p.apellido}
                                     {p.esConductor && (
-                                        <span className="ml-2 bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded">
+                                        <span className="chat-participant-driver-badge">
                                             Conductor
                                         </span>
                                     )}
