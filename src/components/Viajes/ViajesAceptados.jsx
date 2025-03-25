@@ -156,6 +156,10 @@ const ViajesPasajero = () => {
                 <span>Observaciones: {viaje.observaciones}</span>
               </div>
             )}
+            <div className="detail-item">
+              <i className="pi pi-users"></i>
+              <span>Pasajeros: {viaje.asientos_disponibles - 1}</span>
+            </div>
           </div>
 
           <div className="trip-actions">
