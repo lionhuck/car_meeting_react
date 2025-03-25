@@ -12,18 +12,19 @@ const LoginUser = () => {
   const toast = useRef(null);
   const navigate = useNavigate();
   const [emailNoVerificado, setEmailNoVerificado] = useState(null);
-
   const onLoginUser = async (values) => {
-    const bodyLoginUser = btoa(`${values.username}:${values.password}`);
-
     try {
       const response = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: {
-          Authorization: `Basic ${bodyLoginUser}`,
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          username: values.username,  // Asegúrate de que coincida con la clave esperada por el backend
+          password: values.password,
+        }),
       });
-
+  
       const data = await response.json();
 
       if (!response.ok) {
