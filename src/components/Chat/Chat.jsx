@@ -141,6 +141,8 @@ const Chat = ({ viajeId, onClose }) => {
     // Format message timestamp
     const formatFecha = (fechaString) => {
         const fecha = new Date(fechaString);
+        // Restar 3 horas para corregir la conversión de UTC
+        fecha.setHours(fecha.getHours() - 3);
         return fecha.toLocaleString('es-ES', {
             day: '2-digit',
             month: '2-digit',
@@ -149,7 +151,6 @@ const Chat = ({ viajeId, onClose }) => {
             minute: '2-digit'
         });
     };
-
     return (
         <Card className="chat-container">
             <Toast ref={toast} />
