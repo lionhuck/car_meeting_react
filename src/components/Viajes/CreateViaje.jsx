@@ -68,8 +68,8 @@ useEffect
       const token = JSON.parse(localStorage.getItem("token"));
 
       // Ajustar la fecha a la zona horaria local
-      const fechaSalida = new Date(data.fecha_salida);
-      fechaSalida.setMinutes(fechaSalida.getMinutes() - fechaSalida.getTimezoneOffset());
+      // const fechaSalida = new Date(data.fecha_salida);
+      // fechaSalida.setMinutes(fechaSalida.getMinutes() - fechaSalida.getTimezoneOffset());
       
 
       const formData = {
