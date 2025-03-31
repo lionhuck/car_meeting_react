@@ -8,6 +8,7 @@ import { Card } from "primereact/card"
 import { InputText } from "primereact/inputtext"
 import { Divider } from "primereact/divider"
 import { Paginator } from "primereact/paginator"
+import EstrellasCalificacion from "../Calificacion/EstrellasCalificacion"
 import "../Common/TripCard.css"
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -363,7 +364,7 @@ const ViajesView = () => {
 
   const renderViajeCard = (viaje) => {
     return (
-      <div className="trips-card" key={viaje.id}>
+      <div className="trip-card" key={viaje.id}>
         <Card>
           <div className="trip-card-header">
             <div className="trip-route">
@@ -394,6 +395,11 @@ const ViajesView = () => {
                 Conductor: {viaje.conductor.nombre} {viaje.conductor.apellido}
               </span>
             </div>
+            <EstrellasCalificacion 
+              usuarioId={viaje.conductor.id} 
+              token={token} 
+              tipo="conductor"
+            />
             <div className="detail-item">
               <i className="pi pi-dollar"></i>
               <span>Precio: ${viaje.precio}</span>
