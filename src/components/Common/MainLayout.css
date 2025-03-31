@@ -72,6 +72,12 @@
     margin-bottom: 0.5rem;
     text-align: left;
   }
+
+
+.p-button-text {
+    color: black !important;
+}
+
   
   /* Mobile styles */
   @media (max-width: 767px) {

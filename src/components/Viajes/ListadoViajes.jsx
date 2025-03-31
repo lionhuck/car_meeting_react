@@ -447,7 +447,7 @@ const ViajesView = () => {
               rows={rows}
               totalRecords={filteredViajes.length}
               onPageChange={onPageChange}
-              className="trip-paginator"
+              template={{ layout: 'PrevPageLink CurrentPageReport NextPageLink' }}
             />
           </div>
         </>

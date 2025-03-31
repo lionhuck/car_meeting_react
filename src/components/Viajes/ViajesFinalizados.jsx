@@ -151,7 +151,7 @@ const ViajesFinalizados = () => {
                 rows={rows}
                 totalRecords={viajes.length}
                 onPageChange={onPageChange}
-                className="custom-paginator"
+                template={{ layout: 'PrevPageLink CurrentPageReport NextPageLink' }} 
               />
             </div>
           </>

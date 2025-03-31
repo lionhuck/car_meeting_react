@@ -26,12 +26,12 @@ const MainLayout = ({ children, title = "CAR MEETING" }) => {
 
   const authenticatedItems = [
     { label: "Viajes", icon: "pi pi-car", url: "/viajes" },
-    { label: "Crear Viaje", icon: "pi pi-warehouse", url: "/cargar-viaje" },
-    { label: "Viajes Aceptados", icon: "pi pi-bookmark", url: "/viajes-aceptados" },
-    { label: "Viajes Propuestos", icon: "pi pi-check", url: "/viajes-propuestos" },
-    { label: "Viajes en Curso CONDUCTOR", icon: "pi pi-spinner", url: "/viajes-en-curso" },
-    { label: "Viajes Finalizados", icon: "pi pi-check-circle", url: "/viajes-finalizados" },
-    { label: "Editar Perfil", icon: "pi pi-user-edit", url: "/editar-perfil"}
+    { label: "Ofrecer Viaje", icon: "pi pi-warehouse", url: "/cargar-viaje" },
+    { label: "Aceptados", icon: "pi pi-bookmark", url: "/viajes-aceptados" },
+    { label: "Propuestos", icon: "pi pi-check", url: "/viajes-propuestos" },
+    { label: "En Curso CONDUCTOR", icon: "pi pi-spinner", url: "/viajes-en-curso" },
+    { label: "Finalizados", icon: "pi pi-check-circle", url: "/viajes-finalizados" },
+    { label: "Perfil", icon: "pi pi-user-edit", url: "/editar-perfil"}
   ]
 
   const handleLogout = () => {
@@ -108,7 +108,6 @@ const MainLayout = ({ children, title = "CAR MEETING" }) => {
         <div className="mobile-nav">
           <Button
             icon="pi pi-car"
-            label="Viajes"
             className={`p-button-text ${location.pathname === "/viajes" ? "active" : ""}`}
             onClick={() => handleNavigation("/viajes")}
           />
