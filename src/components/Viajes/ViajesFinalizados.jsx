@@ -60,7 +60,7 @@ const ViajesFinalizados = () => {
   // Función para obtener las calificaciones ya realizadas
   const fetchCalificacionesRealizadas = async () => {
     try {
-      const response = await fetch(`${API_URL}/calificacion/usuario`, {
+      const response = await fetch(`${API_URL}/calificaciones/usuario`, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -201,11 +201,6 @@ const ViajesFinalizados = () => {
                 <span className="mr-2">Tu calificación:</span>
                 <Rating value={calificacion.estrellas} readOnly cancel={false} stars={5} className="text-sm" />
               </div>
-              {calificacion.comentario && (
-                <div className="mt-2 text-sm text-gray-600 italic">
-                  "{calificacion.comentario}"
-                </div>
-              )}
             </div>
           )}
         </Card>

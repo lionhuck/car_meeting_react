@@ -1,36 +1,50 @@
+// EstrellasCalificacion.jsx (versión optimizada)
 import React, { useState, useEffect } from "react";
 import { Rating } from "primereact/rating";
+import { Badge } from "primereact/badge";
 
-const EstrellasCalificacion = ({ conductorId, token }) => {
-  const [promedio, setPromedio] = useState(0);
-  const [total, setTotal] = useState(0);
+const EstrellasCalificacion = ({ usuarioId, token, tipo = "conductor" }) => {
+  const [stats, setStats] = useState({ promedio: 0, total: 0 });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (conductorId) {
-      const obtenerCalificacion = async () => {
-        try {
-          const response = await fetch(`${import.meta.env.VITE_API_URL}/usuarios/${conductorId}/estadisticas`, {
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
-          });
+    const fetchEstadisticas = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/usuarios/${usuarioId}/estadisticas`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.ok) {
           const data = await response.json();
-          console.log('data', data)
-          setPromedio(data.promedio || 0);
-          setTotal(data.total || 0);
-        } catch {
-          setPromedio(0);
-          setTotal(0);
+          setStats(data);
         }
-      };
-      obtenerCalificacion();
+      } catch (error) {
+        console.error("Error al obtener estadísticas:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (usuarioId && token) {
+      fetchEstadisticas();
     }
-  }, [conductorId, token]);
+  }, [usuarioId, token]);
+
+  if (loading) {
+    return <span>Cargando calificaciones...</span>;
+  }
 
   return (
-    <div className="flex align-items-center gap-2">
-      <Rating value={promedio} readOnly cancel={false} stars={5} className="text-sm" />
-      <span className="text-sm">
-        {promedio.toFixed(1)} ({total} {total === 1 ? 'prom.' : 'calif'})
-      </span>
+    <div className="flex align-items-center">
+      <Rating value={stats.promedio} readOnly cancel={false} stars={5} />
+      <Badge value={stats.total} severity="info" className="ml-2" />
     </div>
   );
 };

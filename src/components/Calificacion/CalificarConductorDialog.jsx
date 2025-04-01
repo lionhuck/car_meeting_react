@@ -1,13 +1,11 @@
-// CalificarConductorDialog.jsx (versión actualizada)
+// CalificarConductorDialog.jsx (versión simplificada)
 import React, { useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { Rating } from "primereact/rating";
-import { InputTextarea } from "primereact/inputtextarea";
 
 const CalificarConductorDialog = ({ visible, onHide, viajeId, conductor, token, toast, onCalificacionExitosa }) => {
   const [estrellas, setEstrellas] = useState(0);
-  const [comentario, setComentario] = useState("");
   const [loading, setLoading] = useState(false);
 
   const enviarCalificacion = async () => {
@@ -31,12 +29,11 @@ const CalificarConductorDialog = ({ visible, onHide, viajeId, conductor, token, 
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ estrellas, comentario }),
+          body: JSON.stringify({ estrellas }),
         }
       );
 
       if (response.ok) {
-        const data = await response.json();
         toast.current.show({
           severity: "success",
           summary: "Éxito",
@@ -49,8 +46,7 @@ const CalificarConductorDialog = ({ visible, onHide, viajeId, conductor, token, 
           onCalificacionExitosa({
             id_viaje: viajeId,
             id_calificado: conductor.id,
-            estrellas,
-            comentario
+            estrellas
           });
         } else {
           onHide();
