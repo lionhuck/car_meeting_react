@@ -504,6 +504,16 @@ const ViajesView = () => {
                 <span><strong>Conductor:</strong> {selectedTripDetails.conductor.nombre} {selectedTripDetails.conductor.apellido}</span>
               </div>
               <div className="detail-item">
+                <i className="pi pi-star"></i>
+                <span><strong>Calificación:
+                <EstrellasCalificacion 
+                  usuarioId={selectedTripDetails.conductor.id} 
+                  token={token} 
+                  tipo="conductor"
+                />
+                  </strong></span>
+              </div>
+              <div className="detail-item">
                 <i className="pi pi-dollar"></i>
                 <span><strong>Precio:</strong> ${selectedTripDetails.precio}</span>
               </div>

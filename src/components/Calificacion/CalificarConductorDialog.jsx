@@ -1,21 +1,13 @@
+// CalificarConductorDialog.jsx (versión simplificada)
 import React, { useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { Rating } from "primereact/rating";
 import { Toast } from "primereact/toast";
 
-const CalificarConductorDialog = ({
-  visible,
-  onHide,
-  viajeId,
-  conductor,
-  token,
-  toast,
-  onCalificacionExitosa,
-}) => {
+const CalificarConductorDialog = ({ visible, onHide, viajeId, conductor, token, toast }) => {
   const [estrellas, setEstrellas] = useState(0);
-  const [comentario, setComentario] = useState("");
-  const [enviando, setEnviando] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const enviarCalificacion = async () => {
     if (estrellas === 0) {
@@ -28,8 +20,8 @@ const CalificarConductorDialog = ({
       return;
     }
 
+    setLoading(true);
     try {
-      setEnviando(true);
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/viajes/${viajeId}/calificar/conductor`,
         {
@@ -38,30 +30,24 @@ const CalificarConductorDialog = ({
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            estrellas,
-            comentario: comentario.trim() || undefined, // Solo enviar si no está vacío
-          }),
+          body: JSON.stringify({ estrellas }),
         }
       );
-
-      const data = await response.json();
 
       if (response.ok) {
         toast.current.show({
           severity: "success",
           summary: "Éxito",
-          detail: "Calificación enviada correctamente",
+          detail: "¡Gracias por tu calificación!",
           life: 3000,
         });
-        onCalificacionExitosa();
-        resetForm();
         onHide();
       } else {
+        const error = await response.json();
         toast.current.show({
           severity: "error",
           summary: "Error",
-          detail: data.error || "Error al enviar la calificación",
+          detail: error.error || "Error al enviar calificación",
           life: 3000,
         });
       }
@@ -69,71 +55,51 @@ const CalificarConductorDialog = ({
       toast.current.show({
         severity: "error",
         summary: "Error",
-        detail: "Error de conexión al enviar la calificación",
+        detail: "Error de conexión",
         life: 3000,
       });
     } finally {
-      setEnviando(false);
+      setLoading(false);
     }
   };
-
-  const resetForm = () => {
-    setEstrellas(0);
-    setComentario("");
-  };
-
-  const footerContent = (
-    <div>
-      <Button
-        label="Cancelar"
-        icon="pi pi-times"
-        onClick={() => {
-          resetForm();
-          onHide();
-        }}
-        className="p-button-text"
-      />
-      <Button
-        label="Enviar Calificación"
-        icon="pi pi-check"
-        onClick={enviarCalificacion}
-        autoFocus
-        loading={enviando}
-      />
-    </div>
-  );
 
   return (
     <Dialog
       visible={visible}
-      style={{ width: "90vw", maxWidth: "500px" }}
-      header={`Calificar a ${conductor?.nombre || ""} ${
-        conductor?.apellido || ""
-      }`}
-      footer={footerContent}
-      onHide={() => {
-        resetForm();
-        onHide();
-      }}
-      dismissableMask
-      closeOnEscape
+      onHide={onHide}
+      header={`Calificar a ${conductor.nombre}`}
+      style={{ width: "90vw", maxWidth: "400px" }}
     >
       <div className="p-fluid">
         <div className="field">
-          <label htmlFor="rating" className="font-bold block mb-2">
-            ¿Cómo calificarías tu experiencia?
+          <label className="block mb-4 text-center">
+            ¿Cómo calificarías tu viaje con {conductor.nombre}?
           </label>
-          <div className="flex justify-content-center my-4">
+          <div className="flex justify-content-center mb-6">
             <Rating
-              id="rating"
               value={estrellas}
               onChange={(e) => setEstrellas(e.value)}
               cancel={false}
               stars={5}
-              className="text-2xl"
+              className="text-3xl"
             />
           </div>
         </div>
+      </div>
+
+      <div className="flex justify-content-end gap-2">
+        <Button
+          label="Cancelar"
+          icon="pi pi-times"
+          onClick={onHide}
+          className="p-button-text"
+        />
+        <Button
+          label={loading ? "Enviando..." : "Enviar"}
+          icon="pi pi-check"
+          onClick={enviarCalificacion}
+          loading={loading}
+        />
       </div>
     </Dialog>
   );

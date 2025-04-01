@@ -245,7 +245,6 @@ const ViajesFinalizados = () => {
           conductor={viajeSeleccionado.conductor}
           token={token}
           toast={toast}
-          onCalificacionExitosa={handleCalificacionExitosa}
         />
       )}
     </>
