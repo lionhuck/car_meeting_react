@@ -27,6 +27,8 @@ const ViajesView = () => {
   const [first, setFirst] = useState(0)
   const [rows, setRows] = useState(6)
   const [showFilters, setShowFilters] = useState(false)
+  const [showTripDetailsModal, setShowTripDetailsModal] = useState(false);
+  const [selectedTripDetails, setSelectedTripDetails] = useState(null);
   const toast = useRef(null)
   const isMobile = window.innerWidth <= 768
 
@@ -365,7 +367,10 @@ const ViajesView = () => {
   const renderViajeCard = (viaje) => {
     return (
       <div className="trip-card" key={viaje.id}>
-        <Card>
+        <Card onClick={() => {
+        setSelectedTripDetails(viaje);
+        setShowTripDetailsModal(true);
+        }}>
           <div className="trip-card-header">
             <div className="trip-route">
               <div className="origin">
@@ -472,6 +477,51 @@ const ViajesView = () => {
         </div>
       )}
 
+
+
+        {showTripDetailsModal && selectedTripDetails && (
+          <Dialog
+            header={`Viaje a ${selectedTripDetails.destino.nombre}`}
+            visible={showTripDetailsModal}
+            style={{ width: '50vw' }}
+            onHide={() => setShowTripDetailsModal(false)}
+          >
+            <div className="trip-details-modal">
+              <div className="detail-item">
+                <i className="pi pi-map-marker"></i>
+                <span><strong>Origen:</strong> {selectedTripDetails.origen.nombre}</span>
+              </div>
+              <div className="detail-item">
+                <i className="pi pi-flag"></i>
+                <span><strong>Destino:</strong> {selectedTripDetails.destino.nombre}</span>
+              </div>
+              <div className="detail-item">
+                <i className="pi pi-calendar"></i>
+                <span><strong>Fecha:</strong> {formatDate(selectedTripDetails.fecha_salida)}</span>
+              </div>
+              <div className="detail-item">
+                <i className="pi pi-user"></i>
+                <span><strong>Conductor:</strong> {selectedTripDetails.conductor.nombre} {selectedTripDetails.conductor.apellido}</span>
+              </div>
+              <div className="detail-item">
+                <i className="pi pi-dollar"></i>
+                <span><strong>Precio:</strong> ${selectedTripDetails.precio}</span>
+              </div>
+              <div className="detail-item">
+                <i className="pi pi-users"></i>
+                <span><strong>Asientos Disponibles:</strong> {selectedTripDetails.asientos_disponibles}</span>
+              </div>
+              {selectedTripDetails.observaciones && (
+                <div className="detail-item">
+                  <i className="pi pi-info-circle"></i>
+                  <div className="observaciones-full">
+                    <strong>Observaciones:</strong> {selectedTripDetails.observaciones}
+                  </div>
+                </div>
+              )}
+            </div>
+          </Dialog>
+        )}
       {renderLuggageDialog()}
     </Card>
   );
