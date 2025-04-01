@@ -174,11 +174,12 @@ useEffect
           timeFormat="HH:mm"            // Para mostrar la hora como HH:MM
           showTime
           hourFormat="24"               // Para utilizar el formato de 24 horas
-          placeholder="Seleccione la fecha y hora de salida"
+          placeholder="Seleccione la fecha y hora"
           minDate={today}               // Restringe a partir de hoy
           maxDate={maxDate}             // Máximo un mes adelante
           showIcon
           manualInput={true}            // Permite la entrada manual
+          keepInvalid={false}
         />
         );
       },
@@ -206,16 +207,14 @@ useEffect
       name: "precio",
       label: "Precio por persona",
       component: (field, errors) => (
-        <div className="p-inputgroup">
+        <div className="p-inputgroup flex-1">
           <span className="p-inputgroup-addon">$</span>
           <InputNumber
             value={field.value}
             onValueChange={(e) => field.onChange(e.value)}
             min={0}
-            mode="currency"
-            currency="ARS"
-            locale="es-AR"
           />
+          <span className="p-inputgroup-addon">.00</span>
         </div>
       ),
       rules: { 
