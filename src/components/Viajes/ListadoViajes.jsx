@@ -426,6 +426,7 @@ const ViajesView = () => {
               label="Unirse al viaje"
               icon="pi pi-check"
               className="trip-join-btn"
+              severity="success"
               onClick={() => handleJoinTrip(viaje)}
               disabled={!viaje.activo || viaje.asientos_disponibles <= 0}
             />
@@ -529,6 +530,17 @@ const ViajesView = () => {
                   </div>
                 </div>
               )}
+
+              <div className="trip-actions">
+                <Button
+                  label="Unirse al viaje"
+                  icon="pi pi-check"
+                  className="trip-join-btn"
+                  severity="success"
+                  onClick={() => handleJoinTrip(selectedTripDetails)}
+                  disabled={!selectedTripDetails.activo || selectedTripDetails.asientos_disponibles <= 0}
+                />
+              </div>
             </div>
           </Dialog>
         )}
