@@ -477,9 +477,6 @@ const ViajesView = () => {
           ) : null}
         </div>
       )}
-
-
-
         {showTripDetailsModal && selectedTripDetails && (
           <Dialog
             header={`Viaje a ${selectedTripDetails.destino.nombre}`}

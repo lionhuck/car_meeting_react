@@ -4,6 +4,7 @@ import { Card } from "primereact/card"
 import { Button } from "primereact/button"
 import { Divider } from "primereact/divider"
 import { Paginator } from "primereact/paginator"
+import { Rating } from "primereact/rating"
 import '../Common/TripCard.css'
 import CalificarConductorDialog from "../Calificacion/CalificarConductorDialog.jsx"
 import EstrellasCalificacion from "../Calificacion/EstrellasCalificacion.jsx"
@@ -19,7 +20,7 @@ const ViajesFinalizados = () => {
   const [rows, setRows] = useState(6)
   const [dialogVisible, setDialogVisible] = useState(false)
   const [viajeSeleccionado, setViajeSeleccionado] = useState(null)
-  const [viajesCalificados, setViajesCalificados] = useState([])
+  const [calificacionesUsuario, setCalificacionesUsuario] = useState([])
   const toast = useRef(null)
 
   useEffect(() => {
@@ -59,14 +60,14 @@ const ViajesFinalizados = () => {
   // Función para obtener las calificaciones ya realizadas
   const fetchCalificacionesRealizadas = async () => {
     try {
-      const response = await fetch(`${API_URL}/calificaciones/realizadas`, {
+      const response = await fetch(`${API_URL}/calificacion/usuario`, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       })
 
       if (response.ok) {
         const data = await response.json()
-        setViajesCalificados(data.map(c => c.id_viaje))
+        setCalificacionesUsuario(data)
       }
     } catch (error) {
       console.error("Error al obtener calificaciones:", error)
@@ -78,11 +79,16 @@ const ViajesFinalizados = () => {
     setDialogVisible(true)
   }
 
-  const handleCalificacionExitosa = () => {
-    // Actualizar la lista de viajes calificados
-    if (viajeSeleccionado) {
-      setViajesCalificados([...viajesCalificados, viajeSeleccionado.id])
-    }
+  const handleCalificacionExitosa = (nuevaCalificacion) => {
+    // Actualizar la lista de calificaciones
+    setCalificacionesUsuario([...calificacionesUsuario, {
+      id_viaje: viajeSeleccionado.id,
+      id_calificado: viajeSeleccionado.conductor.id,
+      estrellas: nuevaCalificacion.estrellas
+    }])
+    
+    // Cerrar el diálogo
+    setDialogVisible(false)
   }
 
   const formatDate = (dateString) => {
@@ -106,11 +112,17 @@ const ViajesFinalizados = () => {
     setRows(event.rows)
   }
 
+  const getCalificacionViaje = (viajeId) => {
+    return calificacionesUsuario.find(c => c.id_viaje === viajeId) || null
+  }
+
   const yaCalificado = (viajeId) => {
-    return viajesCalificados.includes(viajeId)
+    return calificacionesUsuario.some(c => c.id_viaje === viajeId)
   }
 
   const renderTripCard = (viaje) => {
+    const calificacion = getCalificacionViaje(viaje.id)
+    
     return (
       <div className="trip-card" key={viaje.id}>
         <Card>
@@ -158,9 +170,8 @@ const ViajesFinalizados = () => {
               )}
             {tipoViaje === "conductor" && (
               <div className="detail-item">
-                <i className="pi pi-star"></i>
                 <EstrellasCalificacion 
-                  usuarioId={viaje.conductor?.id} // Asumiendo que token contiene el ID del usuario
+                  usuarioId={viaje.conductor?.id}
                   token={token} 
                   tipo="conductor"
                 />
@@ -182,11 +193,19 @@ const ViajesFinalizados = () => {
           )}
 
           
-          {/* Mostrar indicador de ya calificado */}
-          {tipoViaje === "pasajero" && yaCalificado(viaje.id) && (
-            <div className="mt-3 flex align-items-center text-sm text-gray-600">
-              <i className="pi pi-check-circle mr-2 text-green-500"></i>
-              Conductor ya calificado
+          {/* Mostrar indicador de ya calificado con estrellas */}
+          {tipoViaje === "pasajero" && calificacion && (
+            <div className="mt-3">
+              <div className="flex align-items-center text-sm">
+                <i className="pi pi-check-circle mr-2 text-green-500"></i>
+                <span className="mr-2">Tu calificación:</span>
+                <Rating value={calificacion.estrellas} readOnly cancel={false} stars={5} className="text-sm" />
+              </div>
+              {calificacion.comentario && (
+                <div className="mt-2 text-sm text-gray-600 italic">
+                  "{calificacion.comentario}"
+                </div>
+              )}
             </div>
           )}
         </Card>
@@ -245,6 +264,7 @@ const ViajesFinalizados = () => {
           conductor={viajeSeleccionado.conductor}
           token={token}
           toast={toast}
+          onCalificacionExitosa={handleCalificacionExitosa}
         />
       )}
     </>

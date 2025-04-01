@@ -1,12 +1,13 @@
-// CalificarConductorDialog.jsx (versión simplificada)
+// CalificarConductorDialog.jsx (versión actualizada)
 import React, { useState } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 import { Rating } from "primereact/rating";
-import { Toast } from "primereact/toast";
+import { InputTextarea } from "primereact/inputtextarea";
 
-const CalificarConductorDialog = ({ visible, onHide, viajeId, conductor, token, toast }) => {
+const CalificarConductorDialog = ({ visible, onHide, viajeId, conductor, token, toast, onCalificacionExitosa }) => {
   const [estrellas, setEstrellas] = useState(0);
+  const [comentario, setComentario] = useState("");
   const [loading, setLoading] = useState(false);
 
   const enviarCalificacion = async () => {
@@ -30,18 +31,30 @@ const CalificarConductorDialog = ({ visible, onHide, viajeId, conductor, token, 
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ estrellas }),
+          body: JSON.stringify({ estrellas, comentario }),
         }
       );
 
       if (response.ok) {
+        const data = await response.json();
         toast.current.show({
           severity: "success",
           summary: "Éxito",
           detail: "¡Gracias por tu calificación!",
           life: 3000,
         });
-        onHide();
+        
+        // Comunicar al componente padre que la calificación fue exitosa
+        if (onCalificacionExitosa) {
+          onCalificacionExitosa({
+            id_viaje: viajeId,
+            id_calificado: conductor.id,
+            estrellas,
+            comentario
+          });
+        } else {
+          onHide();
+        }
       } else {
         const error = await response.json();
         toast.current.show({
@@ -67,15 +80,15 @@ const CalificarConductorDialog = ({ visible, onHide, viajeId, conductor, token, 
     <Dialog
       visible={visible}
       onHide={onHide}
-      header={`Calificar a ${conductor.nombre}`}
+      header={`Calificar a ${conductor?.nombre}`}
       style={{ width: "90vw", maxWidth: "400px" }}
     >
       <div className="p-fluid">
         <div className="field">
           <label className="block mb-4 text-center">
-            ¿Cómo calificarías tu viaje con {conductor.nombre}?
+            ¿Cómo calificarías tu viaje con {conductor?.nombre}?
           </label>
-          <div className="flex justify-content-center mb-6">
+          <div className="flex justify-content-center mb-4">
             <Rating
               value={estrellas}
               onChange={(e) => setEstrellas(e.value)}
@@ -87,7 +100,7 @@ const CalificarConductorDialog = ({ visible, onHide, viajeId, conductor, token, 
         </div>
       </div>
 
-      <div className="flex justify-content-end gap-2">
+      <div className="flex justify-content-end gap-2 mt-4">
         <Button
           label="Cancelar"
           icon="pi pi-times"
