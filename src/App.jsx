@@ -2,7 +2,7 @@
 // App.jsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
-import ViajesView from './components/Viajes/ListadoViajes';
+import ViajesView from './components/Viajes/ListadoViajes/ListadoViajes';
 import LoginUser from './components/Auth/LoginUser';
 import CreateViaje from './components/Viajes/CreateViaje';
 import ViajesPasajero from './components/Viajes/ViajesAceptados';

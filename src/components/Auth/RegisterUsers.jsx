@@ -8,11 +8,12 @@ import * as Yup from "yup";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-
 const RegistroUsuario = () => {
   const [mensaje, setMensaje] = useState("");
   const [registroExitoso, setRegistroExitoso] = useState(false);
   const [emailRegistrado, setEmailRegistrado] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const toast = useRef(null);
   const navigate = useNavigate();
 
@@ -29,19 +30,23 @@ const RegistroUsuario = () => {
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
         setEmailRegistrado(values.email);
         setRegistroExitoso(true);
-        setMensaje(data.mensaje || "Usuario registrado exitosamente. Por favor, verifica tu correo electrónico.");
-        
+        setMensaje(
+          data.mensaje ||
+            "Usuario registrado exitosamente. Por favor, verifica tu correo electrónico."
+        );
+
         toast.current.show({
           severity: "success",
           summary: "Registro Exitoso",
-          detail: "Se ha enviado un correo de verificación a tu dirección de email.",
+          detail:
+            "Se ha enviado un correo de verificación a tu dirección de email.",
           life: 5000,
         });
-        
+
         // Ya no hacemos login automático, esperamos verificación de email
       } else {
         setMensaje(data.mensaje || "Hubo un error al registrar el usuario");
@@ -65,7 +70,7 @@ const RegistroUsuario = () => {
 
   const handleReenviarVerificacion = async () => {
     if (!emailRegistrado) return;
-    
+
     try {
       const response = await fetch(`${API_URL}/reenviar-verificacion`, {
         method: "POST",
@@ -76,7 +81,7 @@ const RegistroUsuario = () => {
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
         toast.current.show({
           severity: "success",
@@ -88,7 +93,8 @@ const RegistroUsuario = () => {
         toast.current.show({
           severity: "error",
           summary: "Error",
-          detail: data.mensaje || "No se pudo reenviar el correo de verificación",
+          detail:
+            data.mensaje || "No se pudo reenviar el correo de verificación",
           life: 3000,
         });
       }
@@ -134,34 +140,45 @@ const RegistroUsuario = () => {
   // Si el registro fue exitoso, mostrar mensaje de verificación
   if (registroExitoso) {
     return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <h1 style={{ marginBottom: "1rem" }}>CAR MEETING</h1>
-        <div className="p-d-flex p-jc-center p-ai-center">
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        padding: "0 1rem"
+      }}>
+        <h1 style={{ marginBottom: "1rem", fontSize: "1.75rem" }}>CAR MEETING</h1>
+        <div className="p-d-flex p-jc-center p-ai-center" style={{ width: "100%" }}>
           <div
             className="p-card p-shadow-3"
-            style={{ width: "500px", padding: "2rem" }}
+            style={{ 
+              width: "100%",
+              maxWidth: "500px",
+              padding: "1.5rem"
+            }}
           >
             <Toast ref={toast} />
             <h2 className="p-text-center">Verificación de Email</h2>
-            
-            <div className="p-text-center p-mb-3" style={{marginBottom: "1rem"}}>
-              Se ha enviado un correo de verificación a <strong>{emailRegistrado}</strong>. 
-              Por favor, revisa tu bandeja de entrada y sigue las instrucciones para verificar tu cuenta.
+
+            <div
+              className="p-text-center p-mb-3"
+              style={{ marginBottom: "1rem" }}
+            >
+              Se ha enviado un correo de verificación a{" "}
+              <strong>{emailRegistrado}</strong>. Por favor, revisa tu bandeja
+              de entrada y sigue las instrucciones para verificar tu cuenta.
             </div>
-            
-            <div className="p-text-center p-mb-3" style={{marginBottom: "1rem"}}>
-              Si no has recibido el correo, revisa tu carpeta de spam o haz clic en el botón para reenviar.
+
+            <div
+              className="p-text-center p-mb-3"
+              style={{ marginBottom: "1rem" }}
+            >
+              Si no has recibido el correo, revisa tu carpeta de spam o haz clic
+              en el botón para reenviar.
             </div>
-            
-            <div className="p-text-center" style={{marginBottom: "1rem"}}>
+
+            <div className="p-text-center" style={{ marginBottom: "1rem" }}>
               <Button
                 label="Reenviar Verificación"
                 onClick={handleReenviarVerificacion}
@@ -275,13 +292,26 @@ const RegistroUsuario = () => {
 
                 <div className="p-field">
                   <label htmlFor="password">Contraseña</label>
-                  <Field
-                    as={InputText}
-                    id="password"
-                    type="password"
-                    name="password"
-                    className="p-inputtext"
-                  />
+                  <div className="p-inputgroup">
+                    <Field
+                      as={InputText}
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      className="p-inputtext"
+                    />
+                    <span
+                      className="p-inputgroup-addon"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <i
+                        className={`pi ${
+                          showPassword ? "pi-eye-slash" : "pi-eye"
+                        }`}
+                      />
+                    </span>
+                  </div>
                   <ErrorMessage
                     name="password"
                     component="small"
@@ -291,13 +321,28 @@ const RegistroUsuario = () => {
 
                 <div className="p-field">
                   <label htmlFor="confirm_password">Confirmar contraseña</label>
-                  <Field
-                    as={InputText}
-                    id="confirm_password"
-                    type="password"
-                    name="confirm_password"
-                    className="p-inputtext"
-                  />
+                  <div className="p-inputgroup">
+                    <Field
+                      as={InputText}
+                      id="confirm_password"
+                      type={showConfirmPassword ? "text" : "password"}
+                      name="confirm_password"
+                      className="p-inputtext"
+                    />
+                    <span
+                      className="p-inputgroup-addon"
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                    >
+                      <i
+                        className={`pi ${
+                          showConfirmPassword ? "pi-eye-slash" : "pi-eye"
+                        }`}
+                      />
+                    </span>
+                  </div>
                   <ErrorMessage
                     name="confirm_password"
                     component="small"

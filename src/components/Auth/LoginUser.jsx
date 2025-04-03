@@ -12,6 +12,8 @@ const LoginUser = () => {
   const toast = useRef(null);
   const navigate = useNavigate();
   const [emailNoVerificado, setEmailNoVerificado] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  
   const onLoginUser = async (values) => {
     try {
       const response = await fetch(`${API_URL}/login`, {
@@ -114,10 +116,21 @@ const LoginUser = () => {
   });
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-      <h1 style={{ marginBottom: "1rem" }}>CAR MEETING</h1>
-      <div className="p-d-flex p-jc-center p-ai-center">
-        <div className="p-card p-shadow-3" style={{ width: "400px", padding: "2rem" }}>
+    <div style={{ 
+      display: "flex", 
+      flexDirection: "column", 
+      justifyContent: "center", 
+      alignItems: "center", 
+      height: "100vh",
+      padding: "0 1rem" // Añadir padding horizontal
+    }}>
+      <h1 style={{ marginBottom: "1rem", fontSize: "1.75rem" }}>CAR MEETING</h1>
+      <div className="p-d-flex p-jc-center p-ai-center" style={{ width: "100%" }}>
+        <div className="p-card p-shadow-3" style={{ 
+          width: "100%", 
+          maxWidth: "400px",
+          padding: "1.5rem" // Reducir padding
+        }}>
           <Toast ref={toast} />
           <h2 className="p-text-center">Iniciar Sesión</h2>
           <Formik
@@ -144,13 +157,26 @@ const LoginUser = () => {
 
                 <div className="p-field">
                   <label htmlFor="password">Contraseña</label>
-                  <Field
-                    as={InputText}
-                    id="password"
-                    type="password"
-                    name="password"
-                    className="p-inputtext"
-                  />
+                  <div className="p-inputgroup">
+                    <Field
+                      as={InputText}
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      className="p-inputtext"
+                    />
+                    <span
+                      className="p-inputgroup-addon"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      <i
+                        className={`pi ${
+                          showPassword ? "pi-eye-slash" : "pi-eye"
+                        }`}
+                      />
+                    </span>
+                  </div>
                   <ErrorMessage
                     name="password"
                     component="small"

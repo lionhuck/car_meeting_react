@@ -12,9 +12,11 @@ const VerificarEmail = () => {
   const toast = useRef(null);
   const navigate = useNavigate();
   const isMounted = useRef(false);
+
   useEffect(() => {
-    if (isMounted.current) return; // para que el metodo de verificar no se active dos veces
+    if (isMounted.current) return;
     isMounted.current = true;
+    
     const verificarEmail = async () => {
       try {
         const response = await fetch(`${API_URL}/verificar-email/${token}`, {
@@ -71,23 +73,23 @@ const VerificarEmail = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
-      <h1 style={{ marginBottom: "1rem" }}>CAR MEETING</h1>
-      <div className="p-d-flex p-jc-center p-ai-center">
-        <div
-          className="p-card p-shadow-3"
-          style={{ width: "500px", padding: "2rem" }}
-        >
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100vh",
+      padding: "1rem"
+    }}>
+      <h1 style={{ marginBottom: "1rem", fontSize: "1.75rem" }}>CAR MEETING</h1>
+      <div className="p-d-flex p-jc-center p-ai-center" style={{ width: "100%" }}>
+        <div className="p-card p-shadow-3" style={{ 
+          width: "100%",
+          maxWidth: "500px",
+          padding: "1.5rem"
+        }}>
           <Toast ref={toast} />
-          <h2 className="p-text-center">Verificación de Email</h2>
+          <h2 className="p-text-center" style={{ fontSize: "1.5rem" }}>Verificación de Email</h2>
           
           {verificando ? (
             <div className="p-text-center p-mb-3">
@@ -96,13 +98,11 @@ const VerificarEmail = () => {
             </div>
           ) : (
             <>
-              <div 
-                className="p-text-center p-mb-3" 
-                style={{
-                  marginBottom: "1rem",
-                  color: exito ? "green" : "red"
-                }}
-              >
+              <div className="p-text-center p-mb-3" style={{
+                marginBottom: "1.5rem",
+                color: exito ? "var(--success-color)" : "var(--danger-color)",
+                fontSize: "1rem"
+              }}>
                 {mensaje}
               </div>
               
@@ -112,21 +112,23 @@ const VerificarEmail = () => {
                     label="Iniciar Sesión"
                     onClick={() => navigate("/login")}
                     className="p-button"
+                    style={{ width: "100%" }}
                   />
                 ) : (
-                  <>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                     <Button
                       label="Reenviar Verificación"
                       onClick={handleReenviarVerificacion}
                       className="p-button-outlined"
-                      style={{ marginRight: "1rem" }}
+                      style={{ width: "100%" }}
                     />
                     <Button
                       label="Volver al Inicio"
                       onClick={() => navigate("/login")}
                       className="p-button"
+                      style={{ width: "100%" }}
                     />
-                  </>
+                  </div>
                 )}
               </div>
             </>
