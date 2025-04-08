@@ -30,8 +30,8 @@ const ViajeDetailsModal = ({ visible, onHide, tripDetails, formatDate, token, on
           <span><strong>Conductor:</strong> {tripDetails.conductor.nombre} {tripDetails.conductor.apellido}</span>
         </div>
         <div className="detail-item">
-          <i className="pi pi-star"></i>
-          <span><strong>Calificación:</strong></span>
+          <i className="pi pi-star" style={{ color: 'gold' }}></i>
+          <span><strong>Calificaciónes:</strong></span>
           <EstrellasCalificacion 
             usuarioId={tripDetails.conductor.id} 
             token={token} 

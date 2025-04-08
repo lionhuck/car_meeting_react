@@ -1,7 +1,7 @@
-import { Card } from "primereact/card"
-import { Button } from "primereact/button"
-import { Divider } from "primereact/divider"
-import EstrellasCalificacion from "../../Calificacion/EstrellasCalificacion"
+import { Card } from "primereact/card";
+import { Button } from "primereact/button";
+import { Divider } from "primereact/divider";
+import EstrellasCalificacion from "../../Calificacion/EstrellasCalificacion";
 
 const ViajeCard = ({ viaje, token, onJoinTrip, onShowDetails, formatDate }) => {
   return (
@@ -31,28 +31,35 @@ const ViajeCard = ({ viaje, token, onJoinTrip, onShowDetails, formatDate }) => {
 
         <div className="trip-details">
           <div className="detail-item">
-            <i className="pi pi-user"></i>
+            <i className="pi pi-user" style={{ color: "orange" }}></i>
             <span>
-              Conductor: {viaje.conductor.nombre} {viaje.conductor.apellido}
+              <strong>Conductor: </strong>
+              {viaje.conductor.nombre} {viaje.conductor.apellido}
             </span>
           </div>
-          <EstrellasCalificacion 
-            usuarioId={viaje.conductor.id} 
-            token={token} 
-            tipo="conductor"
-          />
-          <div className="detail-item">
-            <i className="pi pi-dollar"></i>
-            <span>Precio: ${viaje.precio}</span>
+          <div className="detail-item align-items-center">
+            <i className="pi pi-star" style={{ color: "gold" }}></i>
+            <span><strong>Calificaciónes:</strong></span>
+            <EstrellasCalificacion
+              usuarioId={viaje.conductor.id}
+              token={token}
+              tipo="conductor"
+            />
           </div>
           <div className="detail-item">
-            <i className="pi pi-users"></i>
-            <span>Asientos disponibles: {viaje.asientos_disponibles}</span>
+            <i className="pi pi-dollar" style={{ color: "green" }}></i>
+            <span><strong>Precio: </strong>${viaje.precio}</span>
+          </div>
+          <div className="detail-item">
+            <i className="pi pi-users" style={{ color: "red" }}></i>
+            <span> <strong>Asientos disponibles: </strong>{viaje.asientos_disponibles}</span>
           </div>
           {viaje.observaciones && (
             <div className="detail-item trip-observaciones">
-              <i className="pi pi-info-circle"></i>
-              <span title={viaje.observaciones}>Observaciones: {viaje.observaciones}</span>
+              <i className="pi pi-info-circle" style={{ color: "orange" }}></i>
+              <span title={viaje.observaciones}>
+                Observaciones: {viaje.observaciones}
+              </span>
             </div>
           )}
         </div>
