@@ -26,7 +26,7 @@ const ViajeDetailsModal = ({ visible, onHide, tripDetails, formatDate, token, on
           <span><strong>Fecha:</strong> {formatDate(tripDetails.fecha_salida)}</span>
         </div>
         <div className="detail-item">
-          <i className="pi pi-user"></i>
+          <i className="pi pi-user" style={{ color: 'black' }}></i>
           <span><strong>Conductor:</strong> {tripDetails.conductor.nombre} {tripDetails.conductor.apellido}</span>
         </div>
         <div className="detail-item">
@@ -39,16 +39,16 @@ const ViajeDetailsModal = ({ visible, onHide, tripDetails, formatDate, token, on
           />
         </div>
         <div className="detail-item">
-          <i className="pi pi-dollar"></i>
+          <i className="pi pi-dollar" style={{ color: 'green' }}></i>
           <span><strong>Precio:</strong> ${tripDetails.precio}</span>
         </div>
         <div className="detail-item">
-          <i className="pi pi-users"></i>
+          <i className="pi pi-users" style={{ color: 'red' }}></i>
           <span><strong>Asientos Disponibles:</strong> {tripDetails.asientos_disponibles}</span>
         </div>
         {tripDetails.observaciones && (
           <div className="detail-item">
-            <i className="pi pi-info-circle"></i>
+            <i className="pi pi-info-circle" style={{ color: 'orange' }}></i>
             <div className="observaciones-full">
               <strong>Observaciones:</strong> {tripDetails.observaciones}
             </div>

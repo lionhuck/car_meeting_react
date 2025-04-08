@@ -2,8 +2,9 @@ import { Card } from "primereact/card";
 import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
 import EstrellasCalificacion from "../../Calificacion/EstrellasCalificacion";
-
+import { useState } from "react";
 const ViajeCard = ({ viaje, token, onJoinTrip, onShowDetails, formatDate }) => {
+  const [isJoining, setIsJoining] = useState(false);
   return (
     <div className="trip-card">
       <Card onClick={() => onShowDetails(viaje)}>
@@ -31,7 +32,7 @@ const ViajeCard = ({ viaje, token, onJoinTrip, onShowDetails, formatDate }) => {
 
         <div className="trip-details">
           <div className="detail-item">
-            <i className="pi pi-user" style={{ color: "orange" }}></i>
+            <i className="pi pi-user" style={{ color: "black" }}></i>
             <span>
               <strong>Conductor: </strong>
               {viaje.conductor.nombre} {viaje.conductor.apellido}
@@ -63,19 +64,19 @@ const ViajeCard = ({ viaje, token, onJoinTrip, onShowDetails, formatDate }) => {
             </div>
           )}
         </div>
-
         <div className="trip-actions">
           <Button
-            label="Unirse al viaje"
-            icon="pi pi-check"
-            className="trip-join-btn"
-            severity="success"
-            onClick={(e) => {
-              e.stopPropagation(); // Evitar que se abra el detalle al hacer clic en el botón
-              onJoinTrip(viaje);
-            }}
-            disabled={!viaje.activo || viaje.asientos_disponibles <= 0}
-          />
+                label={isJoining ? "Procesando..." : "Unirse al viaje"}
+                icon="pi pi-check"
+                className="trip-join-btn"
+                severity="success"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onJoinTrip(viaje);
+                }}
+                disabled={!viaje.activo || viaje.asientos_disponibles <= 0 || isJoining}
+                loading={isJoining}
+            />
         </div>
       </Card>
     </div>

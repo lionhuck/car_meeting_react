@@ -26,6 +26,7 @@ const ViajesView = () => {
   const [rows, setRows] = useState(6)
   const [showTripDetailsModal, setShowTripDetailsModal] = useState(false)
   const [selectedTripDetails, setSelectedTripDetails] = useState(null)
+  const [isJoining, setIsJoining] = useState(false)
   const toast = useRef(null)
 
   useEffect(() => {
@@ -157,62 +158,68 @@ const ViajesView = () => {
 
   const handleAddPassenger = async () => {
     if (!selectedTrip || !selectedLuggage) {
-      toast.current.show({
-        severity: "error",
-        summary: "Error",
-        detail: "Por favor seleccione un tipo de equipaje",
-        life: 3000,
-      })
-      return
+        toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "Por favor seleccione un tipo de equipaje",
+            life: 3000,
+        });
+        return;
     }
+
+    if (isJoining) return; // Evitar múltiples clics
+
+    setIsJoining(true);
 
     try {
-      const response = await fetch(`${API_URL}/viajes/${selectedTrip.id}/pasajeros`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          equipaje_id: selectedLuggage,
-        }),
-      })
+        const response = await fetch(`${API_URL}/viajes/${selectedTrip.id}/pasajeros`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                equipaje_id: selectedLuggage,
+            }),
+        });
 
-      const data = await response.json()
+        const data = await response.json();
 
-      if (response.ok) {
-        setViajes((prevViajes) =>
-          prevViajes.map((viaje) =>
-            viaje.id === selectedTrip.id ? { ...viaje, asientos_disponibles: viaje.asientos_disponibles - 1 } : viaje
-          )
-        )
+        if (response.ok) {
+            setViajes((prevViajes) =>
+                prevViajes.map((viaje) =>
+                    viaje.id === selectedTrip.id ? { ...viaje, asientos_disponibles: viaje.asientos_disponibles - 1 } : viaje
+                )
+            );
 
-        toast.current.show({
-          severity: "success",
-          summary: "Éxito",
-          detail: "Te has unido al viaje exitosamente",
-          life: 3000,
-        })
+            toast.current.show({
+                severity: "success",
+                summary: "Éxito",
+                detail: "Te has unido al viaje exitosamente",
+                life: 3000,
+            });
 
-        handleDialogClose()
-      } else {
-        toast.current.show({
-          severity: "error",
-          summary: "Error",
-          detail: data.error || "Error al unirse al viaje",
-          life: 3000,
-        })
-      }
+            handleDialogClose();
+        } else {
+            toast.current.show({
+                severity: "error",
+                summary: "Error",
+                detail: data.error || "Error al unirse al viaje",
+                life: 3000,
+            });
+        }
     } catch (error) {
-      console.error("Error al unirse al viaje:", error)
-      toast.current.show({
-        severity: "error",
-        summary: "Error",
-        detail: "Error de conexión al intentar unirse al viaje",
-        life: 3000,
-      })
+        console.error("Error al unirse al viaje:", error);
+        toast.current.show({
+            severity: "error",
+            summary: "Error",
+            detail: "Error de conexión al intentar unirse al viaje",
+            life: 3000,
+        });
+    } finally {
+        setIsJoining(false);
     }
-  }
+};
 
   const handleDialogClose = () => {
     setShowLuggageDialog(false)
