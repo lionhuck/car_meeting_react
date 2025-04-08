@@ -154,7 +154,7 @@ const ViajesPasajero = () => {
             <div className="detail-item">
               <i className="pi pi-user" style={{ color: "black" }}></i>
               <span>
-                Conductor: {viaje.conductor.nombre} {viaje.conductor.apellido}
+                Conductor/ra: {viaje.conductor.nombre} {viaje.conductor.apellido}
               </span>
             </div>
             <div className="detail-item">

@@ -28,7 +28,7 @@ const ViajesAceptadosModal = ({ visible, onHide, tripDetails, formatDate, onJoin
         </div>
         <div className="detail-item">
           <i className="pi pi-user" style={{ color: 'black' }}></i>
-          <span><strong>Conductor:</strong> {tripDetails.conductor.nombre} {tripDetails.conductor.apellido}</span>
+          <span><strong>Conductor/ra:</strong> {tripDetails.conductor.nombre} {tripDetails.conductor.apellido}</span>
         </div>
         <div className="detail-item">
           <i className="pi pi-star" style={{ color: 'gold' }}></i>
