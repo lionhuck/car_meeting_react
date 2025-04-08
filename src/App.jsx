@@ -5,7 +5,7 @@ import './App.css';
 import ViajesView from './components/Viajes/ListadoViajes/ListadoViajes';
 import LoginUser from './components/Auth/LoginUser';
 import CreateViaje from './components/Viajes/CreateViaje';
-import ViajesPasajero from './components/Viajes/ViajesAceptados';
+import ViajesPasajero from './components/Viajes/ViajesAceptados/ViajesAceptados';
 import RegistroUsuario from './components/Auth/RegisterUsers';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import MainLayout from './components/Layout/MainLayout';

@@ -34,18 +34,20 @@ const ViajeCard = ({ viaje, token, onJoinTrip, onShowDetails, formatDate }) => {
           <div className="detail-item">
             <i className="pi pi-user" style={{ color: "black" }}></i>
             <span>
-              <strong>Conductor: </strong>
-              {viaje.conductor.nombre} {viaje.conductor.apellido}
+              <strong>Conductor/ra: </strong>
+              <div>{viaje.conductor.nombre} {viaje.conductor.apellido}</div>
+              
             </span>
           </div>
-          <div className="detail-item align-items-center">
+          <div className="detail-item">
             <i className="pi pi-star" style={{ color: "gold" }}></i>
-            <span><strong>Calificaciónes:</strong></span>
+            <span><strong>Calificaciónes:</strong>
             <EstrellasCalificacion
               usuarioId={viaje.conductor.id}
               token={token}
               tipo="conductor"
             />
+            </span>
           </div>
           <div className="detail-item">
             <i className="pi pi-dollar" style={{ color: "green" }}></i>
@@ -53,7 +55,7 @@ const ViajeCard = ({ viaje, token, onJoinTrip, onShowDetails, formatDate }) => {
           </div>
           <div className="detail-item">
             <i className="pi pi-users" style={{ color: "red" }}></i>
-            <span> <strong>Asientos disponibles: </strong>{viaje.asientos_disponibles}</span>
+            <span> <strong>Lugares disponibles: </strong>{viaje.asientos_disponibles}</span>
           </div>
           {viaje.observaciones && (
             <div className="detail-item trip-observaciones">

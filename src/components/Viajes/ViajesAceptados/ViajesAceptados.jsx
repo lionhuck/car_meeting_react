@@ -7,8 +7,11 @@ import { Dialog } from "primereact/dialog"
 import { Card } from "primereact/card"
 import { Divider } from "primereact/divider"
 import { Paginator } from "primereact/paginator"
-import Chat from "../Chat/Chat"
-import '../Common/TripCard.css'
+import EstrellasCalificacion from "../../Calificacion/EstrellasCalificacion";
+import Chat from "../../Chat/Chat"
+import ViajesAceptadosModal from './ViajesAceptadosModal' // ajustá el path si es necesario
+import '../../Common/TripCard.css'
+
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -22,6 +25,8 @@ const ViajesPasajero = () => {
   const [activeChatViajeId, setActiveChatViajeId] = useState(null)
   const [first, setFirst] = useState(0)
   const [rows, setRows] = useState(6)
+  const [modalVisible, setModalVisible] = useState(false)
+
   const toast = useRef(null)
 
   useEffect(() => {
@@ -113,10 +118,16 @@ const ViajesPasajero = () => {
     setRows(event.rows)
   }
 
+  const handleCardClick = (viaje) => {
+    setSelectedTrip(viaje)
+    setModalVisible(true)
+  }
+  
+
   const renderTripCard = (viaje) => {
     return (
-      <div className="trip-card" key={viaje.id}>
-        <Card>
+      <div className="trip-card" key={viaje.id} style={{ cursor: 'pointer' }}>
+        <Card onClick={() => handleCardClick(viaje)}>
           <div className="trip-card-header">
             <div className="trip-route">
               <div className="origin">
@@ -141,18 +152,28 @@ const ViajesPasajero = () => {
 
           <div className="trip-details">
             <div className="detail-item">
-              <i className="pi pi-user"></i>
+              <i className="pi pi-user" style={{ color: "black" }}></i>
               <span>
                 Conductor: {viaje.conductor.nombre} {viaje.conductor.apellido}
               </span>
             </div>
             <div className="detail-item">
-              <i className="pi pi-dollar"></i>
+              <i className="pi pi-star" style={{ color: "gold" }}></i>
+              <span><strong>Calificaciónes:</strong>
+                <EstrellasCalificacion
+                  usuarioId={viaje.conductor.id}
+                  token={token}
+                  tipo="conductor"
+                />
+            </span>
+          </div>
+            <div className="detail-item">
+              <i className="pi pi-dollar" style={{ color: "green" }}></i>
               <span>Precio: ${viaje.precio}</span>
             </div>
             {viaje.observaciones && (
               <div className="detail-item">
-                <i className="pi pi-info-circle"></i>
+                <i className="pi pi-info-circle" style={{ color: "orange" }}></i>
                 <span>Observaciones: {viaje.observaciones}</span>
               </div>
             )}
@@ -228,6 +249,12 @@ const ViajesPasajero = () => {
           </>
         )}
       </Card>
+      <ViajesAceptadosModal
+        visible={modalVisible}
+        onHide={() => setModalVisible(false)}
+        tripDetails={selectedTrip}
+        formatDate={formatDate} // asegurate de que esta función esté definida
+      />
 
       {/* Chat Modal */}
       <Dialog
