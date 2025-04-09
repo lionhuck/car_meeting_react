@@ -43,7 +43,7 @@ const EstrellasCalificacion = ({ usuarioId, token, tipo = "conductor" }) => {
 
   return (
     <div className="flex align-items-center gap-2">
-      <span>{stats.promedio.toFixed(1).replace('.', ',')}</span>
+      <span>{stats.promedio.toFixed(1).replace('.', ',')} </span>
       <Badge value={stats.total} severity="info" />
     </div>
   );

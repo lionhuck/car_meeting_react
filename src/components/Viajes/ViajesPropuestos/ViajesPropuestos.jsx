@@ -10,6 +10,7 @@ import { Paginator } from "primereact/paginator"
 import Chat from "../../Chat/Chat"
 import '../../Common/TripCard.css'
 import ViajesPropuestosModal from './ViajesPropuestosModal'
+import PasajerosModal from './PasajerosModal'
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -26,6 +27,7 @@ const ViajesPropuestos = () => {
   const [rows, setRows] = useState(6)
   const toast = useRef(null)
   const [modalVisible, setModalVisible] = useState(false)
+  const [pasajerosModalVisible, setPasajerosModalVisible] = useState(false)
   const isMobile = window.innerWidth <= 768
 
   useEffect(() => {
@@ -122,6 +124,11 @@ const ViajesPropuestos = () => {
     setActiveChatViajeId(null)
   }
 
+  const handleShowPasajeros = (trip) => {
+    setSelectedTrip(trip)
+    setPasajerosModalVisible(true)
+  }
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString("es-ES", {
       year: "numeric",
@@ -177,7 +184,7 @@ const ViajesPropuestos = () => {
             </div>
             <div className="detail-item">
               <i className="pi pi-users" style={{ color: "red" }}></i>
-              <span>Lugares disponibles:{viaje.asientos_disponibles}</span>
+              <span>Lugares disponibles: {viaje.asientos_disponibles}</span>
             </div>
 
             {viaje.observaciones && (
@@ -197,6 +204,7 @@ const ViajesPropuestos = () => {
                 e.stopPropagation();
                 confirmDeleteTrip(viaje)
               }}
+              tooltip="Eliminar viaje"
             />
             <Button
               label=""
@@ -206,6 +214,17 @@ const ViajesPropuestos = () => {
                 e.stopPropagation();
                 handleOpenChat(viaje.id)
               }}
+              tooltip="Chat del viaje"
+            />
+            <Button
+              label=""
+              icon="pi pi-users"
+              className="p-button-info"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleShowPasajeros(viaje)
+              }}
+              tooltip="Ver pasajeros"
             />
             <Button
               label="Comenzar"
@@ -288,15 +307,25 @@ const ViajesPropuestos = () => {
           </>
         )}
       </Card>
-      {/* Modal for trip details */}
+      
+      {/* Modal para detalles del viaje */}
       <ViajesPropuestosModal
         visible={modalVisible}
         onHide={() => setModalVisible(false)}
         tripDetails={selectedTrip}
-        formatDate={formatDate} // asegurate de que esta función esté definida
+        formatDate={formatDate}
       />
 
-      {/* Dialog for confirmations */}
+      {/* Modal para mostrar y gestionar pasajeros */}
+      <PasajerosModal 
+        visible={pasajerosModalVisible}
+        onHide={() => setPasajerosModalVisible(false)}
+        viajeId={selectedTrip?.id}
+        token={token}
+        toast={toast}
+      />
+
+      {/* Dialog para confirmaciones */}
       <Dialog
         visible={showDialog}
         onHide={() => setShowDialog(false)}
@@ -323,4 +352,3 @@ const ViajesPropuestos = () => {
 }
 
 export default ViajesPropuestos
-

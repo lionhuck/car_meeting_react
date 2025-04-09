@@ -41,13 +41,12 @@ const ViajeCard = ({ viaje, token, onJoinTrip, onShowDetails, formatDate }) => {
           </div>
           <div className="detail-item">
             <i className="pi pi-star" style={{ color: "gold" }}></i>
-            <span><strong>Calificaciónes:</strong>
+            <span><strong>Calificaciónes:</strong></span>
             <EstrellasCalificacion
               usuarioId={viaje.conductor.id}
               token={token}
               tipo="conductor"
             />
-            </span>
           </div>
           <div className="detail-item">
             <i className="pi pi-dollar" style={{ color: "green" }}></i>
