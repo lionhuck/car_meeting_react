@@ -22,7 +22,7 @@ const LoginUser = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: values.username,  // Asegúrate de que coincida con la clave esperada por el backend
+          email: values.email,  // Asegúrate de que coincida con la clave esperada por el backend
           password: values.password,
         }),
       });
@@ -32,7 +32,7 @@ const LoginUser = () => {
       if (!response.ok) {
         // Verificar si el error es porque el email no está verificado
         if (data.mensaje && data.mensaje.includes("Correo electrónico no verificado")) {
-          setEmailNoVerificado(values.username);
+          setEmailNoVerificado(values.email);
           toast.current.show({
             severity: "warn",
             summary: "Email no verificado",
@@ -111,7 +111,7 @@ const LoginUser = () => {
   };
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string().required("El nombre de usuario o email es requerido"),
+    email: Yup.string().required("El email es requerido"),
     password: Yup.string().required("La contraseña es requerida"),
   });
 
@@ -134,22 +134,22 @@ const LoginUser = () => {
           <Toast ref={toast} />
           <h2 className="p-text-center">Iniciar Sesión</h2>
           <Formik
-            initialValues={{ username: "", password: "" }}
+            initialValues={{ email: "", password: "" }}
             validationSchema={validationSchema}
             onSubmit={(values) => onLoginUser(values)}
           >
             {({ handleSubmit, isValid }) => (
               <form onSubmit={handleSubmit} className="p-fluid">
                 <div className="p-field">
-                  <label htmlFor="username">Nombre de usuario o Email</label>
+                  <label htmlFor="email">Email</label>
                   <Field
                     as={InputText}
-                    id="username"
-                    name="username"
+                    id="email"
+                    name="email"
                     className="p-inputtext"
                   />
                   <ErrorMessage
-                    name="username"
+                    name="email"
                     component="small"
                     style={{ color: "red" }}
                   />

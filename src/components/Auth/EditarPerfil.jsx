@@ -16,7 +16,6 @@ const EditarPerfil = () => {
   const [usuario, setUsuario] = useState({
     nombre: "",
     apellido: "",
-    nombre_usuario: "",
   });
   const [cargando, setCargando] = useState(true);
   const [showVerificationDialog, setShowVerificationDialog] = useState(false);
@@ -61,7 +60,6 @@ const EditarPerfil = () => {
   const validationSchema = Yup.object().shape({
     nombre: Yup.string(),
     apellido: Yup.string(),
-    nombre_usuario: Yup.string().min(6, "El nombre de usuario debe tener al menos 6 caracteres"),
     password: Yup.string()
       .min(8, "La contraseña debe tener al menos 8 caracteres")
       .nullable(),
@@ -155,7 +153,6 @@ const EditarPerfil = () => {
           initialValues={{
             nombre:"",
             apellido:"",
-            nombre_usuario:"",
             password: "",
           }}
           validationSchema={validationSchema}
@@ -191,21 +188,6 @@ const EditarPerfil = () => {
                 />
                 <ErrorMessage name="apellido" component="small" className="p-error block text-left" />
               </div>
-
-              <div className="field mb-3">
-                <label htmlFor="nombre_usuario" className="block text-left font-bold mb-2">
-                  Nombre de usuario actual: {usuario.nombre_usuario || "No disponible"}
-                </label>
-                <InputText
-                  id="nombre_usuario"
-                  name="nombre_usuario"
-                  value={values.nombre_usuario}
-                  onChange={handleChange}
-                  className={errors.nombre_usuario && touched.nombre_usuario ? "p-invalid" : ""}
-                />
-                <ErrorMessage name="nombre_usuario" component="small" className="p-error block text-left" />
-              </div>
-
               <div className="field mb-4">
                 <label htmlFor="password" className="block text-left font-bold mb-2">
                   Nueva contraseña (dejar vacío para mantener actual)

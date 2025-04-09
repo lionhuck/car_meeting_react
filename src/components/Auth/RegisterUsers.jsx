@@ -114,14 +114,6 @@ const RegistroUsuario = () => {
       .min(2)
       .max(50)
       .required("El apellido es obligatorio"),
-    nombre_usuario: Yup.string()
-      .min(3)
-      .max(50)
-      .matches(
-        /^[a-zA-Z0-9_]+$/,
-        "El nombre de usuario solo puede contener letras, números y guiones bajos"
-      )
-      .required("El nombre de usuario es obligatorio"),
     email: Yup.string()
       .email("Formato de email inválido")
       .required("El email es obligatorio"),
@@ -220,7 +212,6 @@ const RegistroUsuario = () => {
             initialValues={{
               nombre: "",
               apellido: "",
-              nombre_usuario: "",
               email: "",
               password: "",
               confirm_password: "",
@@ -255,21 +246,6 @@ const RegistroUsuario = () => {
                   />
                   <ErrorMessage
                     name="apellido"
-                    component="small"
-                    style={{ color: "red" }}
-                  />
-                </div>
-
-                <div className="p-field">
-                  <label htmlFor="nombre_usuario">Nombre de usuario</label>
-                  <Field
-                    as={InputText}
-                    id="nombre_usuario"
-                    name="nombre_usuario"
-                    className="p-inputtext"
-                  />
-                  <ErrorMessage
-                    name="nombre_usuario"
                     component="small"
                     style={{ color: "red" }}
                   />
