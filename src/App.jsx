@@ -9,9 +9,9 @@ import ViajesPasajero from './components/Viajes/ViajesAceptados/ViajesAceptados'
 import RegistroUsuario from './components/Auth/RegisterUsers';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import MainLayout from './components/Layout/MainLayout';
-import ViajesPropuestos from './components/Viajes/ConductorViajesDisponibles';
-import ViajesEnCursoConductor from './components/Viajes/ConductorViajesEnCurso';
-import ViajesFinalizadosConductor from './components/Viajes/ViajesFinalizados';
+import ViajesPropuestos from './components/Viajes/ViajesPropuestos/ViajesPropuestos';
+import ViajesEnCursoConductor from './components/Viajes/ViajesEnCurso/ViajesEnCurso';
+import ViajesFinalizadosConductor from './components/Viajes/ViajesFinalizados/ViajesFinalizados';
 import VerificarEmail from './components/Auth/VerificarEmail';
 import ReenviarVerificacion from './components/Auth/ReenviarVerificacion';
 import EditarPerfil from './components/Auth/EditarPerfil';

@@ -5,9 +5,10 @@ import { Button } from "primereact/button"
 import { Divider } from "primereact/divider"
 import { Paginator } from "primereact/paginator"
 import { Rating } from "primereact/rating"
-import '../Common/TripCard.css'
-import CalificarConductorDialog from "../Calificacion/CalificarConductorDialog.jsx"
-import EstrellasCalificacion from "../Calificacion/EstrellasCalificacion.jsx"
+import '../../Common/TripCard.css'
+import CalificarConductorDialog from "../../Calificacion/CalificarConductorDialog.jsx"
+import EstrellasCalificacion from "../../Calificacion/EstrellasCalificacion.jsx"
+import ViajesFinalizadosModal from "./ViajesFinalizadosModal.jsx"
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -21,6 +22,8 @@ const ViajesFinalizados = () => {
   const [dialogVisible, setDialogVisible] = useState(false)
   const [viajeSeleccionado, setViajeSeleccionado] = useState(null)
   const [calificacionesUsuario, setCalificacionesUsuario] = useState([])
+  const [selectedTrip, setSelectedTrip] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false)
   const toast = useRef(null)
 
   useEffect(() => {
@@ -120,12 +123,17 @@ const ViajesFinalizados = () => {
     return calificacionesUsuario.some(c => c.id_viaje === viajeId)
   }
 
+
+  const handleCardClick = (viaje) => {
+    setSelectedTrip(viaje)
+    setModalVisible(true)
+  }
+
   const renderTripCard = (viaje) => {
     const calificacion = getCalificacionViaje(viaje.id)
-    
     return (
-      <div className="trip-card" key={viaje.id}>
-        <Card>
+      <div className="trip-card" key={viaje.id} style={{ cursor: 'pointer' }}>
+        <Card onClick={() => handleCardClick(viaje)}>
           <div className="trip-card-header">
             <div className="trip-route">
               <div className="origin">
@@ -150,22 +158,25 @@ const ViajesFinalizados = () => {
               <span>Inicio: {formatDate(viaje.hora_inicio_real)}</span>
             </div>
             <div className="detail-item">
-              <i className="pi pi-dollar"></i>
+              <i className="pi pi-dollar" style={{ color: "green" }}></i>
               <span>Precio: ${viaje.precio?.toFixed(2) || "No disponible"}</span>
             </div>
             <div className="detail-item">
-              <i className="pi pi-user"></i>
+              <i className="pi pi-user" style={{ color: "black" }}></i>
               <span>
                 {tipoViaje === "conductor" ? "Usted" : `Conductor: ${viaje.conductor?.nombre} ${viaje.conductor?.apellido}`}
               </span>
             </div>
             {tipoViaje === "pasajero" && (
               <div className="detail-item">
-                <EstrellasCalificacion 
-                  usuarioId={viaje.conductor?.id} 
-                  token={token} 
-                  tipo="conductor"
-                />
+                <i className="pi pi-star" style={{ color: "gold" }}></i>
+                <span><strong>Calificaciónes:</strong>
+                  <EstrellasCalificacion 
+                    usuarioId={viaje.conductor?.id} 
+                    token={token} 
+                    tipo="conductor"
+                  />
+                </span>
               </div>
               )}
             {tipoViaje === "conductor" && (
@@ -249,6 +260,14 @@ const ViajesFinalizados = () => {
           </>
         )}
       </Card>
+
+      <ViajesFinalizadosModal
+        visible={modalVisible}
+        onHide={() => setModalVisible(false)}
+        tripDetails={selectedTrip}
+        formatDate={formatDate}
+        tipoViaje={tipoViaje} // Añade esta línea
+      />
 
       {/* Modal para calificar conductor */}
       {viajeSeleccionado && (

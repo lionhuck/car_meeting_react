@@ -7,12 +7,13 @@ import { Dialog } from "primereact/dialog"
 import { Card } from "primereact/card"
 import { Divider } from "primereact/divider"
 import { Paginator } from "primereact/paginator"
-import Chat from "../Chat/Chat"
-import '../Common/TripCard.css'
+import Chat from "../../Chat/Chat"
+import '../../Common/TripCard.css'
+import ViajesPropuestosModal from './ViajesPropuestosModal'
 
 const API_URL = import.meta.env.VITE_API_URL
 
-const ViajesConductor = () => {
+const ViajesPropuestos = () => {
   const token = JSON.parse(localStorage.getItem("token"))
   const [viajes, setViajes] = useState([])
   const [loading, setLoading] = useState(true)
@@ -24,15 +25,16 @@ const ViajesConductor = () => {
   const [first, setFirst] = useState(0)
   const [rows, setRows] = useState(6)
   const toast = useRef(null)
+  const [modalVisible, setModalVisible] = useState(false)
   const isMobile = window.innerWidth <= 768
 
   useEffect(() => {
     if (token) {
-      fetchViajesConductor()
+      fetchViajesPropuestos()
     }
   }, [token])
 
-  const fetchViajesConductor = async () => {
+  const fetchViajesPropuestos = async () => {
     try {
       const response = await fetch(`${API_URL}/viajes/disponibles`, {
         method: "GET",
@@ -136,10 +138,16 @@ const ViajesConductor = () => {
     setRows(event.rows)
   }
 
+  const handleCardClick = (viaje) => {
+    setSelectedTrip(viaje)
+    setModalVisible(true)
+  }
+  
+
   const renderTripCard = (viaje) => {
     return (
-      <div className="trip-card" key={viaje.id}>
-        <Card>
+      <div className="trip-card" key={viaje.id} style={{ cursor: 'pointer' }}>
+        <Card onClick={() => handleCardClick(viaje)}>
           <div className="trip-card-header">
             <div className="trip-route">
               <div className="origin">
@@ -167,9 +175,14 @@ const ViajesConductor = () => {
               <i className="pi pi-dollar" style={{ color: "green" }}></i>
               <span>Precio: ${viaje.precio}</span>
             </div>
+            <div className="detail-item">
+              <i className="pi pi-users" style={{ color: "red" }}></i>
+              <span>Lugares disponibles:{viaje.asientos_disponibles}</span>
+            </div>
+
             {viaje.observaciones && (
               <div className="detail-item trip-observaciones">
-                <i className="pi pi-info-circle"></i>
+                <i className="pi pi-info-circle" style={{ color: "orange" }}></i>
                 <span>Observaciones: {viaje.observaciones}</span>
               </div>
             )}
@@ -180,19 +193,28 @@ const ViajesConductor = () => {
               label=""
               icon="pi pi-trash"
               className="p-button-danger"
-              onClick={() => confirmDeleteTrip(viaje)}
+              onClick={(e) => {
+                e.stopPropagation();
+                confirmDeleteTrip(viaje)
+              }}
             />
             <Button
               label=""
               icon="pi pi-comments"
               className="p-button-secondary"
-              onClick={() => handleOpenChat(viaje.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleOpenChat(viaje.id)
+              }}
             />
             <Button
               label="Comenzar"
               icon="pi pi-play"
               className="p-button-warning"
-              onClick={() => confirmStartTrip(viaje)}
+              onClick={(e) => { 
+                e.stopPropagation();
+                confirmStartTrip(viaje)
+              }}
             />
           </div>
         </Card>
@@ -237,7 +259,7 @@ const ViajesConductor = () => {
 
   return (
     <>
-      <Card title="Viajes Ofrecidos" className="card p-4 main-card" style={{ borderRadius: "12px" }}>
+      <Card title="Viajes Propuestos" className="card p-4 main-card" style={{ borderRadius: "12px" }}>
       <Toast ref={toast} position={isMobile ? "bottom-center" : "top-right"} />
       
         {loading ? (
@@ -266,6 +288,13 @@ const ViajesConductor = () => {
           </>
         )}
       </Card>
+      {/* Modal for trip details */}
+      <ViajesPropuestosModal
+        visible={modalVisible}
+        onHide={() => setModalVisible(false)}
+        tripDetails={selectedTrip}
+        formatDate={formatDate} // asegurate de que esta función esté definida
+      />
 
       {/* Dialog for confirmations */}
       <Dialog
@@ -293,5 +322,5 @@ const ViajesConductor = () => {
   )
 }
 
-export default ViajesConductor
+export default ViajesPropuestos
 

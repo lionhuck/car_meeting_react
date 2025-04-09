@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect, useRef } from "react"
 import { Toast } from "primereact/toast"
 import { Button } from "primereact/button"
@@ -7,7 +5,8 @@ import { Dialog } from "primereact/dialog"
 import { Card } from "primereact/card"
 import { Divider } from "primereact/divider"
 import { Paginator } from "primereact/paginator"
-import "../Common/TripCard.css"
+import "../../Common/TripCard.css"
+import ViajesEnCursoModal from "./ViajesEnCursoModal"
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -20,6 +19,7 @@ const ViajesEnCurso = () => {
   const [finalizingTrip, setFinalizingTrip] = useState(false)
   const [first, setFirst] = useState(0)
   const [rows, setRows] = useState(6)
+  const [modalVisible, setModalVisible] = useState(false)
   const toast = useRef(null)
 
   useEffect(() => {
@@ -110,10 +110,15 @@ const ViajesEnCurso = () => {
     setRows(event.rows)
   }
 
+  const handleCardClick = (viaje) => {
+    setSelectedTrip(viaje)
+    setModalVisible(true)
+  }
+
   const renderTripCard = (viaje) => {
     return (
-      <div className="trip-card" key={viaje.id}>
-        <Card>
+      <div className="trip-card" key={viaje.id} style={{ cursor: 'pointer' }}>
+        <Card onClick={() => handleCardClick(viaje)}>
           <div className="trip-card-header">
             <div className="trip-route">
               <div className="origin">
@@ -150,7 +155,10 @@ const ViajesEnCurso = () => {
               label="Finalizar Viaje"
               icon="pi pi-check"
               className="p-button-success"
-              onClick={() => confirmFinishTrip(viaje)}
+              onClick={(e) => {
+                e.stopPropagation();
+                confirmFinishTrip(viaje);
+              }} 
               disabled={finalizingTrip}
             />
           </div>
@@ -160,61 +168,71 @@ const ViajesEnCurso = () => {
   }
 
   return (
-    <Card title="Viajes en curso" className="p-4" style={{ borderRadius: "12px" }}>
-      <Toast ref={toast} />
-
-      <Dialog
-        visible={showDialog}
-        onHide={() => setShowDialog(false)}
-        header="Confirmar finalización"
-        footer={
-          <div>
-            <Button
-              label="Cancelar"
-              icon="pi pi-times"
-              onClick={() => setShowDialog(false)}
-              className="p-button-text"
-            />
-            <Button
-              label="Confirmar"
-              icon="pi pi-check"
-              onClick={handleFinishTrip}
-              className="p-button-success"
-              disabled={finalizingTrip}
-            />
+    <>
+      <Card title="Viajes en curso" className="p-4" style={{ borderRadius: "12px" }}>
+        <Toast ref={toast} />
+  
+        <Dialog
+          visible={showDialog}
+          onHide={() => setShowDialog(false)}
+          header="Confirmar finalización"
+          footer={
+            <div>
+              <Button
+                label="Cancelar"
+                icon="pi pi-times"
+                onClick={() => setShowDialog(false)}
+                className="p-button-text"
+              />
+              <Button
+                label="Confirmar"
+                icon="pi pi-check"
+                onClick={handleFinishTrip}
+                className="p-button-success"
+                disabled={finalizingTrip}
+              />
+            </div>
+          }
+        >
+          <p>¿Estás seguro de que deseas finalizar este viaje?</p>
+        </Dialog>
+  
+        {loading ? (
+          <div className="loading-container">
+            <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem", color: "#3b82f6" }}></i>
+            <div className="mt-2">Cargando viajes en curso...</div>
           </div>
-        }
-      >
-        <p>¿Estás seguro de que deseas finalizar este viaje?</p>
-      </Dialog>
-
-      {loading ? (
-        <div className="loading-container">
-          <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem", color: "#3b82f6" }}></i>
-          <div className="mt-2">Cargando viajes en curso...</div>
-        </div>
-      ) : viajes.length === 0 ? (
-        <div className="empty-container">
-          <i className="pi pi-info-circle" style={{ fontSize: "2rem", color: "#64748b" }}></i>
-          <p className="empty-message">No tienes viajes en curso.</p>
-        </div>
-      ) : (
-        <>
-          <div className="trips-grid">{viajes.slice(first, first + rows).map((viaje) => renderTripCard(viaje))}</div>
-
-          <div className="pagination-container">
-            <Paginator
-              first={first}
-              rows={rows}
-              totalRecords={viajes.length}
-              onPageChange={onPageChange}
-              template={{ layout: 'PrevPageLink CurrentPageReport NextPageLink' }} 
-            />
+        ) : viajes.length === 0 ? (
+          <div className="empty-container">
+            <i className="pi pi-info-circle" style={{ fontSize: "2rem", color: "#64748b" }}></i>
+            <p className="empty-message">No tienes viajes en curso.</p>
           </div>
-        </>
-      )}
-    </Card>
-  )
+        ) : (
+          <>
+            <div className="trips-grid">{viajes.slice(first, first + rows).map((viaje) => renderTripCard(viaje))}</div>
+  
+            <div className="pagination-container">
+              <Paginator
+                first={first}
+                rows={rows}
+                totalRecords={viajes.length}
+                onPageChange={onPageChange}
+                template={{ layout: 'PrevPageLink CurrentPageReport NextPageLink' }} 
+              />
+            </div>
+          </>
+        )}
+      </Card>
+  
+      {/* Modal for trip details */}
+      <ViajesEnCursoModal
+        visible={modalVisible}
+        onHide={() => setModalVisible(false)}
+        tripDetails={selectedTrip}
+        formatDate={formatDate} // asegurate de que esta función esté definida
+      />
+    </>
+  );
 }
 
 export default ViajesEnCurso
