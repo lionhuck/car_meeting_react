@@ -81,8 +81,6 @@ useEffect
         observaciones: data.observaciones || null
       };
   
-      console.log('Sending data:', formData);
-  
       const response = await fetch(`${API_URL}/viajes`, {
         method: 'POST',
         headers: {
