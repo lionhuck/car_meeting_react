@@ -31,7 +31,7 @@ const ViajesFinalizadosModal = ({
         <div className="detail-item">
           <i className="pi pi-flag"></i>
           <span>
-            <strong>Destino:</strong>{" "}
+            <strong>Destino: </strong>{" "}
             {tripDetails.destino?.nombre || "No disponible"}
           </span>
         </div>
@@ -46,18 +46,17 @@ const ViajesFinalizadosModal = ({
         <div className="detail-item">
           <i className="pi pi-clock"></i>
           <span>
-            <strong>Fin:</strong>{" "}
-            {formatDate(tripDetails.hora_fin_real) || "No disponible"}
+            <strong>Fin: </strong>
+            {formatDate(tripDetails.hora_finalizacion_real) || "No disponible"}
           </span>
         </div>
         <div className="detail-item">
           <i className="pi pi-user" style={{ color: "black" }}></i>
           <span>
-            <strong>
+            <strong>Conductor: </strong>
               {tipoViaje === "conductor"
-                ? "Usted fue el conductor"
+                ? "Usted"
                 : "Conductor:"}
-            </strong>
             {tipoViaje === "pasajero" &&
               ` ${tripDetails.conductor?.nombre} ${tripDetails.conductor?.apellido}`}
           </span>

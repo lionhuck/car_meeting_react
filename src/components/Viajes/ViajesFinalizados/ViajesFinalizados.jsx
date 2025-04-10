@@ -158,10 +158,14 @@ const ViajesFinalizados = () => {
               <span><strong>Inicio: </strong>{formatDate(viaje.hora_inicio_real)}</span>
             </div>
             <div className="detail-item">
+              <i className="pi pi-clock"></i>
+              <span><strong>Fin: </strong>{formatDate(viaje.hora_finalizacion_real)}</span>
+            </div>
+            <div className="detail-item">
               <i className="pi pi-user" style={{ color: "black" }}></i>
-              <span><strong>
+              <span><strong>Conductor: </strong>
                 {tipoViaje === "conductor" ? "Usted" : `Conductor: ${viaje.conductor?.nombre} ${viaje.conductor?.apellido}`}
-                </strong></span>
+                </span>
             </div>
             <div className="detail-item">
               <i className="pi pi-dollar" style={{ color: "green" }}></i>
