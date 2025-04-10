@@ -12,14 +12,20 @@ const ViajeCard = ({ viaje, token, onJoinTrip, onShowDetails, formatDate }) => {
           <div className="trip-route">
             <div className="origin">
               <i className="pi pi-map-marker"></i>
-              <span>{viaje.origen.nombre}</span>
+              <span>
+                {viaje.origen.nombre}
+                {viaje.origen.provincia ? `, ${viaje.origen.provincia.nombre}` : ''}
+              </span>
             </div>
             <div className="route-arrow">
               <i className="pi pi-arrow-right"></i>
             </div>
             <div className="destination">
               <i className="pi pi-flag"></i>
-              <span>{viaje.destino.nombre}</span>
+              <span>
+                {viaje.destino.nombre}
+                {viaje.destino.provincia ? `, ${viaje.destino.provincia.nombre}` : ''}
+              </span>
             </div>
           </div>
           <div className="trip-date">

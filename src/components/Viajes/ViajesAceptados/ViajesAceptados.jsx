@@ -144,7 +144,7 @@ const ViajesPasajero = () => {
             </div>
             <div className="trip-date">
               <i className="pi pi-calendar"></i>
-              <span>{formatDate(viaje.fecha_salida)}</span>
+              <span><strong>{formatDate(viaje.fecha_salida)}</strong></span>
             </div>
           </div>
 
@@ -154,7 +154,7 @@ const ViajesPasajero = () => {
             <div className="detail-item">
               <i className="pi pi-user" style={{ color: "black" }}></i>
               <span>
-                Conductor/ra: {viaje.conductor.nombre} {viaje.conductor.apellido}
+                <strong>Conductor/ra:</strong> {viaje.conductor.nombre} {viaje.conductor.apellido}
               </span>
             </div>
             <div className="detail-item">

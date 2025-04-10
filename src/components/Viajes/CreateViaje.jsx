@@ -33,8 +33,21 @@ const CreateViaje = () => {
           }
         });
         if (response.ok) {
-          const data = await response.json();  // Procesar la respuesta como JSON
-          setLocalidades(data);  // Asumimos que `data` contiene las localidades
+          const data = await response.json();
+
+          // Convertimos el objeto recibido en una lista plana de localidades con provincia
+          const localidadesFormateadas = [];
+        
+          for (const [provinciaNombre, provinciaData] of Object.entries(data)) {
+            for (const loc of provinciaData.localidades) {
+              localidadesFormateadas.push({
+                id: loc.id,
+                nombre: `${loc.nombre}, ${provinciaNombre}`
+              });
+            }
+          }
+        
+          setLocalidades(localidadesFormateadas);
         } else {
           throw new Error("Error en la respuesta del servidor");
         }
@@ -122,18 +135,27 @@ useEffect
       name: "id_origen",
       label: "Origen",
     component: (field, errors) => (
-        <AutoComplete
-          value={field.value}
-          onChange={(e) => field.onChange(e.value)}
-          suggestions={filteredLocalidades}
-          completeMethod={searchLocalidades}
-          field="nombre"
-          dropdown
-          dropdownMode="current"
-          placeholder="Seleccione el origen"
-          dropdownIcon="pi pi-chevron-down"
-          toggleable={true}
-        />
+      <AutoComplete
+      value={field.value}
+      onChange={(e) => field.onChange(e.value)}
+      suggestions={filteredLocalidades}
+      completeMethod={searchLocalidades}
+      field="nombre"
+      dropdown
+      dropdownMode="current"
+      placeholder="Seleccione el origen"
+      dropdownIcon="pi pi-chevron-down"
+      toggleable={true}
+      itemTemplate={(item) => {
+        const [localidad, provincia] = item.nombre.split(", ");
+        return (
+          <div>
+            <strong>{localidad}</strong><br />
+            <small>{provincia}</small>
+          </div>
+        );
+      }}
+    />
       ),
       rules: { required: "El origen es obligatorio" }
     },
@@ -152,6 +174,15 @@ useEffect
           placeholder="Seleccione el destino"
           dropdownIcon="pi pi-chevron-down"
           toggleable={true}
+          itemTemplate={(item) => {
+            const [localidad, provincia] = item.nombre.split(", ");
+            return (
+              <div>
+                <strong>{localidad}</strong><br />
+                <small>{provincia}</small>
+              </div>
+            );
+          }}
         />
       ),
       rules: { required: "El destino es obligatorio" }
