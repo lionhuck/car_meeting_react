@@ -51,7 +51,7 @@ const ViajesFinalizadosModal = ({
           </span>
         </div>
         <div className="detail-item">
-          <i className="pi pi-user"></i>
+          <i className="pi pi-user" style={{ color: "black" }}></i>
           <span>
             <strong>
               {tipoViaje === "conductor"

@@ -155,17 +155,17 @@ const ViajesFinalizados = () => {
           <div className="trip-details">
             <div className="detail-item">
               <i className="pi pi-calendar"></i>
-              <span>Inicio: {formatDate(viaje.hora_inicio_real)}</span>
-            </div>
-            <div className="detail-item">
-              <i className="pi pi-dollar" style={{ color: "green" }}></i>
-              <span>Precio: ${viaje.precio?.toFixed(2) || "No disponible"}</span>
+              <span><strong>Inicio: </strong>{formatDate(viaje.hora_inicio_real)}</span>
             </div>
             <div className="detail-item">
               <i className="pi pi-user" style={{ color: "black" }}></i>
-              <span>
+              <span><strong>
                 {tipoViaje === "conductor" ? "Usted" : `Conductor: ${viaje.conductor?.nombre} ${viaje.conductor?.apellido}`}
-              </span>
+                </strong></span>
+            </div>
+            <div className="detail-item">
+              <i className="pi pi-dollar" style={{ color: "green" }}></i>
+              <span><strong>Precio: </strong>${viaje.precio?.toFixed(2) || "No disponible"}</span>
             </div>
             {tipoViaje === "pasajero" && (
               <div className="detail-item">
@@ -181,11 +181,14 @@ const ViajesFinalizados = () => {
               )}
             {tipoViaje === "conductor" && (
               <div className="detail-item">
-                <EstrellasCalificacion 
-                  usuarioId={viaje.conductor?.id}
-                  token={token} 
-                  tipo="conductor"
-                />
+                <i className="pi pi-star" style={{ color: "gold" }}></i>
+                <span><strong>Calificaciónes:</strong>
+                  <EstrellasCalificacion 
+                    usuarioId={viaje.conductor?.id}
+                    token={token} 
+                    tipo="conductor"
+                  />
+                  </span>
               </div>
             )}
           </div>

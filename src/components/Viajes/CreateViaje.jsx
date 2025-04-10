@@ -212,16 +212,16 @@ useEffect
           <InputNumber
             value={field.value}
             onValueChange={(e) => field.onChange(e.value)}
-            min={0}
+            min={1}
           />
           <span className="p-inputgroup-addon">.00</span>
         </div>
       ),
       rules: { 
         required: "El precio es obligatorio",
-        min: { value: 0, message: "El precio no puede ser negativo" }
+        min: { value: 1, message: "El precio no puede ser negativo" }
       },
-      defaultValue: 0
+      defaultValue: ""
     },
     {
       name: "observaciones",

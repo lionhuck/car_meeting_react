@@ -161,7 +161,6 @@ const PasajerosModal = ({ visible, onHide, viajeId, token, toast }) => {
         <DataTable
           value={participantes}
           loading={loading}
-          paginator
           rows={11}
           emptyMessage="No hay participantes en este viaje"
           className="p-datatable-sm"

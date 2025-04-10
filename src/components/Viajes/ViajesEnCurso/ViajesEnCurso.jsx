@@ -140,12 +140,12 @@ const ViajesEnCurso = () => {
           <div className="trip-details">
             <div className="detail-item">
               <i className="pi pi-calendar"></i>
-              <span>Hora de Inicio: {formatDate(viaje.hora_inicio_real)}</span>
+              <span><strong>Hora de Inicio:</strong> {formatDate(viaje.hora_inicio_real)}</span>
             </div>
             {viaje.observaciones && (
-              <div className="detail-item">
-                <i className="pi pi-info-circle"></i>
-                <span>Observaciones: {viaje.observaciones}</span>
+              <div className="detail-item trip-observaciones">
+                <i className="pi pi-info-circle" style={{ color: "orange" }}></i>
+                <span><strong>Observaciones:</strong> {viaje.observaciones}</span>
               </div>
             )}
           </div>

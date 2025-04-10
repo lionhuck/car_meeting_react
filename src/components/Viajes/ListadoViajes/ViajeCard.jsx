@@ -6,8 +6,8 @@ import { useState } from "react";
 const ViajeCard = ({ viaje, token, onJoinTrip, onShowDetails, formatDate }) => {
   const [isJoining, setIsJoining] = useState(false);
   return (
-    <div className="trip-card">
-      <Card onClick={() => onShowDetails(viaje)}>
+    <div className="trip-card" key={viaje.id} style={{ cursor: 'pointer' }}>
+        <Card onClick={() => onShowDetails(viaje)}>
         <div className="trip-card-header">
           <div className="trip-route">
             <div className="origin">
@@ -41,12 +41,13 @@ const ViajeCard = ({ viaje, token, onJoinTrip, onShowDetails, formatDate }) => {
           </div>
           <div className="detail-item">
             <i className="pi pi-star" style={{ color: "gold" }}></i>
-            <span><strong>Calificaciónes:</strong></span>
+            <span><strong>Calificaciónes:</strong>
             <EstrellasCalificacion
               usuarioId={viaje.conductor.id}
               token={token}
               tipo="conductor"
             />
+            </span>
           </div>
           <div className="detail-item">
             <i className="pi pi-dollar" style={{ color: "green" }}></i>
