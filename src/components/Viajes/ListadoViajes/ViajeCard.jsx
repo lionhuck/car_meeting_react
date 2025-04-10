@@ -24,7 +24,7 @@ const ViajeCard = ({ viaje, token, onJoinTrip, onShowDetails, formatDate }) => {
           </div>
           <div className="trip-date">
             <i className="pi pi-calendar"></i>
-            <span>{formatDate(viaje.fecha_salida)}</span>
+            <span><strong>{formatDate(viaje.fecha_salida)}</strong></span>
           </div>
         </div>
 
