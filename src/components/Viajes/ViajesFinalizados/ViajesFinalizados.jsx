@@ -138,14 +138,18 @@ const ViajesFinalizados = () => {
             <div className="trip-route">
               <div className="origin">
                 <i className="pi pi-map-marker"></i>
-                <span>{viaje.origen?.nombre || "No disponible"}</span>
+                <span>{viaje.origen.nombre}
+                      {viaje.origen.provincia ? `, ${viaje.origen.provincia.nombre}` : '' || "No disponible"}
+                </span>
               </div>
               <div className="route-arrow">
                 <i className="pi pi-arrow-right"></i>
               </div>
               <div className="destination">
                 <i className="pi pi-flag"></i>
-                <span>{viaje.destino?.nombre || "No disponible"}</span>
+                <span>{viaje.destino.nombre}
+                      {viaje.destino.provincia ? `, ${viaje.destino.provincia.nombre}` : '' || "No disponible"}
+                </span>
               </div>
             </div>
           </div>
@@ -164,7 +168,7 @@ const ViajesFinalizados = () => {
             <div className="detail-item">
               <i className="pi pi-user" style={{ color: "black" }}></i>
               <span><strong>Conductor: </strong>
-                {tipoViaje === "conductor" ? "Usted" : `Conductor: ${viaje.conductor?.nombre} ${viaje.conductor?.apellido}`}
+                {tipoViaje === "conductor" ? "Usted" : `${viaje.conductor?.nombre} ${viaje.conductor?.apellido}`}
                 </span>
             </div>
             <div className="detail-item">

@@ -264,8 +264,8 @@ const ViajesView = () => {
 
       {loading ? (
         <div className="loading-container">
-          <i className="pi pi-spin pi-spinner loading-icon"></i>
-          <span>Cargando viajes...</span>
+          <i className="pi pi-spin pi-spinner" style={{ fontSize: "2rem", color: "#3b82f6" }}></i>
+          <div className="mt-2">Cargando viajes...</div>
         </div>
       ) : filteredViajes.length > 0 ? (
         <>

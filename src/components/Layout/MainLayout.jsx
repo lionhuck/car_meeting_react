@@ -26,7 +26,7 @@ const MainLayout = ({ children, title = "CAR MEETING" }) => {
 
   const authenticatedItems = [
     { label: "Viajes", icon: "pi pi-car", url: "/viajes" },
-    { label: "Ofrecer Viaje", icon: "pi pi-warehouse", url: "/cargar-viaje" },
+    { label: "Proponer Viaje", icon: "pi pi-warehouse", url: "/cargar-viaje" },
     { label: "Aceptados", icon: "pi pi-bookmark", url: "/viajes-aceptados" },
     { label: "Propuestos", icon: "pi pi-check", url: "/viajes-propuestos" },
     { label: "En Curso CONDUCTOR", icon: "pi pi-spinner", url: "/viajes-en-curso" },
