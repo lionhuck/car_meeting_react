@@ -3,7 +3,7 @@ import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
-import './Chat.css'; // Import the new CSS file
+import './Chat.css';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -12,11 +12,13 @@ const Chat = ({ viajeId, onClose }) => {
     const [mensajes, setMensajes] = useState([]);
     const [participantes, setParticipantes] = useState([]);
     const [cargando, setCargando] = useState(true);
+    const [enviando, setEnviando] = useState(false);
     const [isOnline, setIsOnline] = useState(navigator.onLine);
     const token = JSON.parse(localStorage.getItem("token"));
     const toast = useRef(null);
     const mensajesRef = useRef(null);
-
+    const usuarioId = JSON.parse(localStorage.getItem("usuario"))?.id;
+    
     // Network status tracking
     useEffect(() => {
         const handleOnline = () => setIsOnline(true);
@@ -31,9 +33,9 @@ const Chat = ({ viajeId, onClose }) => {
         };
     }, []);
 
-    // Fetch messages on component mount and at intervals
+    // Initial data loading
     useEffect(() => {
-        obtenerMensajes();
+        obtenerMensajesYParticipantes();
         // Configurar intervalo para actualizar mensajes cada 10 segundos
         const interval = setInterval(obtenerMensajes, 10000);
         return () => clearInterval(interval);
@@ -46,10 +48,7 @@ const Chat = ({ viajeId, onClose }) => {
         }
     }, [mensajes]);
 
-    // Get current user ID
-    const usuarioId = JSON.parse(localStorage.getItem("usuario"))?.id;
-
-    // Fetch messages and participants
+    // Optimized function to get messages
     const obtenerMensajes = async () => {
         if (!isOnline) return;
 
@@ -65,19 +64,6 @@ const Chat = ({ viajeId, onClose }) => {
             const data = await response.json();
             setMensajes(data);
             setCargando(false);
-
-            try {
-                const participantesResponse = await fetch(`${API_URL}/viajes/${viajeId}/participantes`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                
-                if (participantesResponse.ok) {
-                    const participantesData = await participantesResponse.json();
-                    setParticipantes(participantesData);
-                }
-            } catch (error) {
-                console.error("Error al obtener participantes:", error);
-            }
         } catch (error) {
             if (!cargando) {
                 toast.current.show({ 
@@ -90,9 +76,46 @@ const Chat = ({ viajeId, onClose }) => {
         }
     };
 
-    // Send message
+    // Get both messages and participants at once
+    const obtenerMensajesYParticipantes = async () => {
+        if (!isOnline) return;
+
+        try {
+            // Use Promise.all to fetch both resources in parallel
+            const [mensajesResponse, participantesResponse] = await Promise.all([
+                fetch(`${API_URL}/chat/${viajeId}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                }),
+                fetch(`${API_URL}/viajes/${viajeId}/participantes`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                })
+            ]);
+
+            if (!mensajesResponse.ok) {
+                throw new Error("Error al obtener los mensajes");
+            }
+            
+            const mensajesData = await mensajesResponse.json();
+            setMensajes(mensajesData);
+            setCargando(false);
+
+            if (participantesResponse.ok) {
+                const participantesData = await participantesResponse.json();
+                setParticipantes(participantesData);
+            }
+        } catch (error) {
+            toast.current.show({ 
+                severity: "error", 
+                summary: "Error", 
+                detail: "No se pudieron cargar los datos del chat.", 
+                life: 3000 
+            });
+        }
+    };
+
+    // Optimized send message function with debounce logic
     const enviarMensaje = async () => {
-        if (!mensaje.trim() || !isOnline) {
+        if (!mensaje.trim() || !isOnline || enviando) {
             if (!isOnline) {
                 toast.current.show({
                     severity: "warn",
@@ -104,6 +127,27 @@ const Chat = ({ viajeId, onClose }) => {
             return;
         }
 
+        // Set sending state to prevent multiple clicks
+        setEnviando(true);
+        
+        // Keep a copy of the message to send
+        const mensajeAEnviar = mensaje;
+        
+        // Optimistic UI update - add message locally first
+        const nuevoMensaje = {
+            id: `temp-${Date.now()}`, // Temporary ID
+            id_chat: viajeId,
+            id_usuario: usuarioId,
+            nombre_usuario: JSON.parse(localStorage.getItem("usuario"))?.nombre || `Usuario ${usuarioId}`,
+            contenido: mensajeAEnviar,
+            enviado_en: new Date().toISOString(),
+            temporal: true // Flag to identify unsent messages
+        };
+        
+        // Update UI immediately
+        setMensajes(prev => [...prev, nuevoMensaje]);
+        setMensaje(""); // Clear input field
+        
         try {
             const response = await fetch(`${API_URL}/chat/${viajeId}/mensaje`, {
                 method: "POST",
@@ -111,22 +155,30 @@ const Chat = ({ viajeId, onClose }) => {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ contenido: mensaje }),
+                body: JSON.stringify({ contenido: mensajeAEnviar }),
             });
 
             if (response.ok) {
+                // Message sent successfully, update the list to get the real message ID
                 await obtenerMensajes();
-                setMensaje("");
             } else {
+                // Show error and keep the message in the input field
+                setMensaje(mensajeAEnviar);
+                
+                // Remove the temporary message
+                setMensajes(prev => prev.filter(m => m.id !== nuevoMensaje.id));
+                
                 throw new Error("Error al enviar el mensaje");
             }
         } catch (error) {
             toast.current.show({ 
                 severity: "error", 
                 summary: "Error", 
-                detail: "No se pudo enviar el mensaje.", 
+                detail: "No se pudo enviar el mensaje. Inténtalo de nuevo.", 
                 life: 3000 
             });
+        } finally {
+            setEnviando(false);
         }
     };
 
@@ -177,12 +229,12 @@ const Chat = ({ viajeId, onClose }) => {
                                         msg.id_usuario === usuarioId 
                                             ? 'chat-message-sent' 
                                             : 'chat-message-received'
-                                    }`}
+                                    } ${msg.temporal ? 'chat-message-sending' : ''}`}
                                 >
                                     <div className="chat-message-sender">{msg.nombre_usuario || `Usuario ${msg.id_usuario}`}</div>
                                     <div className="chat-message-content">{msg.contenido}</div>
                                     <div className="chat-message-timestamp">
-                                        {formatFecha(msg.enviado_en)}
+                                        {msg.temporal ? 'Enviando...' : formatFecha(msg.enviado_en)}
                                     </div>
                                 </div>
                             ))
@@ -198,14 +250,15 @@ const Chat = ({ viajeId, onClose }) => {
                             placeholder="Escribe un mensaje..."
                             className="chat-input"
                             multiline
+                            disabled={enviando}
                         />
                         
                         <div className="chat-actions">
                             <Button 
-                                icon="pi pi-send" 
+                                icon={enviando ? "pi pi-spin pi-spinner" : "pi pi-send"}
                                 className="chat-send-button" 
                                 onClick={enviarMensaje}
-                                disabled={!isOnline}
+                                disabled={!isOnline || enviando || !mensaje.trim()}
                             />
                             <Button 
                                 icon="pi pi-times" 
