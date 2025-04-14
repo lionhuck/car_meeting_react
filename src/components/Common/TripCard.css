@@ -178,13 +178,20 @@
   }
   
   .trip-actions {
-    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-between;
     width: 100%;
   }
-  
+
   .trip-actions .p-button {
-    width: 100%;
+    flex: 1 1 30%;
+    min-width: 30%;
     margin-bottom: 0.5rem;
+  }
+
+  .trip-actions .p-button:last-child {
+    flex: 1 1 100%;
+    min-width: 100%;
   }
   
   .specific-filters {
