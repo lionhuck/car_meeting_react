@@ -198,7 +198,6 @@ const ViajesView = () => {
                 detail: "Te has unido al viaje exitosamente",
                 life: 3000,
             });
-
             handleDialogClose();
         } else {
             toast.current.show({

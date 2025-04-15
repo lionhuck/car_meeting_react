@@ -209,7 +209,10 @@ const ViajesFinalizados = () => {
                 icon="pi pi-star"
                 severity="info"
                 className="p-button-sm"
-                onClick={() => handleCalificarConductor(viaje)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleCalificarConductor(viaje)
+                }}
               />
             </div>
           )}

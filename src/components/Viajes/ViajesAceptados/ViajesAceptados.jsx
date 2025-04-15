@@ -190,13 +190,19 @@ const ViajesPasajero = () => {
               label="Salir del viaje"
               icon="pi pi-times"
               className="p-button-danger"
-              onClick={() => confirmUnjoinTrip(viaje)}
+              onClick={(e) => {
+                e.stopPropagation()
+                confirmUnjoinTrip(viaje)
+              }}
             />
             <Button
               label="Chat"
               icon="pi pi-comments"
               className="p-button-secondary"
-              onClick={() => handleOpenChat(viaje.id)}
+              onClick={(e) => {
+                e.stopPropagation() 
+                handleOpenChat(viaje.id)
+              }}
             />
           </div>
         </Card>

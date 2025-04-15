@@ -145,6 +145,10 @@ const ViajesEnCurso = () => {
 
           <div className="trip-details">
             <div className="detail-item">
+              <i className="pi pi-dollar" style={{ color: "green" }}></i>
+              <span><strong>Precio:</strong> ${viaje.precio}</span>
+            </div>
+            <div className="detail-item">
               <i className="pi pi-calendar"></i>
               <span><strong>Hora de Inicio:</strong> {formatDate(viaje.hora_inicio_real)}</span>
             </div>

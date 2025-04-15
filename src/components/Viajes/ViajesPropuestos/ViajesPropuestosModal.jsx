@@ -16,11 +16,11 @@ const ViajesPropuestosModal = ({ visible, onHide, tripDetails, formatDate, onJoi
       <div className="trip-details-modal">
         <div className="detail-item">
           <i className="pi pi-map-marker"></i>
-          <span><strong>Origen:</strong> {tripDetails.origen.nombre}</span>
+          <span><strong>Origen:</strong> {tripDetails.origen.nombre}, {tripDetails.origen.provincia.nombre}</span>
         </div>
         <div className="detail-item">
           <i className="pi pi-flag"></i>
-          <span><strong>Destino:</strong> {tripDetails.destino.nombre}</span>
+          <span><strong>Destino:</strong> {tripDetails.destino.nombre}, {tripDetails.destino.provincia.nombre}</span>
         </div>
         <div className="detail-item">
           <i className="pi pi-calendar"></i>

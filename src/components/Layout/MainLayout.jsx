@@ -10,7 +10,7 @@ const MainLayout = ({ children, title = "CAR MEETING" }) => {
   const location = useLocation()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [visible, setVisible] = useState(false)
-  const [hasActiveTrips, setHasActiveTrips] = useState(false)
+  // const [hasActiveTrips, setHasActiveTrips] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
 
   useEffect(() => {
@@ -25,24 +25,24 @@ const MainLayout = ({ children, title = "CAR MEETING" }) => {
     return () => window.removeEventListener("resize", handleResize)
   }, [location.pathname])
 
-  useEffect(() => {
-    const token = localStorage.getItem("token")
-    if (token) {
-      fetch(`${import.meta.env.VITE_API_URL}/viajes/en-curso`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${JSON.parse(token)}`
-        }
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (Array.isArray(data) && data.length > 0) {
-            setHasActiveTrips(true)
-          }
-        })
-        .catch(() => setHasActiveTrips(false))
-    }
-  }, [])
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token")
+  //   if (token) {
+  //     fetch(`${import.meta.env.VITE_API_URL}/viajes/en-curso`, {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: `Bearer ${JSON.parse(token)}`
+  //       }
+  //     })
+  //       .then(res => res.json())
+  //       .then(data => {
+  //         if (Array.isArray(data) && data.length > 0) {
+  //           setHasActiveTrips(true)
+  //         }
+  //       })
+  //       .catch(() => setHasActiveTrips(false))
+  //   }
+  // }, [])
   
 
   const authenticatedItems = [
@@ -50,16 +50,14 @@ const MainLayout = ({ children, title = "CAR MEETING" }) => {
     { label: "Proponer Viaje", icon: "pi pi-warehouse", url: "/cargar-viaje" },
     { label: "Aceptados", icon: "pi pi-bookmark", url: "/viajes-aceptados" },
     { label: "Propuestos", icon: "pi pi-check", url: "/viajes-propuestos" },
-    {
-      label: (
-        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          En Curso CONDUCTOR
-          {hasActiveTrips && <span className="red-dot" />}
-        </span>
-      ),
-      icon: "pi pi-spinner",
-      url: "/viajes-en-curso"
-    },    
+    {label: "En Curso CONDUCTOR",
+      // (
+      //   <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+      //     En Curso CONDUCTOR
+      //     {hasActiveTrips && <span className="red-dot" />}
+      //   </span>
+      // )
+      icon: "pi pi-spinner",url: "/viajes-en-curso"},    
     { label: "Finalizados", icon: "pi pi-check-circle", url: "/viajes-finalizados" },
     { label: "Perfil", icon: "pi pi-user-edit", url: "/editar-perfil"}
   ]
