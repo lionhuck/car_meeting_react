@@ -1,10 +1,11 @@
 import { Dialog } from "primereact/dialog"
 import { Button } from "primereact/button"
+import { useState } from "react"
 import EstrellasCalificacion from "../../Calificacion/EstrellasCalificacion"
 
 const ViajeDetailsModal = ({ visible, onHide, tripDetails, formatDate, token, onJoinTrip }) => {
   if (!tripDetails) return null
-
+  const [isJoining, setIsJoining] = useState(false)
   return (
     <Dialog
       header={`Viaje a ${tripDetails.destino.nombre}`}
@@ -57,12 +58,13 @@ const ViajeDetailsModal = ({ visible, onHide, tripDetails, formatDate, token, on
 
         <div className="trip-actions">
           <Button
-            label="Unirse al viaje"
+            label={isJoining ? "Procesando..." : "Unirse al viaje"}
             icon="pi pi-check"
             className="trip-join-btn"
             severity="success"
             onClick={() => onJoinTrip(tripDetails)}
-            disabled={!tripDetails.activo || tripDetails.asientos_disponibles <= 0}
+            disabled={!tripDetails.activo || tripDetails.asientos_disponibles <= 0 || isJoining || tripDetails.puedeUnirse === false}
+            loading={isJoining}
           />
         </div>
       </div>

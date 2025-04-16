@@ -177,7 +177,7 @@ const ViajesPropuestos = () => {
             </div>
             <div className="trip-date">
               <i className="pi pi-calendar"></i>
-              <span>{formatDate(viaje.fecha_salida)}</span>
+              <span><strong>{formatDate(viaje.fecha_salida)}</strong></span>
             </div>
           </div>
 
@@ -186,17 +186,17 @@ const ViajesPropuestos = () => {
           <div className="trip-details">
             <div className="detail-item">
               <i className="pi pi-dollar" style={{ color: "green" }}></i>
-              <span>Precio: ${viaje.precio}</span>
+              <span><strong>Precio: </strong>${viaje.precio}</span>
             </div>
             <div className="detail-item">
               <i className="pi pi-users" style={{ color: "red" }}></i>
-              <span>Lugares disponibles: {viaje.asientos_disponibles}</span>
+              <span><strong>Lugares disponibles: </strong>{viaje.asientos_disponibles}</span>
             </div>
 
             {viaje.observaciones && (
               <div className="detail-item trip-observaciones">
                 <i className="pi pi-info-circle" style={{ color: "orange" }}></i>
-                <span>Observaciones: {viaje.observaciones}</span>
+                <span><strong>Observaciones: </strong>{viaje.observaciones}</span>
               </div>
             )}
           </div>

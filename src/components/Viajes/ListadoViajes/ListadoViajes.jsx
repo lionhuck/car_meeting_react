@@ -77,21 +77,48 @@ const ViajesView = () => {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-      })
-
+      });
+  
       if (response.ok) {
-        const data = await response.json()
-        setViajes(data)
-        setFilteredViajes(data)
+        const data = await response.json();
+        
+        // Verificar para cada viaje si el usuario puede unirse
+        const viajesConEstado = await Promise.all(
+          data.map(async (viaje) => {
+            const puedeUnirseResponse = await fetch(
+              `${API_URL}/viajes/${viaje.id}/puede-unirse`,
+              {
+                method: "GET",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+            
+            if (puedeUnirseResponse.ok) {
+              const puedeUnirseData = await puedeUnirseResponse.json();
+              return {
+                ...viaje,
+                puedeUnirse: puedeUnirseData.puede_unirse,
+                mensajeUnirse: puedeUnirseData.mensaje
+              };
+            }
+            return viaje;
+          })
+        );
+        
+        setViajes(viajesConEstado);
+        setFilteredViajes(viajesConEstado);
       } else {
-        console.error("Error al obtener los viajes")
+        console.error("Error al obtener los viajes");
       }
     } catch (error) {
-      console.error("Error en la solicitud de viajes:", error)
+      console.error("Error en la solicitud de viajes:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const initFilters = () => {
     setFilters({

@@ -82,7 +82,7 @@ const ViajeCard = ({ viaje, token, onJoinTrip, onShowDetails, formatDate }) => {
                     e.stopPropagation();
                     onJoinTrip(viaje);
                 }}
-                disabled={!viaje.activo || viaje.asientos_disponibles <= 0 || isJoining}
+                disabled={!viaje.activo || viaje.asientos_disponibles <= 0 || isJoining || viaje.puedeUnirse === false}
                 loading={isJoining}
             />
         </div>
