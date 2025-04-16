@@ -89,7 +89,7 @@ useEffect
         id_origen: parseInt(data.id_origen.id),
         id_destino: parseInt(data.id_destino.id),
         fecha_salida: fechaSalida.toISOString().replace('T', ' ').split('.')[0],
-        asientos_disponibles: parseInt(data.asientos_disponibles),
+        asientos: parseInt(data.asientos),
         precio: parseInt(data.precio),
         observaciones: data.observaciones || null
       };
@@ -215,7 +215,7 @@ useEffect
       rules: { required: "La fecha de salida es obligatoria" }
     },
     {
-      name: "asientos_disponibles",
+      name: "asientos",
       label: "Asientos Disponibles",
       component: (field, errors) => (
         <InputNumber

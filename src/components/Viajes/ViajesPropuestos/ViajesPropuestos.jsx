@@ -193,12 +193,15 @@ const ViajesPropuestos = () => {
               <span><strong>Lugares disponibles: </strong>{viaje.asientos_disponibles}</span>
             </div>
 
-            {viaje.observaciones && (
-              <div className="detail-item trip-observaciones">
-                <i className="pi pi-info-circle" style={{ color: "orange" }}></i>
-                <span><strong>Observaciones: </strong>{viaje.observaciones}</span>
-              </div>
-            )}
+            <div className="detail-item trip-observaciones">
+            <i className="pi pi-info-circle" style={{ color: "orange" }}></i>
+            <span>
+              <strong>Observaciones: </strong>
+              {viaje.observaciones?.trim()
+                ? viaje.observaciones
+                : "Sin observaciones"}
+            </span>
+          </div>
           </div>
 
           <div className="trip-actions">
