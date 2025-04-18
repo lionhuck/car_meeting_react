@@ -57,18 +57,18 @@ const ViajeDetailsModal = ({ visible, onHide, tripDetails, formatDate, token, on
         )}
 
         <div className="trip-actions">
-          <Button
-            label={
-              !tripDetails.puedeUnirse ? "Formando parte" : 
-              isJoining ? "Procesando..." : "Unirse al viaje"
-            }
-            icon="pi pi-check"
-            className="trip-join-btn"
-            severity="success"
-            onClick={() => onJoinTrip(tripDetails)}
-            disabled={!tripDetails.activo || tripDetails.asientos_disponibles <= 0 || isJoining || tripDetails.puedeUnirse === false }
-            loading={isJoining}
-          />
+        <Button
+          label={
+            !tripDetails.puedeUnirse ? "Ya formas parte" : 
+            isJoining ? "Procesando..." : "Unirse al viaje"
+          }
+          icon={tripDetails.puedeUnirse ? "pi pi-check" : "pi pi-ban"}
+          className="trip-join-btn"
+          severity={tripDetails.puedeUnirse ? "success" : "danger"}
+          onClick={() => onJoinTrip(tripDetails)}
+          disabled={!tripDetails.activo || tripDetails.asientos_disponibles <= 0 || isJoining || !tripDetails.puedeUnirse}
+          loading={isJoining}
+        />
         </div>
       </div>
     </Dialog>

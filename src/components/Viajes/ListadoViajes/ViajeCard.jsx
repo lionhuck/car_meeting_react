@@ -89,22 +89,20 @@ const ViajeCard = ({ viaje, token, onJoinTrip, onShowDetails, formatDate }) => {
         </div>
         <div className="trip-actions">
           <Button
-            label={isJoining ? "Procesando..." : "Unirse al viaje"}
-            icon="pi pi-check"
-            className="trip-join-btn"
-            severity="success"
-            onClick={(e) => {
-              e.stopPropagation();
-              onJoinTrip(viaje);
-            }}
-            disabled={
-              !viaje.activo ||
-              viaje.asientos_disponibles <= 0 ||
-              isJoining ||
-              viaje.puedeUnirse === false
-            }
-            loading={isJoining}
-          />
+          label={
+            !viaje.puedeUnirse ? "Ya formás parte" : 
+            isJoining ? "Procesando..." : "Unirse al viaje"
+          }
+          icon={viaje.puedeUnirse ? "pi pi-check" : "pi pi-ban"}
+          className="trip-join-btn"
+          severity={viaje.puedeUnirse ? "success" : "secondary"}
+          onClick={(e) => {
+            e.stopPropagation();
+            onJoinTrip(viaje);
+          }}
+          disabled={!viaje.activo || viaje.asientos_disponibles <= 0 || isJoining || !viaje.puedeUnirse}
+          loading={isJoining}
+        />
         </div>
       </Card>
     </div>
