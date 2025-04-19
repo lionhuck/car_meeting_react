@@ -52,13 +52,34 @@ const LoginUser = () => {
 
       // Si el login es exitoso
       localStorage.setItem("token", JSON.stringify(data.token));
-
-      toast.current.show({
-        severity: "success",
-        summary: "Éxito",
-        detail: "Inicio de sesión exitoso",
-        life: 3000,
-      });
+      
+      const pendingViajeId = localStorage.getItem("pendingViajeId");
+      console.log('pendingViajeId encontrado:', pendingViajeId); // Debug
+      
+      if (pendingViajeId) {
+        localStorage.removeItem("pendingViajeId");
+        
+        // Verificar que el viaje aún existe antes de redirigir
+        try {
+          const viajeResponse = await fetch(`${API_URL}/viajes/compartir/${pendingViajeId}`);
+          if (viajeResponse.ok) {
+            navigate(`/viaje-compartido/${pendingViajeId}`);
+            return; // Importante: salir para evitar doble redirección
+          }
+        } catch (error) {
+          console.error('Error verificando viaje:', error);
+        }
+        
+        // Si hay error o el viaje ya no existe, redirigir a otra página
+        toast.current.show({
+          severity: "warn",
+          summary: "Viaje no disponible",
+          detail: "El viaje al que intentabas unirte ya no está disponible",
+          life: 3000,
+        });
+      }
+      
+      // Redirección normal si no hay viaje pendiente
       navigate('/viajes');
     } catch (error) {
       toast.current.show({

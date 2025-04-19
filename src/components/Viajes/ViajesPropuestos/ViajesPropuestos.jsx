@@ -11,6 +11,7 @@ import Chat from "../../Chat/Chat"
 import '../../Common/TripCard.css'
 import ViajesPropuestosModal from './ViajesPropuestosModal'
 import PasajerosModal from './PasajerosModal'
+import CompartirViajeModal from "../ViajeCompartido/CompartirViajeModal"
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -28,6 +29,7 @@ const ViajesPropuestos = () => {
   const toast = useRef(null)
   const [modalVisible, setModalVisible] = useState(false)
   const [pasajerosModalVisible, setPasajerosModalVisible] = useState(false)
+  const [compartirModalVisible, setCompartirModalVisible] = useState(false);
   const isMobile = window.innerWidth <= 768
 
   useEffect(() => {
@@ -151,6 +153,12 @@ const ViajesPropuestos = () => {
   }
   
 
+  const handleShareTrip = (viaje) => {
+    setSelectedTrip(viaje);
+    setCompartirModalVisible(true);
+  };
+
+
   const renderTripCard = (viaje) => {
     return (
       <div className="trip-card" key={viaje.id} style={{ cursor: 'pointer' }}>
@@ -235,6 +243,16 @@ const ViajesPropuestos = () => {
               }}
               tooltip="Ver pasajeros"
             />
+            <Button
+            label=""
+            icon="pi pi-share-alt"
+            className="p-button-success"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleShareTrip(viaje)
+            }}
+            tooltip="Compartir viaje"
+          />
             <Button
               label="Comenzar"
               icon="pi pi-play"
@@ -331,6 +349,14 @@ const ViajesPropuestos = () => {
         onHide={() => setPasajerosModalVisible(false)}
         viajeId={selectedTrip?.id}
         token={token}
+        toast={toast}
+      />
+
+      {/* Modal para compartir viaje */}
+      <CompartirViajeModal
+        visible={compartirModalVisible}
+        onHide={() => setCompartirModalVisible(false)}
+        viaje={selectedTrip}
         toast={toast}
       />
 

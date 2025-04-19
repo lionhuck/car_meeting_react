@@ -17,7 +17,7 @@ import ReenviarVerificacion from './components/Auth/ReenviarVerificacion';
 import EditarPerfil from './components/Auth/EditarPerfil';
 import SolicitarReset from './components/Auth/SolicitarReset';
 import ResetPassword from './components/Auth/ResetPassword';
-
+import ViajeCompartido from './components/Viajes/ViajeCompartido/ViajeCompartido';
 
 function App() {
   return (
@@ -31,6 +31,7 @@ function App() {
           <Route path="/reenviar-verificacion" element={<ReenviarVerificacion />} />
           <Route path="/solicitar-reset" element={<SolicitarReset />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path="/viaje-compartido/:viajeId" element={<ViajeCompartido />} />
           {/* Rutas protegidas */}
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<ViajesView />} />

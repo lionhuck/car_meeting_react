@@ -58,7 +58,6 @@ const ViajeCard = ({ viaje, token, onJoinTrip, onShowDetails, formatDate }) => {
               <strong>Calificaciónes:</strong>
               <EstrellasCalificacion
                 usuarioId={viaje.conductor.id}
-                token={token}
                 tipo="conductor"
               />
             </span>
