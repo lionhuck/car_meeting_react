@@ -200,7 +200,7 @@ const ViajeCompartido = () => {
               {viaje.asientos_disponibles}
             </span>
           </div>
-          <div className="detail-item ">
+          <div className="detail-item">
             <i className="pi pi-info-circle" style={{ color: "orange" }}></i>
             <span>
               <strong>Observaciones: </strong>
