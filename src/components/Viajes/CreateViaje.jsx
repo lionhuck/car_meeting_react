@@ -10,8 +10,17 @@ import { Card } from "primereact/card";
 import { Message } from "primereact/message";
 import { Panel } from "primereact/panel";
 import { Divider } from "primereact/divider";
+import { Tag } from "primereact/tag";
+import { Image } from "primereact/image";
+import { ProgressSpinner } from "primereact/progressspinner";
+
 
 const API_URL = import.meta.env.VITE_API_URL;
+
+const normalizeText = (text) => {
+  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+};
+
 
 const CreateViaje = () => {
   const { control, handleSubmit, reset, formState: { errors } } = useForm();
@@ -66,15 +75,15 @@ const CreateViaje = () => {
     fetchLocalidades();
   }, []);
 
-  const searchLocalidades = (event) => {
-    const query = event.query.toLowerCase();
-    setFilteredLocalidades(
-      localidades.filter((localidad) =>
-        localidad.nombre.toLowerCase().includes(query)
-      )
-    );
-  };
 
+  const searchLocalidades = (event) => {
+  const query = normalizeText(event.query);
+  setFilteredLocalidades(
+    localidades.filter((localidad) =>
+      normalizeText(localidad.nombre).includes(query)
+    )
+  );
+};
   const isValidDate = (date) => {
     if (!date) return false;
     return date instanceof Date && !isNaN(date);
@@ -139,7 +148,7 @@ const CreateViaje = () => {
   const formFields = [
     {
       name: "id_origen",
-      label: "Origen",
+      label: " Origen",
       component: (field, errors) => (
         <AutoComplete
           value={field.value}
@@ -167,7 +176,7 @@ const CreateViaje = () => {
     },
     {
       name: "id_destino",
-      label: "Destino",
+      label: " Destino",
       component: (field, errors) => (
         <AutoComplete
           value={field.value}
@@ -195,11 +204,11 @@ const CreateViaje = () => {
     },
     {
       name: "fecha_salida",
-      label: "Fecha y hora de salida",
+      label: " Fecha y hora de salida",
       component: (field, errors) => {
         const today = new Date();
         const maxDate = new Date();
-        maxDate.setMonth(today.getMonth() + 1); // Un mes después
+        maxDate.setMonth(today.getMonth() + 1);
     
         return (
           <div className="p-fluid">
@@ -210,17 +219,15 @@ const CreateViaje = () => {
               timeFormat="HH:mm"
               showTime
               hourFormat="24"
-              placeholder="DD/MM/AAAA HH:MM"
+              placeholder="Seleccione fecha y hora"
               minDate={today}
               maxDate={maxDate}
               showIcon
-              keepInvalid={false}
-              readOnlyInput={false}
-              inputMode="numeric"
+              touchUI // Esto hace que el calendario sea más amigable para móviles
               className={errors.fecha_salida ? "p-invalid" : ""}
             />
             <small className="p-d-block p-mt-1">
-              DD/MM/AAAA HH:MM (24 horas)
+              Toque para seleccionar fecha y hora
             </small>
           </div>
         );
@@ -232,7 +239,7 @@ const CreateViaje = () => {
     },
     {
       name: "asientos",
-      label: "Asientos Disponibles",
+      label: " Asientos Disponibles",
       component: (field, errors) => (
         <InputNumber
           value={field.value}
@@ -251,7 +258,7 @@ const CreateViaje = () => {
     },
     {
       name: "precio",
-      label: "Precio por persona",
+      label: " Precio por persona",
       component: (field, errors) => (
         <div className="p-inputgroup flex-1">
           <span className="p-inputgroup-addon">$</span>
@@ -274,7 +281,7 @@ const CreateViaje = () => {
     },
     {
       name: "observaciones",
-      label: "Observaciones",
+      label: " Observaciones",
       component: (field, errors) => (
         <InputText
           value={field.value}
@@ -291,56 +298,103 @@ const CreateViaje = () => {
   const header = <h2>Crear Viaje</h2>;
   
   return (
-    <Card className="p-shadow-8">
-      {header}
-      <Divider />
-      
-      {mensaje && (
-        <Message severity={mensaje.severity} text={mensaje.detail} />
-      )}
-      
-      <form onSubmit={handleSubmit(onSubmit)} className="p-fluid">
-        <Panel className="p-fluid">
-          <div className="p-grid p-formgrid">
-            {formFields.map((fieldConfig, index) => (
-              <div className="p-field p-col-12 p-md-6" key={index}>
-                <label htmlFor={fieldConfig.name} className="p-d-block p-mb-2">
-                  {fieldConfig.label}
-                  {fieldConfig.rules?.required && <span className="p-error"> *</span>}
-                </label>
-                <Controller
-                  name={fieldConfig.name}
-                  control={control}
-                  defaultValue={fieldConfig.defaultValue || ""}
-                  rules={fieldConfig.rules}
-                  render={({ field }) => (
-                    <>
-                      {fieldConfig.component(field, errors)}
-                      {errors[fieldConfig.name] && (
-                        <small className="p-error p-d-block">
-                          {errors[fieldConfig.name].message}
-                        </small>
-                      )}
-                    </>
-                  )}
-                />
-              </div>
-            ))}
-          </div>
-        </Panel>
-        <div className="p-d-flex p-jc-center p-mt-4">
-          <Button
-            label={loading ? "Cargando..." : "Crear Viaje"}
-            icon="pi pi-check"
-            type="submit"
-            className="p-button-success p-button-lg"
-            disabled={loading}
-            loading={loading}
+    <div className="p-d-flex p-jc-center">
+      <Card className="p-shadow-8" style={{ width: '100%', maxWidth: '800px' }}>
+        <div className="p-d-flex p-jc-center p-mb-4">
+          <Image 
+            alt="Viajar es compartir" 
+            width="100%"
+            preview 
+            className="p-shadow-4"
+            style={{ borderRadius: '10px', maxHeight: '200px', objectFit: 'cover' }}
           />
         </div>
-      </form>
-    </Card>
+        
+        <div className="p-text-center p-mb-4">
+          <h2 style={{ color: 'var(--primary-color)' }}>¡Comparte tu próximo viaje!</h2>
+          <p className="p-mt-2" style={{ color: 'var(--text-color-secondary)' }}>
+            Llena este formulario y conecta con personas que compartan tu ruta. 
+          </p>
+        </div>
+        
+        <Divider />
+        
+        {mensaje && (
+          <Message 
+            severity={mensaje.severity} 
+            text={mensaje.detail} 
+            className="p-mb-4" 
+          />
+        )}
+        
+        <form onSubmit={handleSubmit(onSubmit)} className="p-fluid">
+          <Panel 
+            header="Detalles del viaje" 
+            toggleable
+            className="p-mb-4"
+            style={{ background: 'var(--surface-ground)' }}
+          >
+            <div className="p-grid p-formgrid">
+              {formFields.map((fieldConfig, index) => (
+                <div className="p-field p-col-12 p-md-6" key={index}>
+                  <label htmlFor={fieldConfig.name} className="p-d-block p-mb-2">
+                    <i className={`pi ${getFieldIcon(fieldConfig.name)} p-mr-2`} />
+                    {fieldConfig.label}
+                    {fieldConfig.rules?.required && <span className="p-error"> *</span>}
+                  </label>
+                  <Controller
+                    name={fieldConfig.name}
+                    control={control}
+                    defaultValue={fieldConfig.defaultValue || ""}
+                    rules={fieldConfig.rules}
+                    render={({ field }) => (
+                      <>
+                        {fieldConfig.component(field, errors)}
+                        {errors[fieldConfig.name] && (
+                          <small className="p-error p-d-block">
+                            {errors[fieldConfig.name].message}
+                          </small>
+                        )}
+                      </>
+                    )}
+                  />
+                </div>
+              ))}
+            </div>
+          </Panel>
+          
+          <div className="p-d-flex p-jc-center p-mt-4">
+            <Button
+              label={loading ? "Creando tu viaje..." : "Publicar Viaje"}
+              icon={loading ? null : "pi pi-send"}
+              type="submit"
+              className="p-button-success"
+              disabled={loading}
+            >
+              {loading && <ProgressSpinner 
+                style={{ width: '20px', height: '20px' }} 
+                strokeWidth="6" 
+                className="p-mr-2" 
+              />}
+            </Button>
+          </div>
+        </form>
+      </Card>
+    </div>
   );
+};
+
+// Función auxiliar para iconos
+const getFieldIcon = (fieldName) => {
+  switch(fieldName) {
+    case 'id_origen': return 'pi-map-marker';
+    case 'id_destino': return 'pi-flag-fill';
+    case 'fecha_salida': return 'pi-clock';
+    case 'asientos': return 'pi-users';
+    case 'precio': return 'pi-money-bill';
+    case 'observaciones': return 'pi-comment';
+    default: return 'pi-info-circle';
+  }
 };
 
 export default CreateViaje;

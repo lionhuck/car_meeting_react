@@ -221,7 +221,6 @@ const ViajesPropuestos = () => {
                 e.stopPropagation();
                 confirmDeleteTrip(viaje)
               }}
-              tooltip="Eliminar viaje"
             />
             <Button
               label=""
@@ -231,7 +230,6 @@ const ViajesPropuestos = () => {
                 e.stopPropagation();
                 handleOpenChat(viaje.id)
               }}
-              tooltip="Chat del viaje"
             />
             <Button
               label=""
@@ -241,7 +239,6 @@ const ViajesPropuestos = () => {
                 e.stopPropagation();
                 handleShowPasajeros(viaje)
               }}
-              tooltip="Ver pasajeros"
             />
             <Button
             label=""
@@ -251,7 +248,6 @@ const ViajesPropuestos = () => {
               e.stopPropagation();
               handleShareTrip(viaje)
             }}
-            tooltip="Compartir viaje"
           />
             <Button
               label="Comenzar"

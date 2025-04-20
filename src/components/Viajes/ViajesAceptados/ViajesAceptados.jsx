@@ -9,7 +9,8 @@ import { Divider } from "primereact/divider";
 import { Paginator } from "primereact/paginator";
 import EstrellasCalificacion from "../../Calificacion/EstrellasCalificacion";
 import Chat from "../../Chat/Chat";
-import ViajesAceptadosModal from "./ViajesAceptadosModal"; // ajustá el path si es necesario
+import CompartirViajeModal from '../ViajeCompartido/CompartirViajeModal';
+import ViajesAceptadosModal from "./ViajesAceptadosModal"; 
 import "../../Common/TripCard.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -24,6 +25,8 @@ const ViajesPasajero = () => {
   const [activeChatViajeId, setActiveChatViajeId] = useState(null);
   const [first, setFirst] = useState(0);
   const [rows, setRows] = useState(6);
+  const [showShareModal, setShowShareModal] = useState(false);
+const [viajeToShare, setViajeToShare] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
   const toast = useRef(null);
@@ -206,8 +209,28 @@ const ViajesPasajero = () => {
               </span>
             </div>
           </div>
-
           <div className="trip-actions">
+            {/* Botones secundarios */}
+              <Button
+                label=""
+                icon="pi pi-comments"
+                className="p-button-secondary"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleOpenChat(viaje.id);
+                }}
+                />
+              <Button
+                label=""
+                icon="pi pi-share-alt"
+                className="p-button-success"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setViajeToShare(viaje);
+                  setShowShareModal(true);
+                }}
+                />
+            {/* Botón principal - Salir del viaje */}
             <Button
               label="Salir del viaje"
               icon="pi pi-times"
@@ -217,15 +240,7 @@ const ViajesPasajero = () => {
                 confirmUnjoinTrip(viaje);
               }}
             />
-            <Button
-              label="Chat"
-              icon="pi pi-comments"
-              className="p-button-secondary"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleOpenChat(viaje.id);
-              }}
-            />
+            
           </div>
         </Card>
       </div>
@@ -307,6 +322,12 @@ const ViajesPasajero = () => {
         onHide={() => setModalVisible(false)}
         tripDetails={selectedTrip}
         formatDate={formatDate} // asegurate de que esta función esté definida
+      />
+      <CompartirViajeModal
+        visible={showShareModal}
+        onHide={() => setShowShareModal(false)}
+        viaje={viajeToShare}
+        toast={toast}
       />
 
       {/* Chat Modal */}
