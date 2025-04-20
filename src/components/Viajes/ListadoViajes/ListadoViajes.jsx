@@ -5,7 +5,7 @@ import { Paginator } from "primereact/paginator"
 import ViajeCard from "./ViajeCard"
 import ViajeFilters from "./ViajeFilters"
 import ViajeDetailsModal from "./ViajeDetailsModal"
-import LuggageDialog from "./LuggageDialog"
+import EquipajeModal from "../ViajeCompartido/EquipajeModal"
 import NoAccessCard from "./NoAccessCard"
 import "../../Common/TripCard.css"
 
@@ -17,10 +17,8 @@ const ViajesView = () => {
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({})
   const [globalFilterValue, setGlobalFilterValue] = useState("")
-  const [showLuggageDialog, setShowLuggageDialog] = useState(false)
+  const [equipajeModalVisible, setEquipajeModalVisible] = useState(false);
   const [selectedTrip, setSelectedTrip] = useState(null)
-  const [selectedLuggage, setSelectedLuggage] = useState(null)
-  const [luggageTypes, setLuggageTypes] = useState([])
   const [filteredViajes, setFilteredViajes] = useState([])
   const [first, setFirst] = useState(0)
   const [rows, setRows] = useState(6)
@@ -32,7 +30,6 @@ const ViajesView = () => {
   useEffect(() => {
     if (token){
       fetchViajes()
-      fetchLuggageTypes()
       initFilters()
     } else {
       setLoading(false)
@@ -42,32 +39,6 @@ const ViajesView = () => {
   useEffect(() => {
     applyFilters()
   }, [viajes, globalFilterValue, filters])
-
-  const fetchLuggageTypes = async () => {
-    try {
-      const response = await fetch(`${API_URL}/equipajes`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        setLuggageTypes(
-          data.map((type) => ({
-            label: type.categoria,
-            value: type.id,
-          }))
-        )
-      } else {
-        console.error("Error al obtener tipos de equipaje")
-      }
-    } catch (error) {
-      console.error("Error en la solicitud de tipos de equipaje:", error)
-    }
-  }
 
   const fetchViajes = async () => {
     try {
@@ -180,78 +151,73 @@ const ViajesView = () => {
       return
     }
     setSelectedTrip(tripData)
-    setShowLuggageDialog(true)
+    setEquipajeModalVisible(true);
   }
 
-  const handleAddPassenger = async () => {
-    if (!selectedTrip || !selectedLuggage) {
-        toast.current.show({
-            severity: "error",
-            summary: "Error",
-            detail: "Por favor seleccione un tipo de equipaje",
-            life: 3000,
-        });
-        return;
+  const handleAddPassenger = async (equipajeId) => {
+    if (!selectedTrip || !equipajeId) {
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Por favor seleccione un tipo de equipaje",
+        life: 3000,
+      });
+      return;
     }
-
-    if (isJoining) return; // Evitar múltiples clics
-
+  
+    if (isJoining) return;
+  
     setIsJoining(true);
-
+  
     try {
-        const response = await fetch(`${API_URL}/viajes/${selectedTrip.id}/pasajeros`, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                equipaje_id: selectedLuggage,
-            }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            setViajes((prevViajes) =>
-                prevViajes.map((viaje) =>
-                    viaje.id === selectedTrip.id ? { ...viaje, asientos_disponibles: viaje.asientos_disponibles - 1 } : viaje
-                )
-            );
-
-            toast.current.show({
-                severity: "success",
-                summary: "Éxito",
-                detail: "Te has unido al viaje exitosamente",
-                life: 3000,
-            });
-            handleDialogClose();
-        } else {
-            toast.current.show({
-                severity: "error",
-                summary: "Error",
-                detail: data.error || "Error al unirse al viaje",
-                life: 3000,
-            });
-        }
-    } catch (error) {
-        console.error("Error al unirse al viaje:", error);
+      const response = await fetch(`${API_URL}/viajes/${selectedTrip.id}/pasajeros`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          equipaje_id: equipajeId,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        setViajes((prevViajes) =>
+          prevViajes.map((viaje) =>
+            viaje.id === selectedTrip.id ? { ...viaje, asientos_disponibles: viaje.asientos_disponibles - 1 } : viaje
+          )
+        );
+  
         toast.current.show({
-            severity: "error",
-            summary: "Error",
-            detail: "Error de conexión al intentar unirse al viaje",
-            life: 3000,
+          severity: "success",
+          summary: "Éxito",
+          detail: "Te has unido al viaje exitosamente",
+          life: 3000,
         });
+        setEquipajeModalVisible(false);
+      } else {
+        toast.current.show({
+          severity: "error",
+          summary: "Error",
+          detail: data.error || "Error al unirse al viaje",
+          life: 3000,
+        });
+      }
+    } catch (error) {
+      console.error("Error al unirse al viaje:", error);
+      toast.current.show({
+        severity: "error",
+        summary: "Error",
+        detail: "Error de conexión al intentar unirse al viaje",
+        life: 3000,
+      });
     } finally {
-        setIsJoining(false);
+      setIsJoining(false);
     }
-};
+  };
 
-  const handleDialogClose = () => {
-    setShowLuggageDialog(false)
-    setSelectedTrip(null)
-    setSelectedLuggage(null)
-  }
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString("es-ES", {
@@ -335,13 +301,10 @@ const ViajesView = () => {
         onJoinTrip={handleJoinTrip}
       />
 
-      <LuggageDialog 
-        visible={showLuggageDialog}
-        onHide={handleDialogClose}
-        onConfirm={handleAddPassenger}
-        luggageTypes={luggageTypes}
-        selectedLuggage={selectedLuggage}
-        setSelectedLuggage={setSelectedLuggage}
+      <EquipajeModal
+        visible={equipajeModalVisible}
+        onHide={() => setEquipajeModalVisible(false)}
+        onSelect={handleAddPassenger}
       />
     </Card>
   )

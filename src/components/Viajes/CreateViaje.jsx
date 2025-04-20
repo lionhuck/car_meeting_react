@@ -160,7 +160,7 @@ const CreateViaje = () => {
           dropdownMode="current"
           placeholder="Seleccione el origen"
           dropdownIcon="pi pi-chevron-down"
-          toggleable={true}
+          toggleable
           itemTemplate={(item) => {
             const [localidad, provincia] = item.nombre.split(", ");
             return (
@@ -188,7 +188,7 @@ const CreateViaje = () => {
           dropdownMode="current"
           placeholder="Seleccione el destino"
           dropdownIcon="pi pi-chevron-down"
-          toggleable={true}
+          toggleable
           itemTemplate={(item) => {
             const [localidad, provincia] = item.nombre.split(", ");
             return (
