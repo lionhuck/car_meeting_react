@@ -64,12 +64,13 @@ const CompartirViajeModal = ({ visible, onHide, viaje, toast }) => {
         time: ''
       };
       
-      const mensajePredeterminado = `🚗 OFREZCO VIAJE CarMeeting
+      const mensajePredeterminado = 
+`🚗 OFREZCO VIAJE CarMeeting
 ➡ De ${viaje.origen?.nombre || "Origen desconocido"} a ${viaje.destino?.nombre || "Destino desconocido"}
 📆 ${fechaInfo.dayName} ${fechaInfo.day}
 ⏰ ${fechaInfo.time}
-💰 $${viaje.precio ? formatPrice(viaje.precio) : "--"}`;
-      
+💰 $${viaje.precio ? formatPrice(viaje.precio) : "--"} 
+`;
       setMensajeCompartir(mensajePredeterminado);
     }
   }, [viaje]);

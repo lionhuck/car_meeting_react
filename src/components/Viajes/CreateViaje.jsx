@@ -277,7 +277,7 @@ const CreateViaje = () => {
         required: "El precio es obligatorio",
         min: { value: 1, message: "El precio no puede ser negativo" }
       },
-      defaultValue: ""
+      defaultValue: 0
     },
     {
       name: "observaciones",
