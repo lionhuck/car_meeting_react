@@ -11,7 +11,7 @@ import { Message } from "primereact/message";
 import { Panel } from "primereact/panel";
 import { Divider } from "primereact/divider";
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL;
 
 const CreateViaje = () => {
   const { control, handleSubmit, reset, formState: { errors } } = useForm();
@@ -20,6 +20,7 @@ const CreateViaje = () => {
   const [loading, setLoading] = useState(false);
   const [mensaje, setMensaje] = useState(null);
   const navigate = useNavigate();
+
   useEffect(() => {
     const fetchLocalidades = async () => {
       try {
@@ -32,10 +33,9 @@ const CreateViaje = () => {
             'Authorization': `Bearer ${token}`,
           }
         });
+        
         if (response.ok) {
           const data = await response.json();
-
-          // Convertimos el objeto recibido en una lista plana de localidades con provincia
           const localidadesFormateadas = [];
         
           for (const [provinciaNombre, provinciaData] of Object.entries(data)) {
@@ -62,7 +62,7 @@ const CreateViaje = () => {
         setLoading(false);
       }
     };
-useEffect
+
     fetchLocalidades();
   }, []);
 
@@ -75,16 +75,23 @@ useEffect
     );
   };
 
+  const isValidDate = (date) => {
+    if (!date) return false;
+    return date instanceof Date && !isNaN(date);
+  };
+
   const onSubmit = async (data) => {
     try {
       setLoading(true);
       const token = JSON.parse(localStorage.getItem("token"));
 
-      // Ajustar la fecha a la zona horaria local
-      const fechaSalida = new Date(data.fecha_salida);
-      // fechaSalida.setMinutes(fechaSalida.getMinutes() - fechaSalida.getTimezoneOffset());
-      
+      // Validar fecha manualmente
+      if (!isValidDate(data.fecha_salida)) {
+        throw new Error("La fecha y hora ingresadas no son válidas");
+      }
 
+      const fechaSalida = new Date(data.fecha_salida);
+      
       const formData = {
         id_origen: parseInt(data.id_origen.id),
         id_destino: parseInt(data.id_destino.id),
@@ -109,8 +116,7 @@ useEffect
         setMensaje({ severity: "success", summary: "Éxito", detail: "Viaje creado exitosamente" });
         reset();
         navigate("/viajes-propuestos");
-      }
-      else {
+      } else {
         console.error('Server response:', responseData);
         setMensaje({ 
           severity: "error", 
@@ -123,7 +129,7 @@ useEffect
       setMensaje({ 
         severity: "error", 
         summary: "Error de conexión", 
-        detail: "Error al conectar con el servidor" 
+        detail: error.message || "Error al conectar con el servidor" 
       });
     } finally {
       setLoading(false);
@@ -134,28 +140,28 @@ useEffect
     {
       name: "id_origen",
       label: "Origen",
-    component: (field, errors) => (
-      <AutoComplete
-      value={field.value}
-      onChange={(e) => field.onChange(e.value)}
-      suggestions={filteredLocalidades}
-      completeMethod={searchLocalidades}
-      field="nombre"
-      dropdown
-      dropdownMode="current"
-      placeholder="Seleccione el origen"
-      dropdownIcon="pi pi-chevron-down"
-      toggleable={true}
-      itemTemplate={(item) => {
-        const [localidad, provincia] = item.nombre.split(", ");
-        return (
-          <div>
-            <strong>{localidad}</strong><br />
-            <small>{provincia}</small>
-          </div>
-        );
-      }}
-    />
+      component: (field, errors) => (
+        <AutoComplete
+          value={field.value}
+          onChange={(e) => field.onChange(e.value)}
+          suggestions={filteredLocalidades}
+          completeMethod={searchLocalidades}
+          field="nombre"
+          dropdown
+          dropdownMode="current"
+          placeholder="Seleccione el origen"
+          dropdownIcon="pi pi-chevron-down"
+          toggleable={true}
+          itemTemplate={(item) => {
+            const [localidad, provincia] = item.nombre.split(", ");
+            return (
+              <div>
+                <strong>{localidad}</strong><br />
+                <small>{provincia}</small>
+              </div>
+            );
+          }}
+        />
       ),
       rules: { required: "El origen es obligatorio" }
     },
@@ -196,23 +202,33 @@ useEffect
         maxDate.setMonth(today.getMonth() + 1); // Un mes después
     
         return (
-          <Calendar
-          value={field.value}
-          onChange={(e) => field.onChange(e.value)}
-          dateFormat="dd/mm/yy"        // Para mostrar la fecha como DD/MM/AAAA
-          timeFormat="HH:mm"            // Para mostrar la hora como HH:MM
-          showTime
-          hourFormat="24"               // Para utilizar el formato de 24 horas
-          placeholder="Seleccione la fecha y hora"
-          minDate={today}               // Restringe a partir de hoy
-          maxDate={maxDate}             // Máximo un mes adelante
-          showIcon
-          manualInput={true}            // Permite la entrada manual
-          keepInvalid={false}
-        />
+          <div className="p-fluid">
+            <Calendar
+              value={field.value}
+              onChange={(e) => field.onChange(e.value)}
+              dateFormat="dd/mm/yy"
+              timeFormat="HH:mm"
+              showTime
+              hourFormat="24"
+              placeholder="DD/MM/AAAA HH:MM"
+              minDate={today}
+              maxDate={maxDate}
+              showIcon
+              keepInvalid={false}
+              readOnlyInput={false}
+              inputMode="numeric"
+              className={errors.fecha_salida ? "p-invalid" : ""}
+            />
+            <small className="p-d-block p-mt-1">
+              DD/MM/AAAA HH:MM (24 horas)
+            </small>
+          </div>
         );
       },
-      rules: { required: "La fecha de salida es obligatoria" }
+      rules: { 
+        required: "La fecha de salida es obligatoria",
+        validate: (value) => isValidDate(value) || "Fecha/hora inválida"
+      }
     },
     {
       name: "asientos",
@@ -224,6 +240,7 @@ useEffect
           min={1}
           max={10}
           placeholder="Número de asientos"
+          className={errors.asientos ? "p-invalid" : ""}
         />
       ),
       rules: { 
@@ -241,9 +258,12 @@ useEffect
           <InputNumber
             value={field.value}
             onValueChange={(e) => field.onChange(e.value)}
+            mode="currency"
+            currency="ARS"
+            locale="es-AR"
             min={1}
+            className={errors.precio ? "p-invalid" : ""}
           />
-          <span className="p-inputgroup-addon">.00</span>
         </div>
       ),
       rules: { 
@@ -261,6 +281,7 @@ useEffect
           onChange={(e) => field.onChange(e.target.value)}
           placeholder="Ingrese observaciones adicionales"
           maxLength={500}
+          className={errors.observaciones ? "p-invalid" : ""}
         />
       ),
       defaultValue: ""
@@ -270,7 +291,7 @@ useEffect
   const header = <h2>Crear Viaje</h2>;
   
   return (
-    <Card>
+    <Card className="p-shadow-8">
       {header}
       <Divider />
       
@@ -278,37 +299,43 @@ useEffect
         <Message severity={mensaje.severity} text={mensaje.detail} />
       )}
       
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} className="p-fluid">
         <Panel className="p-fluid">
-            <div className="p-grid p-formgrid"> {/* Usa grid para mejor organización */}
-              {formFields.map((fieldConfig, index) => (
-                <div className="p-field p-col-12 p-md-6 p-lg-4" key={index}> {/* Responsive columns */}
-                  <label htmlFor={fieldConfig.name} className="p-d-block p-mb-2">{fieldConfig.label}</label>
-                  <Controller
-                    name={fieldConfig.name}
-                    control={control}
-                    defaultValue={fieldConfig.defaultValue || ""}
-                    rules={fieldConfig.rules}
-                    render={({ field }) => (
-                      <>
-                        {fieldConfig.component(field, errors)}
-                        {errors[fieldConfig.name] && (
-                          <small className="p-error">{errors[fieldConfig.name].message}</small>
-                        )}
-                      </>
-                    )}
-                  />
-                </div>
-              ))}
-            </div>
+          <div className="p-grid p-formgrid">
+            {formFields.map((fieldConfig, index) => (
+              <div className="p-field p-col-12 p-md-6" key={index}>
+                <label htmlFor={fieldConfig.name} className="p-d-block p-mb-2">
+                  {fieldConfig.label}
+                  {fieldConfig.rules?.required && <span className="p-error"> *</span>}
+                </label>
+                <Controller
+                  name={fieldConfig.name}
+                  control={control}
+                  defaultValue={fieldConfig.defaultValue || ""}
+                  rules={fieldConfig.rules}
+                  render={({ field }) => (
+                    <>
+                      {fieldConfig.component(field, errors)}
+                      {errors[fieldConfig.name] && (
+                        <small className="p-error p-d-block">
+                          {errors[fieldConfig.name].message}
+                        </small>
+                      )}
+                    </>
+                  )}
+                />
+              </div>
+            ))}
+          </div>
         </Panel>
-        <div className="p-field p-mt-4 pt-4">
+        <div className="p-d-flex p-jc-center p-mt-4">
           <Button
             label={loading ? "Cargando..." : "Crear Viaje"}
             icon="pi pi-check"
             type="submit"
-            className="p-button-success p-button-lg" // Botón más grande
+            className="p-button-success p-button-lg"
             disabled={loading}
+            loading={loading}
           />
         </div>
       </form>

@@ -12,10 +12,11 @@ const ViajeFilters = ({ filters, setFilters, clearFilter }) => {
       <div className="filters-header">
         <Button
           icon={showFilters ? "pi pi-times" : "pi pi-filter"}
-          className="p-button-rounded p-button-text"
+          severity="info"
           onClick={() => setShowFilters(!showFilters)}
           aria-label={showFilters ? "Ocultar filtros" : "Mostrar filtros"}
           tooltip={showFilters ? "Ocultar filtros" : "Mostrar filtros"}
+          outlined
         />
       </div>
       

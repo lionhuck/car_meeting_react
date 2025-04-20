@@ -64,7 +64,7 @@ const ViajeDetailsModal = ({ visible, onHide, tripDetails, formatDate, token, on
           }
           icon={tripDetails.puedeUnirse ? "pi pi-check" : "pi pi-ban"}
           className="trip-join-btn"
-          severity={tripDetails.puedeUnirse ? "success" : "danger"}
+          severity={tripDetails.puedeUnirse ? "success" : "secondary"}
           onClick={() => onJoinTrip(tripDetails)}
           disabled={!tripDetails.activo || tripDetails.asientos_disponibles <= 0 || isJoining || !tripDetails.puedeUnirse}
           loading={isJoining}

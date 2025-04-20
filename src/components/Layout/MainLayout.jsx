@@ -23,41 +23,14 @@ const MainLayout = ({ children, title = "CAR MEETING" }) => {
 
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
-  }, [location.pathname])
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token")
-  //   if (token) {
-  //     fetch(`${import.meta.env.VITE_API_URL}/viajes/en-curso`, {
-  //       method: "GET",
-  //       headers: {
-  //         Authorization: `Bearer ${JSON.parse(token)}`
-  //       }
-  //     })
-  //       .then(res => res.json())
-  //       .then(data => {
-  //         if (Array.isArray(data) && data.length > 0) {
-  //           setHasActiveTrips(true)
-  //         }
-  //       })
-  //       .catch(() => setHasActiveTrips(false))
-  //   }
-  // }, [])
-  
+  }, [location.pathname])  
 
   const authenticatedItems = [
     { label: "Viajes", icon: "pi pi-car", url: "/viajes" },
     { label: "Proponer Viaje", icon: "pi pi-warehouse", url: "/cargar-viaje" },
     { label: "Aceptados", icon: "pi pi-bookmark", url: "/viajes-aceptados" },
     { label: "Propuestos", icon: "pi pi-check", url: "/viajes-propuestos" },
-    {label: "En Curso CONDUCTOR",
-      // (
-      //   <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-      //     En Curso CONDUCTOR
-      //     {hasActiveTrips && <span className="red-dot" />}
-      //   </span>
-      // )
-      icon: "pi pi-spinner",url: "/viajes-en-curso"},    
+    { label: "En Curso CONDUCTOR",icon: "pi pi-spinner",url: "/viajes-en-curso"},    
     { label: "Finalizados", icon: "pi pi-check-circle", url: "/viajes-finalizados" },
     { label: "Perfil", icon: "pi pi-user-edit", url: "/editar-perfil"}
   ]
@@ -134,12 +107,15 @@ const MainLayout = ({ children, title = "CAR MEETING" }) => {
       <header className="mobile-header">
         <Button icon="pi pi-bars" className="p-button-text menu-button" onClick={() => setVisible(true)} />
         <div className="mobile-nav">
+          <div className="header-logo">
+            <h1>{title}</h1>
+          </div>
           <Button
             icon="pi pi-car"
             className={`p-button-text ${location.pathname === "/viajes" ? "active" : ""}`}
             onClick={() => handleNavigation("/viajes")}
           />
-          <Button icon="pi pi-user" className="p-button-text user-button" onClick={() => handleNavigation("/editar-perfil")} />
+          <Button icon="pi pi-user-edit" className="p-button-text user-button" onClick={() => handleNavigation("/editar-perfil")} />
         </div>
       </header>
 

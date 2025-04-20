@@ -249,7 +249,7 @@ const Chat = ({ viajeId, onClose }) => {
                             onKeyPress={handleKeyPress}
                             placeholder="Escribe un mensaje..."
                             className="chat-input"
-                            multiline
+                            rows={3}
                             disabled={enviando}
                         />
                         
