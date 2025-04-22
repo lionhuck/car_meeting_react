@@ -59,12 +59,12 @@ const ResetPassword = () => {
 
   const validationSchema = Yup.object().shape({
     password: Yup.string()
-      .required("La contraseña es requerida")
-      .min(8, "La contraseña debe tener al menos 8 caracteres")
+      .min(8)
       .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,}$/,
         "La contraseña debe contener letras y números"
-      ),
+      )
+      .required("La contraseña es obligatoria"),
     confirm_password: Yup.string()
       .required("La confirmación de contraseña es requerida")
       .oneOf([Yup.ref("password"), null], "Las contraseñas deben coincidir"),

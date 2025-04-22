@@ -61,7 +61,11 @@ const EditarPerfil = () => {
     nombre: Yup.string(),
     apellido: Yup.string(),
     password: Yup.string()
-      .min(8, "La contraseña debe tener al menos 8 caracteres")
+      .min(8)
+      .matches(
+        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,}$/,
+        "La contraseña debe contener letras y números"
+      )
       .nullable(),
   });
 

@@ -117,10 +117,10 @@ const RegistroUsuario = () => {
     email: Yup.string()
       .email("Formato de email inválido")
       .required("El email es obligatorio"),
-    password: Yup.string()
+      password: Yup.string()
       .min(8)
       .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,}$/,
         "La contraseña debe contener letras y números"
       )
       .required("La contraseña es obligatoria"),
