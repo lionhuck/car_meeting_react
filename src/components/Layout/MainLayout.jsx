@@ -5,12 +5,22 @@ import { useEffect, useState } from "react"
 import "../Common/MainLayout.css"
 import Footer from "../Footer/Footer.jsx"
 
+const NO_LAYOUT_ROUTES = [
+  '/inicio-sesion',
+  '/login',
+  '/registro-usuario',
+  '/registro',
+  '/solicitar-reset',
+  '/reset-password',
+  '/verificar-email',
+  '/reenviar-verificacion'
+];
+
 const MainLayout = ({ children, title = "CAR MEETING" }) => {
   const navigate = useNavigate()
   const location = useLocation()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [visible, setVisible] = useState(false)
-  // const [hasActiveTrips, setHasActiveTrips] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
 
   useEffect(() => {
@@ -24,6 +34,9 @@ const MainLayout = ({ children, title = "CAR MEETING" }) => {
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [location.pathname])  
+
+  // Verificar si la ruta actual debe mostrar el layout
+  const shouldShowLayout = isAuthenticated && !NO_LAYOUT_ROUTES.includes(location.pathname)
 
   const authenticatedItems = [
     { label: "Viajes", icon: "pi pi-car", url: "/viajes" },
@@ -49,7 +62,7 @@ const MainLayout = ({ children, title = "CAR MEETING" }) => {
     }
   }
 
-  if (!isAuthenticated) {
+  if (!shouldShowLayout) {
     return <div>{children}</div>
   }
 

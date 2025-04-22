@@ -1,11 +1,13 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const ProtectedRoute = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const checkTokenValidity = async () => {
@@ -18,7 +20,6 @@ const ProtectedRoute = () => {
       }
 
       try {
-        // Intenta realizar una petición a una ruta protegida para verificar el token
         const response = await fetch(`${API_URL}/perfil`, {
           method: 'GET',
           headers: {
@@ -27,31 +28,37 @@ const ProtectedRoute = () => {
         });
 
         if (!response.ok) {
-          // Si el token es inválido o ha expirado, cierra la sesión
           localStorage.removeItem('token');
           setIsAuthenticated(false);
+          // Redirigir a login con estado para mostrar mensaje
+          navigate('/login', { state: { from: location.pathname, sessionExpired: true } });
         } else {
           setIsAuthenticated(true);
         }
       } catch (error) {
         console.error('Error al verificar el token:', error);
-        // Si hay un error, asumimos que el token es inválido
         localStorage.removeItem('token');
         setIsAuthenticated(false);
+        navigate('/login', { state: { from: location.pathname, error: true } });
       } finally {
         setIsLoading(false);
       }
     };
 
     checkTokenValidity();
-  }, []);
+  }, [navigate, location.pathname]);
 
   if (isLoading) {
-    // Muestra un indicador de carga mientras se verifica el token
     return <div>Cargando...</div>;
   }
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/inicio-sesion" />;
-};
+  if (isAuthenticated && ['/login', '/inicio-sesion', '/registro', '/registro-usuario', '/solicitar-reset', '/verificar-email', '/reenviar-verificacion'].includes(location.pathname)) {
+    return <Navigate to="/viajes" replace />;
+  }
+
+
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" state={{ from: location.pathname }} />;
+  };
+
 
 export default ProtectedRoute;
