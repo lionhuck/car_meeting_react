@@ -127,7 +127,7 @@ const ReenviarVerificacion = () => {
                 <Button
                   label="Volver al Login"
                   className="p-button-link mt-3"
-                  onClick={() => navigate("/login")}
+                  onClick={() => navigate("/inicio-sesion")}
                   style={{ width: "100%", marginTop: "0.5rem" }}
                   type="button"
                 />

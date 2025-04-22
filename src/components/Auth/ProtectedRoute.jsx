@@ -31,7 +31,7 @@ const ProtectedRoute = () => {
           localStorage.removeItem('token');
           setIsAuthenticated(false);
           // Redirigir a login con estado para mostrar mensaje
-          navigate('/login', { state: { from: location.pathname, sessionExpired: true } });
+          navigate('/inicio-sesion', { state: { from: location.pathname, sessionExpired: true } });
         } else {
           setIsAuthenticated(true);
         }
@@ -39,7 +39,7 @@ const ProtectedRoute = () => {
         console.error('Error al verificar el token:', error);
         localStorage.removeItem('token');
         setIsAuthenticated(false);
-        navigate('/login', { state: { from: location.pathname, error: true } });
+        navigate('/inicio-sesion', { state: { from: location.pathname, error: true } });
       } finally {
         setIsLoading(false);
       }

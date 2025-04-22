@@ -110,7 +110,7 @@ const VerificarEmail = () => {
                 {exito ? (
                   <Button
                     label="Iniciar Sesión"
-                    onClick={() => navigate("/login")}
+                    onClick={() => navigate("/inicio-sesion")}
                     className="p-button"
                     style={{ width: "100%" }}
                   />
@@ -124,7 +124,7 @@ const VerificarEmail = () => {
                     />
                     <Button
                       label="Volver al Inicio"
-                      onClick={() => navigate("/login")}
+                      onClick={() => navigate("/inicio-sesion")}
                       className="p-button"
                       style={{ width: "100%" }}
                     />

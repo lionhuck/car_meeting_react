@@ -138,7 +138,7 @@ const EditarPerfil = () => {
   
   const handleVerificationDialogClose = () => {
     setShowVerificationDialog(false);
-    navigate("/login");
+    navigate("/inicio-sesion");
   };
 
   if (cargando) {

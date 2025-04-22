@@ -45,7 +45,7 @@ function App() {
           </Route>
           
           {/* Ruta para páginas no encontradas */}
-          <Route path="*" element={<Navigate to="/viajes" />} />
+          <Route path="*" element={<Navigate to="/inicio-sesion" />} />
         </Routes>
       </MainLayout>
     </BrowserRouter>
