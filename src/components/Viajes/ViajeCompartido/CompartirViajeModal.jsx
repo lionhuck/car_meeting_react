@@ -55,7 +55,7 @@ const CompartirViajeModal = ({ visible, onHide, viaje, toast }) => {
 
   useEffect(() => {
     if (viaje) {
-      const shareUrl = `${window.location.origin}/viaje-compartido/${viaje.id}`;
+      const shareUrl = `${window.location.origin}/viaje-compartido/${viaje.id}?refresh=${Date.now()}`;
       setCompartirUrl(shareUrl);
       
       const fechaInfo = viaje.fecha_salida ? formatDateForMessage(viaje.fecha_salida) : {
@@ -76,7 +76,9 @@ const CompartirViajeModal = ({ visible, onHide, viaje, toast }) => {
   }, [viaje]);
 
   const copyToClipboard = () => {
-    const textoCompleto = `${mensajeCompartir}\n\n${compartirUrl}`;
+    // Añade el parámetro de timestamp al enlace que se copia
+    const urlConCache = `${compartirUrl.split('?')[0]}?refresh=${Date.now()}`;
+    const textoCompleto = `${mensajeCompartir}\n\n${urlConCache}`;
     
     navigator.clipboard.writeText(textoCompleto)
       .then(() => {
@@ -98,23 +100,24 @@ const CompartirViajeModal = ({ visible, onHide, viaje, toast }) => {
       });
   };
 
-  const compartirViaNativo = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: `Viaje de ${viaje?.origen?.nombre || ""} a ${viaje?.destino?.nombre || ""}`,
-        text: mensajeCompartir,
-        url: compartirUrl
-      })
-      .catch(error => {
-        console.error('Error al compartir:', error);
-        // Fallback a copiar si falla el compartir nativo
-        copyToClipboard();
-      });
-    } else {
-      // Esto no debería ocurrir ya que el botón solo se muestra en móviles con soporte
+const compartirViaNativo = () => {
+  if (navigator.share) {
+    // Asegúrate de usar la URL con el parámetro anti-caché
+    const urlConCache = `${compartirUrl.split('?')[0]}?refresh=${Date.now()}`;
+    
+    navigator.share({
+      title: `Viaje de ${viaje?.origen?.nombre || ""} a ${viaje?.destino?.nombre || ""}`,
+      text: mensajeCompartir,
+      url: urlConCache
+    })
+    .catch(error => {
+      console.error('Error al compartir:', error);
       copyToClipboard();
-    }
-  };
+    });
+  } else {
+    copyToClipboard();
+  }
+};
 
   return (
     <Dialog
