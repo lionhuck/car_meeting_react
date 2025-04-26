@@ -77,13 +77,15 @@ const CreateViaje = () => {
 
 
   const searchLocalidades = (event) => {
-  const query = normalizeText(event.query);
-  setFilteredLocalidades(
-    localidades.filter((localidad) =>
-      normalizeText(localidad.nombre).includes(query)
-    )
-  );
-};
+    const query = normalizeText(event.query);
+    setFilteredLocalidades(
+      localidades.filter((localidad) => {
+        const [nombreLocalidad] = localidad.nombre.split(","); // 👈 solo el nombre de la ciudad
+        return normalizeText(nombreLocalidad).includes(query);
+      })
+    );
+  };
+  
   const isValidDate = (date) => {
     if (!date) return false;
     return date instanceof Date && !isNaN(date);
