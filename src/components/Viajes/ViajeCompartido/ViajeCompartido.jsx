@@ -55,7 +55,6 @@ const ViajeCompartido = () => {
 
   const handleUnirse = () => {
     if (!isAuthenticated) {
-      console.log('Guardando viajeId en localStorage:', viajeId); // Debug
       localStorage.setItem("pendingViajeId", viajeId.toString()); // Asegurar que es string
       navigate("/inicio-sesion"); 
       return;

@@ -54,7 +54,6 @@ const LoginUser = () => {
       localStorage.setItem("token", JSON.stringify(data.token));
       
       const pendingViajeId = localStorage.getItem("pendingViajeId");
-      console.log('pendingViajeId encontrado:', pendingViajeId); // Debug
       
       if (pendingViajeId) {
         localStorage.removeItem("pendingViajeId");
