@@ -5,10 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "vercel-build": "npm install &&  npm run build",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "vite preview --port ${PORT:-5000}"
+    "vercel-build": "npm ci && npm run build"
   },
   "dependencies": {
     "amqplib": "^0.10.9",
