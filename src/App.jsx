@@ -18,7 +18,7 @@ import SolicitarReset from './components/Auth/SolicitarReset';
 import ResetPassword from './components/Auth/ResetPassword';
 import ViajeCompartido from './components/Viajes/ViajeCompartido/ViajeCompartido';
 // ⭐ AGREGAR ESTA IMPORTACIÓN
-import DemoBanner from './components/DemoBanner';
+import DemoBanner from './components/Demo/DemoBanner';
 
 function App() {
   return (
