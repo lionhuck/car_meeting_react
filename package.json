@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "pre-build": "rm -rf node_modules && npm install",
+    "vercel-build": "npm install &&  npm run build",
     "build": "vite build",
     "preview": "vite preview",
     "start": "vite preview --port ${PORT:-5000}"
