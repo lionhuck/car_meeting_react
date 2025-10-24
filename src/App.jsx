@@ -1,4 +1,3 @@
-// 3. Finalmente, actualizamos el App.jsx con las rutas protegidas
 // App.jsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
@@ -18,10 +17,14 @@ import EditarPerfil from './components/Auth/EditarPerfil';
 import SolicitarReset from './components/Auth/SolicitarReset';
 import ResetPassword from './components/Auth/ResetPassword';
 import ViajeCompartido from './components/Viajes/ViajeCompartido/ViajeCompartido';
+// ⭐ AGREGAR ESTA IMPORTACIÓN
+import DemoBanner from './components/DemoBanner';
 
 function App() {
   return (
     <BrowserRouter>
+      <DemoBanner />
+      
       <MainLayout>
         <Routes>
           {/* Rutas públicas */}
@@ -32,6 +35,7 @@ function App() {
           <Route path="/solicitar-reset" element={<SolicitarReset />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/viaje-compartido/:viajeId" element={<ViajeCompartido />} />
+          
           {/* Rutas protegidas */}
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<ViajesView />} />

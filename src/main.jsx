@@ -1,18 +1,17 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import './App.css'
-import App from './App.jsx'
+// main.jsx o App.jsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import { useMockApi } from './services/mockApiService';
 
-// Importa los estilos de PrimeReact
-// Importaciones de estilos de PrimeReact
-import "primereact/resources/themes/lara-light-indigo/theme.css";  // tema
-import "primereact/resources/primereact.min.css";                  // core
-import "primeicons/primeicons.css";                                // iconos                                  // grid system (opcional)
+// Inicializar el mock API si está en modo demo
+if (import.meta.env.VITE_DEMO_MODE === 'true') {
+  useMockApi();
+  console.log('🎭 Modo Demo Activado - Usando datos simulados');
+}
 
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
     <App />
-  </StrictMode>,
-)
+  </React.StrictMode>
+);
