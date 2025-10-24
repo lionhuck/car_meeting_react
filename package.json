@@ -4,12 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "preview": "vite preview",
-  "start": "serve -s dist -l $PORT"
-},
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "serve -s dist -l $PORT"
+  },
   "dependencies": {
+    "amqplib": "^0.10.9",
     "axios": "^1.7.9",
     "formik": "^2.4.6",
     "jwt-decode": "^4.0.0",
@@ -20,7 +21,6 @@
     "react-hook-form": "^7.54.2",
     "react-router-dom": "^6.28.0",
     "serve": "^14.2.0",
-    "tailwind": "^4.0.0",
     "yup": "^1.6.1"
   },
   "devDependencies": {
@@ -28,18 +28,14 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
-    "autoprefixer": "^10.4.20",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9.13.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.11.0",
-    "postcss": "^8.5.3",
-    "tailwindcss": "^4.0.12",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.16",
     "vite": "^5.4.10"
-  },
-  "engines": {
-    "node": "22.x",
-    "npm": "9.x"
   }
 }
