@@ -40,7 +40,7 @@ const DemoBanner = () => {
     }}>
       <Card
         style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #1832a5ff 0%, #764ba2 100%)',
           border: 'none',
           boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
           color: 'white'
@@ -62,7 +62,7 @@ const DemoBanner = () => {
           <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
             <i className="pi pi-info-circle" style={{ fontSize: '2rem', marginBottom: '0.5rem' }}></i>
             <h3 style={{ margin: '0.5rem 0', fontSize: '1.3rem' }}>
-              🎯 Modo Demo Activo
+              Modo Demo
             </h3>
             <p style={{ fontSize: '0.9rem', opacity: 0.9, margin: '0.5rem 0' }}>
               Usa estas credenciales para probar la aplicación
