@@ -8,6 +8,9 @@ import * as Yup from 'yup';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true';
+
+
 const LoginUser = () => {
   const toast = useRef(null);
   const navigate = useNavigate();
@@ -154,7 +157,10 @@ const LoginUser = () => {
           <Toast ref={toast} />
           <h2 className="p-text-center">Iniciar Sesión</h2>
           <Formik
-            initialValues={{ email: "", password: "" }}
+            initialValues={{
+              email: isDemoMode ? "demo@carmeeting.com" : "",
+              password: isDemoMode ? "demo123" : ""
+            }}
             validationSchema={validationSchema}
             onSubmit={(values) => onLoginUser(values)}
           >
